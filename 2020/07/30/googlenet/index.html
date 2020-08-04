@@ -167,7 +167,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    25 minutes read (About 3803 words)
+                    25 minutes read (About 3801 words)
                 </span>
                 
                 
@@ -189,7 +189,7 @@
 
 <ul>
 <li>너무 오랜만에 딥러닝 논문 정주행 리뷰네요. 올 해가 가기 전에는 2020년에 도착하고 싶은게 목표인데.. 아직 2014년이라니..<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f622.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f622.png?v8">😢</span> 더 분발해야겠습니다! 이번에 알아 볼 논문은 2014년 ILVRC에서 1위에 빛나는 GoogleNet입니다! 또 다른 이른으로, Inception이라고 불립니다. </li>
-<li>논문의 풀네임은 <strong>‘Going deeper with convolutions’</strong> 이고, 저자는 Christian Szegedy et al.이고, 구글에서 발표한 논문이면서 동시에 CNN의 시초인 LeNet을 오마주하는 의미에서 이름을 GoogLeNet으로 부른다고 합니다! </li>
+<li>논문의 풀네임은 <strong>‘Going deeper with convolutions’</strong> 입니다. 저자는 Christian Szegedy et al.이고, 구글에서 발표한 논문이면서 동시에 CNN의 시초인 LeNet을 오마주하는 의미에서 이름을 GoogLeNet으로 부른다고 하네요!</li>
 <li>논문의 제목은 명작인.. 2010년 레오나르도 디카프리오 주연의 영화 Inception의 ‘We need to go deeper’라는 명대사로 유명했던 인터넷 Meme을 딴 것이라고 하네요 <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f606.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f606.png?v8">😆</span> ZFNet까지의 구조들은 끽해야 Conv layer 몇 개와 Fully Conneted 2, 3개를 붙이는 구조에서 더욱 깊어진 CNN 모델 구조가 가능하게 된 점을 자랑스럽게 소개합니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span></li>
 </ul>
 <hr>
@@ -247,7 +247,7 @@
 <br>
 
 <h2 id="Architectural-Details"><a href="#Architectural-Details" class="headerlink" title="Architectural Details"></a><strong>Architectural Details</strong></h2><ul>
-<li>그렇기 때문에, GoogleNet의 핵심 아이디어는 “최적의 local sparse structure가 근사될 수 있는 방법을 어떻게 찾을 수 있는가”로 수렴합니다. 그 고민의 결과로 탄생한 것이 Inception architecture입니다.</li>
+<li>그렇기 때문에, GoogleNet의 핵심 아이디어는 <strong>“최적의 local sparse structure가 근사될 수 있는 방법을 어떻게 찾을 수 있는가”</strong>로 수렴합니다. 그 고민의 결과로 탄생한 것이 Inception architecture입니다.</li>
 <li>논문을 보면, Inception Module이라고 부는 이 Module이 어떻게 탄생하게 됐는지에 대해 구구절절 설명을 해 놓습니다만, 쉽게 말하자면 아래와 같이 정리할 수 있습니다. <blockquote>
 <p><strong>The Nativity of Inception Module</strong></p>
 <ol>
@@ -292,7 +292,7 @@
 <li><strong>두 번째</strong>는 이 <strong>1x1 conv가 모델의 깊이(depth)와 함께 넓이(width)도 넓힐 수 있게 된 점</strong>입니다. 1x1 conv가 매번 ReLU를 함께 수행하기 때문에 모델의 깊이를 한층 더 깊게 가져갈 수 있게 해주지만, 결정적으로 1x1 conv 덕에 아끼게 되는 Computational resources들로 계산량의 어려움 없이 모델을 더 넓고 깊에 가져갈 수 있게 해줍니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span></li>
 </ul>
 <h2 id="5-GoogLeNet"><a href="#5-GoogLeNet" class="headerlink" title="5. GoogLeNet"></a>5. GoogLeNet</h2><ul>
-<li><p>자 ~ 드디어 GoogLeNet 전체 구조에 대해서 살펴볼 시간입니다!<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f42c.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f42c.png?v8">🐬</span> <del>먼 길이었다..</del> 도입부에 말했듯, Goog<strong>LeNet</strong>에 LeNet이 보이는 이유는 Yann LeCun의 LeNet 5에 대한 Homage임을 논문에서 밝히고 있습니다. 멋있죠?:thumbsup:</p>
+<li><p>자 ~ 드디어 GoogLeNet 전체 구조에 대해서 살펴볼 시간입니다!<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f42c.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f42c.png?v8">🐬</span> <del>먼 길이었다..</del> 도입부에 말했듯, Goog<strong>LeNet</strong>에 LeNet이 보이는 이유는 Yann LeCun의 LeNet 5에 대한 Homage임을 논문에서 밝히고 있습니다. 멋있죠? :+1:</p>
 </li>
 <li><p>GoogleNet의 구조의 세부사항을 표로 정리하면 아래와 같습니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8">😄</span> 구글넷은 총 9개의 Inception Module로 구성되어 있습니다. </p>
 </li>
@@ -381,7 +381,7 @@
 
 <h2 id="7-Conclusions"><a href="#7-Conclusions" class="headerlink" title="7. Conclusions"></a>7. Conclusions</h2><ul>
 <li>끝으로 ‘다른 모델로도 구글넷과 비슷한 depth와 width를 가지고 비슷한 성능을 낼 수 있을지 모르나, 훨씬 무겁고 학습하기 힘들 것이다’라고 말하면서 동시에, 자신들이 <strong>Sparse Architecture 이론이 현실적으로 가능하고 보편적으로 사용할 수 있음을 확실히 증명했다</strong>고 벅차게 밝힙니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span></li>
-<li>동시에, 그런 결론은 미래에 자동화된 더 정교한 sparse model을 만들 수 있다는 유망한 미래를 뜻한다고 말하고 있습니다. 그래서, 결론적으로 머지 않아 실제로 구글은 AutoML을 만들어버리게 되죠. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f605.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f605.png?v8">😅</span></li>
+<li>동시에, 그런 결론은 미래에 자동화된 더 정교한 sparse model을 만들 수 있다는 유망한 미래를 뜻한다고 말하고 있습니다. 그리고, 결국엔 머지 않아 실제로 구글은 AutoML을 만들어버리게 되죠. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f605.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f605.png?v8">😅</span></li>
 </ul>
 <br>
 <hr>
