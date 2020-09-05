@@ -167,7 +167,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    12 minutes read (About 1869 words)
+                    12 minutes read (About 1868 words)
                 </span>
                 
                 
@@ -248,7 +248,7 @@
 </center>
 
 <ul>
-<li><p><code>7x7 filter</code>를 사용했다면 필요한 학습해야 하는 parameter는 channel을 $C$만큼 가지고 있다고하면, $7^2C^2 = 49C^2$개이지만, <code>3x3 filter</code>를 사용한다면, $3(3^2C^2) = 27C^2$일 뿐이므로 81% 이상을 절약할 수도 있습니다! 이는 큰 차이죠. </p>
+<li><p><code>7x7 filter</code>를 사용했다면 필요한 학습해야 하는 parameter는 channel을 $C$만큼 가지고 있다고하면, $7^2C^2 = 49C^2$개이지만, <code>3x3 filter</code>를 사용한다면, $3(3^2C^2) = 27C^2$일 뿐이므로 45% 정도나 절약할 수 있습니다! 이는 큰 차이죠. </p>
 </li>
 <li><p>단순히 계산량만 줄인 것이 아니라, <u>결과적으로 3x3 filter를 여러번 쓰는만큼, ReLU와 같은 non-linearity가 더 추가</u>되는 결과로 이어지기 때문에, 모델의 표현력 또한 좋아집니다! <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8">👍</span></p>
 </li>
@@ -763,6 +763,6 @@ document.addEventListener('DOMContentLoaded', function () {
             all[i].SourceElement().parentNode.className += ' has-jax';
     });
 </script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
