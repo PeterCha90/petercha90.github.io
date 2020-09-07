@@ -3,29 +3,50 @@
 
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/vgg/</loc>
-        <lastmod>2020-09-05T12:01:14.825Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/Label-Smoothing/</loc>
+        <lastmod>2020-09-07T08:53:40.187Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/VGG/</loc>
-        <lastmod>2020-09-05T12:01:14.825Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/inception-v3/</loc>
+        <lastmod>2020-09-07T08:53:40.187Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/inception-v2/</loc>
+        <lastmod>2020-09-07T08:53:40.187Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
-        <lastmod>2020-09-05T12:01:14.825Z</lastmod>
+        <lastmod>2020-09-07T08:53:40.187Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
-        <lastmod>2020-09-05T12:01:14.825Z</lastmod>
+        <lastmod>2020-09-07T08:53:40.187Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/vgg/</loc>
+        <lastmod>2020-09-05T12:19:02.222Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/VGG/</loc>
+        <lastmod>2020-09-05T12:19:02.222Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
