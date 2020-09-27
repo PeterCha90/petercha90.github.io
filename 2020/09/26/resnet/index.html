@@ -167,7 +167,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    13 minutes read (About 1933 words)
+                    13 minutes read (About 1938 words)
                 </span>
                 
                 
@@ -283,11 +283,9 @@
 <ul>
 <li><p>바람직하게 mapping이 될 것이라고 전제하는 Layer의 식을 $H(x)$라고 할 때, ‘Residual’이라고 지칭되는 $F(x)$ 부분이 ‘Identity’라고 지칭되는 $x$와 더해져서 $H(x) = F(x) + x$로 표현될 수 있습니다. </p>
 </li>
-<li><p>이 식을 잘 살펴 본다면, 만약에 그냥 identity mapping이 최적의 상황이라면 Residual을 0으로 만드는 것이 nonlinear layers를 통과시키는 것보다 계산량에서 훨씬 효율적인 것은 물론이고, 더 옳은 판단일 것입니다. </p>
+<li><p>이 식을 잘 살펴 본다면 그냥 identity mapping이 최적의 상황인 경우, Residual을 0으로 만드는 것이 Residual 속의 nonlinear layers를 통과시키는 것보다 계산량에서 훨씬 효율적인 것은 물론이고, 더 옳은 판단일 것입니다. 이 개념을 논문에서는 Neural Network with <strong>“shortcut connections”</strong> 라고 소개합니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8">😉</span> </p>
 </li>
-<li><p>이 식을 논문에서는 Neural Network with <strong>“shortcut connections”</strong> 라고 소개합니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8">😉</span> 이제 이 개념이 왜 LSTM과 Highway Networks의 개념과 맞닿아 있는지 감이 오시나요? </p>
-</li>
-<li><p>더 세부적인 ResNet에 대한 설명은 다음편에서 이어가도록 하겠습니다. 감사합니다. :) </p>
+<li><p>이제 ResNet의 Residual Learning의 개념이 왜 LSTM과 Highway Networks의 개념과 맞닿아 있는지 감이 오시나요? 더 세부적인 ResNet에 대한 설명은 다음편에서 이어가도록 하겠습니다. 감사합니다. :) </p>
 </li>
 </ul>
 <br>
