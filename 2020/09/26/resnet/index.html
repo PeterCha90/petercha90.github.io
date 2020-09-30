@@ -167,7 +167,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    13 minutes read (About 1949 words)
+                    14 minutes read (About 2161 words)
                 </span>
                 
                 
@@ -206,12 +206,12 @@
 <li><p>그래서 소개되는, 더 깊은 구조를 가능하게 해주는 모델의 구조는 이제 살펴 볼 <strong>identity mapping</strong>이라는 개념으로 가능해지는 <strong><em>Deep Residual Learning</em></strong> 입니다. 우선, 이 개념이 어떤 아이디어로 부터 출발했는지 좀 더 깊은 이해를 돕기 위해, 위에서도 잠깐 언급한 Highway Network, 그리고 또 그 Highway Network의 모태가 된 LSTM에 대해서 이번 포스팅에서는 알아보도록 하겠습니다. :) </p>
 </li>
 </ul>
-<h3 id="tram-Highway-Networks"><a href="#tram-Highway-Networks" class="headerlink" title=":tram: Highway Networks"></a><span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f68a.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f68a.png?v8">🚊</span> Highway Networks</h3><ul>
+<h2 id="2-Related-Work-mag-right"><a href="#2-Related-Work-mag-right" class="headerlink" title="2. Related Work :mag_right:"></a>2. Related Work <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f50e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f50e.png?v8">🔎</span></h2><h3 id="tram-Highway-Networks"><a href="#tram-Highway-Networks" class="headerlink" title=":tram: Highway Networks"></a><span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f68a.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f68a.png?v8">🚊</span> Highway Networks</h3><ul>
 <li>2015년 5월에 나온 논문으로 The Swiss AI Lab IDSIA에서 나온 Rupesh의 논문입니다. 이 Highway라는 개념도 어디서 착안을 하였는고하니, 1995년에 나온 개념인 <strong>LSTM</strong>. 우리가 시계열관련 딥러닝을 공부하게 되면 꼭 만나게 되는 그 LSTM 개념에 착안하여 나온 방식이라고 합니다. 잠시 LSTM을 살펴보고 갈까요? 아래는 LSTM Cell의 구조입니다. </li>
 </ul>
 <h4 id="LSTM-Long-Short-Term-Memory"><a href="#LSTM-Long-Short-Term-Memory" class="headerlink" title="LSTM - Long Short Term Memory."></a>LSTM - Long Short Term Memory.</h4><center>
   <figure>
-    <img src="/gallery/resnet_2.png" width="80%">
+    <img src="/gallery/resnet_2.png" width="70%">
   <figcaption><a href="(https://commons.wikimedia.org/Cell stat e가 있고, wiki/File:LSTM.png">LSTM</a>
   </figcaption>
   </figure>
@@ -285,14 +285,18 @@
 </li>
 <li><p>이 식을 잘 살펴 본다면 그냥 identity mapping이 최적의 상황인 경우, Residual을 0으로 만드는 것이 Residual 속의 nonlinear layers를 통과시키는 것보다 계산량에서 훨씬 효율적인 것은 물론이고, 더 옳은 판단일 것입니다. 이 개념을 논문에서는 Neural Network with <strong>“shortcut connections”</strong> 라고 소개합니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8">😉</span> </p>
 </li>
-<li><p>이제 ResNet의 Residual Learning의 개념이 왜 LSTM과 Highway Networks의 개념과 맞닿아 있는지 감이 오시나요? 더 세부적인 ResNet에 대한 설명은 다음편에서 이어가도록 하겠습니다. 감사합니다. :) </p>
+<li><p>이 Residual Leraning으로 ImageNet에 대해 많은 실험을 해 본 결과, 아래와 같은 결론을 내립니다.<br>  1) Residual Nets은 layer가 깊어질수록 Training Error가 높아지는 단순히 layer들을 쌓은 모델과 비교했을 때, Optimize 하기가 더 쉽다.<br>  2) Depth가 깊어질수록 Residual Nets은 정확도가 올라가며, 이전 다른 네트워크들보다 월등히 좋은 결과를 낸다.  </p>
+</li>
+<li><p>더욱이, CIFAR-10으로도 실험을 해봤는데, 비슷한 결론을 얻을 수 있었기 때문에 ResNet은 특정 데이터셋에서만 국한되는 결과는 아니라고도 말합니다. </p>
+</li>
+<li><p>실제로도, ResNet은 2015 ImageNet classification, detection, localization, COCO detection, segmentation까지의 모든 대회에서 1위를 휩쓸어버리면서, 그 파워를 증명해냅니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f62e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f62e.png?v8">😮</span></p>
 </li>
 </ul>
 <br>
 <hr>
 
 <ul>
-<li>여기까지, Resnet 리뷰 1편을 마치도록 하겠습니다.</li>
+<li>이제 ResNet의 Residual Learning의 개념이 왜 LSTM과 Highway Networks의 개념과 맞닿아 있는지 감이 오시나요? 더 세부적인 ResNet에 대한 설명은 다음편에서 이어가도록 하겠습니다. 여기까지, Resnet 리뷰 1편을 마치도록 하겠습니다. 감사합니다. :)  </li>
 </ul>
 <h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
 <li>Highway Networks <a href="https://arxiv.org/pdf/1505.00387.pdf" rel="external nofollow noopener noreferrer" target="_blank">paper</a></li>
