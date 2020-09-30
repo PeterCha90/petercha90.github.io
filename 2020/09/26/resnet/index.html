@@ -167,7 +167,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    15 minutes read (About 2181 words)
+                    16 minutes read (About 2422 words)
                 </span>
                 
                 
@@ -281,10 +281,22 @@
 </center>
 
 <ul>
-<li><p>바람직하게 mapping이 될 것이라고 전제하는 Layer의 식을 $H(x)$라고 할 때, ‘Residual’이라고 지칭되는 $F(x)$ 부분이 ‘Identity’라고 지칭되는 $x$와 더해져서 $H(x) = F(x) + x$로 표현될 수 있습니다. </p>
+<li>바람직하게 mapping이 될 것이라고 전제하는 Layer의 식을 $H(x)$라고 할 때, ‘Residual’이라고 지칭되는 $F(x)$ 부분이 ‘Identity’라고 지칭되는 $x$와 더해져서 $H(x) = F(x) + x$로 표현될 수 있습니다. </li>
+<li>이 식을 잘 살펴 본다면 그냥 identity mapping이 최적의 상황인 경우, Residual을 0으로 만드는 것이 Residual 속의 nonlinear layers를 통과시키는 것보다 계산량에서 훨씬 효율적인 것은 물론이고, 더 옳은 판단일 것입니다. 이 개념을 논문에서는 Neural Network with <strong>“shortcut connections”</strong> 라고 소개합니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8">😉</span></li>
+</ul>
+<h4 id="mag-Differnce"><a href="#mag-Differnce" class="headerlink" title=":mag: Differnce?"></a><span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f50d.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f50d.png?v8">🔍</span> Differnce?</h4><ul>
+<li>여기서 짚고 넘어갈 수 있는, <strong>ResNet과 Highway Network의 수식의 차이점</strong>이 무엇인지 혹시 발견하셨나요? 비교의 편의성을 위해서 각 식을 다시 살펴 보자면, 아래와 같습니다. </li>
+</ul>
+<p>$$y = H(x, W_H)\cdot T(x, W_T) + x\cdot (1-T(x, W_T))   \text{ : Highway}$$<br>$$y = F(x) + x \text{ : ResNet}$$</p>
+<ul>
+<li><p>네, 바로 ResNet은 Highway의 Gate function처럼 한 쪽의 비중이 커지면 한 쪽의 기여도를 제거하는 것이 아니라, <u><strong>identity shortcut</strong>은 ‘항상’ 닫히지 않고 정보를 100% 그대로 전달</u>합니다. </p>
 </li>
-<li><p>이 식을 잘 살펴 본다면 그냥 identity mapping이 최적의 상황인 경우, Residual을 0으로 만드는 것이 Residual 속의 nonlinear layers를 통과시키는 것보다 계산량에서 훨씬 효율적인 것은 물론이고, 더 옳은 판단일 것입니다. 이 개념을 논문에서는 Neural Network with <strong>“shortcut connections”</strong> 라고 소개합니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8">😉</span> </p>
+<li><p>그 말인 즉슨, 단지 <u>‘Residual’의 해당하는 부분이 의미가 있다면 그 정보를 더해서 모델을 설명할 것이고, 그 것이 아니라면 학습을 하지 않겠다.</u>는 의도로 해석할 수 있습니다. 이 부분을 이해하게 된다면, ResNet에서 말하는 ‘Residual learning’의 뜻이 아주 명확해 집니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8">😄</span> </p>
 </li>
+</ul>
+<hr>
+
+<ul>
 <li><p>이 Residual Leraning으로 ImageNet에 대해 많은 실험을 해 본 결과, 아래와 같은 결론을 내립니다. </p>
 <ol>
 <li>Residual Nets은 layer가 깊어질수록 Training Error가 높아지는 단순히 layer들을 쌓은 모델과 비교했을 때, Optimize 하기가 더 쉽다. </li>
