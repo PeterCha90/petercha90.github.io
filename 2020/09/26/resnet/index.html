@@ -167,7 +167,7 @@
                 <span class="level-item has-text-grey">
                     
                     
-                    14 minutes read (About 2161 words)
+                    15 minutes read (About 2181 words)
                 </span>
                 
                 
@@ -285,14 +285,15 @@
 </li>
 <li><p>이 식을 잘 살펴 본다면 그냥 identity mapping이 최적의 상황인 경우, Residual을 0으로 만드는 것이 Residual 속의 nonlinear layers를 통과시키는 것보다 계산량에서 훨씬 효율적인 것은 물론이고, 더 옳은 판단일 것입니다. 이 개념을 논문에서는 Neural Network with <strong>“shortcut connections”</strong> 라고 소개합니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f609.png?v8">😉</span> </p>
 </li>
-<li><p>이 Residual Leraning으로 ImageNet에 대해 많은 실험을 해 본 결과, 아래와 같은 결론을 내립니다.<br>  1) Residual Nets은 layer가 깊어질수록 Training Error가 높아지는 단순히 layer들을 쌓은 모델과 비교했을 때, Optimize 하기가 더 쉽다.<br>  2) Depth가 깊어질수록 Residual Nets은 정확도가 올라가며, 이전 다른 네트워크들보다 월등히 좋은 결과를 낸다.  </p>
+<li><p>이 Residual Leraning으로 ImageNet에 대해 많은 실험을 해 본 결과, 아래와 같은 결론을 내립니다. </p>
+<ol>
+<li>Residual Nets은 layer가 깊어질수록 Training Error가 높아지는 단순히 layer들을 쌓은 모델과 비교했을 때, Optimize 하기가 더 쉽다. </li>
+<li>Depth가 깊어질수록 Residual Nets은 정확도가 올라가며, 이전 다른 네트워크들보다 월등히 좋은 결과를 낸다.  </li>
+</ol>
 </li>
-<li><p>더욱이, CIFAR-10으로도 실험을 해봤는데, 비슷한 결론을 얻을 수 있었기 때문에 ResNet은 특정 데이터셋에서만 국한되는 결과는 아니라고도 말합니다. </p>
-</li>
-<li><p>실제로도, ResNet은 2015 ImageNet classification, detection, localization, COCO detection, segmentation까지의 모든 대회에서 1위를 휩쓸어버리면서, 그 파워를 증명해냅니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f62e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f62e.png?v8">😮</span></p>
+<li><p>더욱이, CIFAR-10으로도 실험을 해봤는데, 비슷한 결론을 얻을 수 있었기 때문에 ResNet은 특정 데이터셋에서만 국한되는 결과는 아니라고도 말합니다.  실제로도, ResNet은 2015년 당시의 탑급의 대회들을 모두 쓸어버렸습니다. 2015 ImageNet classification, detection, localization, COCO detection, segmentation까지의 모든 대회에서 1위를 휩쓸어버리면서, 그 파워를 증명해냅니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f62e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f62e.png?v8">😮</span></p>
 </li>
 </ul>
-<br>
 <hr>
 
 <ul>
@@ -770,6 +771,6 @@ document.addEventListener('DOMContentLoaded', function () {
             all[i].SourceElement().parentNode.className += ' has-jax';
     });
 </script>
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
