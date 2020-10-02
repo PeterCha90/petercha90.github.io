@@ -4,35 +4,35 @@
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
-        <lastmod>2020-10-02T07:41:50.398Z</lastmod>
+        <lastmod>2020-10-02T14:19:18.409Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
-        <lastmod>2020-10-02T07:41:50.398Z</lastmod>
+        <lastmod>2020-10-02T14:19:18.409Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
-        <lastmod>2020-10-02T07:41:50.398Z</lastmod>
+        <lastmod>2020-10-02T14:19:18.409Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
-        <lastmod>2020-10-02T07:41:50.398Z</lastmod>
+        <lastmod>2020-10-02T14:19:18.409Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
-        <lastmod>2020-10-02T07:41:50.398Z</lastmod>
+        <lastmod>2020-10-02T14:19:18.409Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -101,20 +101,6 @@
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/transfer-learning/</loc>
-        <lastmod>2020-08-14T01:58:05.826Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/TPU/</loc>
-        <lastmod>2020-08-14T01:58:05.826Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
         <loc>http://www.stand-firm-peter.me/tags/GCP/</loc>
         <lastmod>2020-08-14T01:58:05.826Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -123,6 +109,20 @@
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/Google-Cloud-Platform/</loc>
+        <lastmod>2020-08-14T01:58:05.826Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/transfer-learning/</loc>
+        <lastmod>2020-08-14T01:58:05.826Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/TPU/</loc>
         <lastmod>2020-08-14T01:58:05.826Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
