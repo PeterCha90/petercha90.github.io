@@ -12,12 +12,14 @@
         <meta name="keywords" content="AI,Machine Learning,">
     
     
+        <link rel="icon" href="http://www.stand-firm-peter.me/assets/images/favicon.ico">
+    
     
         
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\nGoogle TPU 사용해서 Transfer Learning하여 모바일에 심기 - (3) \nAnnotation Labelling하기, tfrecord 파일 만들기 \n\n\n\n\n\n본 Tutorial은 2020년 6월 기준으로 작성되었으며, Mac OS 기준으로 작성되어 Ubuntu 및 다른 Linux기반 OS에서는 검증되지 않았습니다. 잘못 기재되어 있거나 수정이 필요한 부분들은 알려주시면 감사하겠습니다 :)\n\n이번 포스팅에는, \n\n1) 우리가 학습시키고 싶은 Annotation 데이터 생성하기2) 데이터를 tfrecord로 만들기\n\n두 가지 과정을 함께 진행해보겠습니다. \n\n\n\n\n\n\n\n1. Make your own annotation data\n이번 Tutorial에서 하고자 하는 task는 Object Detection이다. 따라서, 모델을 학습하기 위해서는 training 이미지 속 객체들에게 해당하는 label을 모두 부여해야 한다. \n\n어노테이션을 만들 수 있는 프로그램은 참 많은데, 필자는 LabelImg 를 추천한다. OS별로 설치도 쉽고, 사용하기도 편하다. \n\n이 프로그램이 가지는 가장 큰 장점은 학습 이미지의 basedata로 가져가는 VOC dataset이나, COCO dataset과 같은 format으로 생성되는 label정보를 저장해준다는 것이다! 🙏 이 장점은 기존 dataset에 숟가락만 얹어, 우리가 감지하기 원하는 이미지만 추가하면 쉽게 학습을 시작할 수 있게 해준다. \n  \n\n\n\n이번 튜토리얼에서는 LabelImg와 결이 맞도록, VOC 2012 object detection dataset을 다운받고, 추가로 학습하고 싶은 다른 Class 하나를 추가한 21가지 이미지를 Detection할 수 있는 모델을 만들어 보도록 한다. 순서는 아래와 같다.\n\n\nLabelImg를 사용해서 추가로 학습시키고 싶은 클래스에 해당하는 모든 이미지의 Annotation을 생성한다. (a.k.a 노가다)\n생성된 .xml Annotation 파일들을 다운받은 VOC 2012 데이터의 Annotations에 추가한다.\n이미지들은 JPEGImages 폴더에 넣어준다.\ntrain, trainval, val 용도에 따른 이미지 목록을 잘 정리해서 ImageSets > Main 안에 해당 .txt(ex: train.txt, trainval.txt, val.txt) 파일마다 잘 추가해준다. \n\n\n\n\n\n\n\n2. Make data into tfrecord\n이전 포스팅에서 설치한 TensorFlow Object Detection API는 학습할 데이터가 TFRecord 포멧이어야만 한다. 지금부터 살펴볼 과정에서 모든 데이터를 하나의 .tfrecord파일로 생성하게 되는데, 그 과정이 조금 고통스러울 수 있지만 한 번 만들기만 한다면 사용하기에 매우 편리하다.\n\n필자의 추천대로 LabelImg를 사용해서 annotatio을 생성했다면, 바로 models/research/object_detection/dataset_tools/에 위치하고 있는 create_pascal_tf_record.py를 경우에 따라 조금 수정해서 사용하면 된다. \n\n수정이 필요한 부분은 아래와 같다.  create_pascal_tf_record.py\n  1234567891011121314...# at line 91# 딱히 수정을 안해도 되긴 하지만, tfrecord는 PNG도 지원하기 때문에 # 필요에 따라 수정해서 사용하면 될듯 if image.format != 'JPEG':\traise ValueError('Image format not JPEG')...# at line 163for year in years:logging.info('Reading from PASCAL %s dataset.', year)# aeroplane만 만들게 되어 있다. examples_path = os.path.join(data_dir, year, 'ImageSets', 'Main',                             'aeroplane_' + FLAGS.set + '.txt')...\n\n\n\nIn other case..\n만약 VOC format이 아니라면, 각 상황에 맞는 TFRecord 변환 스크립트를 작성해야 한다. 각자가 가지고 있는 파일(json, yaml, 등등)에 따라 코드를 읽어와서 생성을 해 주어야 한다. \n\n하나의 예시로 Berkeley Deep Drive는 json 파일로 작성된 Object Detection Box label 데이터이다. 이를 tfrecord 파일로 만드는 예시는 여기에서 다운받아 참고할 수 있다.\n\n\nFinish !\ntfrecord 생성에 성공했다는 증거는,  전체 이미지 용량보다 약간 더 용량이 많다는 것! tfrecord의 용량이 대상 전체 이미지를 합한 용량보다 조금 더 많다는 것을 확인할 수 있다면, 성공이다. \n\n\n\n\n수고하셨습니다. :) 다음 시간에는, Google Cloud Platform에서 이번 편에서 생성한 tfrecord를 가지고 본격적인 Transfer Learning을 실행해보도록 하겠습니다!\n이 글은 DataCrew 에서도 보실 수 있습니다. \n\n\n\n\n\nReferences\nTraining and serving a realtime mobile object detector in 30 minutes with Cloud TPUs - Link\nGCP Project Setting - Link\nStep by Step TensorFlow Object Detection API Tutorial - Part 1 ~ 5 - Link\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-06-09T00:00:00+09:00","dateModified":"2020-06-21T17:29:35+09:00","datePublished":"2020-06-09T00:00:00+09:00","description":"\nGoogle TPU 사용해서 Transfer Learning하여 모바일에 심기 - (3) \nAnnotation Labelling하기, tfrecord 파일 만들기 \n","headline":"Running a pretrained model on Android with TPU (3)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/06/09/tensorflow_object_detection_with_tpu_3/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2020/06/09/tensorflow_object_detection_with_tpu_3/","keywords":"tutorial, TPU, deep_learning, transfer learning, tensorflow object detection api"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg"},"articleBody":"\nGoogle TPU 사용해서 Transfer Learning하여 모바일에 심기 - (3) \nAnnotation Labelling하기, tfrecord 파일 만들기 \n\n\n\n\n\n본 Tutorial은 2020년 6월 기준으로 작성되었으며, Mac OS 기준으로 작성되어 Ubuntu 및 다른 Linux기반 OS에서는 검증되지 않았습니다. 잘못 기재되어 있거나 수정이 필요한 부분들은 알려주시면 감사하겠습니다 :)\n\n이번 포스팅에는, \n\n1) 우리가 학습시키고 싶은 Annotation 데이터 생성하기2) 데이터를 tfrecord로 만들기\n\n두 가지 과정을 함께 진행해보겠습니다. \n\n\n\n\n\n\n\n1. Make your own annotation data\n이번 Tutorial에서 하고자 하는 task는 Object Detection이다. 따라서, 모델을 학습하기 위해서는 training 이미지 속 객체들에게 해당하는 label을 모두 부여해야 한다. \n\n어노테이션을 만들 수 있는 프로그램은 참 많은데, 필자는 LabelImg 를 추천한다. OS별로 설치도 쉽고, 사용하기도 편하다. \n\n이 프로그램이 가지는 가장 큰 장점은 학습 이미지의 basedata로 가져가는 VOC dataset이나, COCO dataset과 같은 format으로 생성되는 label정보를 저장해준다는 것이다! 🙏 이 장점은 기존 dataset에 숟가락만 얹어, 우리가 감지하기 원하는 이미지만 추가하면 쉽게 학습을 시작할 수 있게 해준다. \n  \n\n\n\n이번 튜토리얼에서는 LabelImg와 결이 맞도록, VOC 2012 object detection dataset을 다운받고, 추가로 학습하고 싶은 다른 Class 하나를 추가한 21가지 이미지를 Detection할 수 있는 모델을 만들어 보도록 한다. 순서는 아래와 같다.\n\n\nLabelImg를 사용해서 추가로 학습시키고 싶은 클래스에 해당하는 모든 이미지의 Annotation을 생성한다. (a.k.a 노가다)\n생성된 .xml Annotation 파일들을 다운받은 VOC 2012 데이터의 Annotations에 추가한다.\n이미지들은 JPEGImages 폴더에 넣어준다.\ntrain, trainval, val 용도에 따른 이미지 목록을 잘 정리해서 ImageSets > Main 안에 해당 .txt(ex: train.txt, trainval.txt, val.txt) 파일마다 잘 추가해준다. \n\n\n\n\n\n\n\n2. Make data into tfrecord\n이전 포스팅에서 설치한 TensorFlow Object Detection API는 학습할 데이터가 TFRecord 포멧이어야만 한다. 지금부터 살펴볼 과정에서 모든 데이터를 하나의 .tfrecord파일로 생성하게 되는데, 그 과정이 조금 고통스러울 수 있지만 한 번 만들기만 한다면 사용하기에 매우 편리하다.\n\n필자의 추천대로 LabelImg를 사용해서 annotatio을 생성했다면, 바로 models/research/object_detection/dataset_tools/에 위치하고 있는 create_pascal_tf_record.py를 경우에 따라 조금 수정해서 사용하면 된다. \n\n수정이 필요한 부분은 아래와 같다.  create_pascal_tf_record.py\n  1234567891011121314...# at line 91# 딱히 수정을 안해도 되긴 하지만, tfrecord는 PNG도 지원하기 때문에 # 필요에 따라 수정해서 사용하면 될듯 if image.format != 'JPEG':\traise ValueError('Image format not JPEG')...# at line 163for year in years:logging.info('Reading from PASCAL %s dataset.', year)# aeroplane만 만들게 되어 있다. examples_path = os.path.join(data_dir, year, 'ImageSets', 'Main',                             'aeroplane_' + FLAGS.set + '.txt')...\n\n\n\nIn other case..\n만약 VOC format이 아니라면, 각 상황에 맞는 TFRecord 변환 스크립트를 작성해야 한다. 각자가 가지고 있는 파일(json, yaml, 등등)에 따라 코드를 읽어와서 생성을 해 주어야 한다. \n\n하나의 예시로 Berkeley Deep Drive는 json 파일로 작성된 Object Detection Box label 데이터이다. 이를 tfrecord 파일로 만드는 예시는 여기에서 다운받아 참고할 수 있다.\n\n\nFinish !\ntfrecord 생성에 성공했다는 증거는,  전체 이미지 용량보다 약간 더 용량이 많다는 것! tfrecord의 용량이 대상 전체 이미지를 합한 용량보다 조금 더 많다는 것을 확인할 수 있다면, 성공이다. \n\n\n\n\n수고하셨습니다. :) 다음 시간에는, Google Cloud Platform에서 이번 편에서 생성한 tfrecord를 가지고 본격적인 Transfer Learning을 실행해보도록 하겠습니다!\n이 글은 DataCrew 에서도 보실 수 있습니다. \n\n\n\n\n\nReferences\nTraining and serving a realtime mobile object detector in 30 minutes with Cloud TPUs - Link\nGCP Project Setting - Link\nStep by Step TensorFlow Object Detection API Tutorial - Part 1 ~ 5 - Link\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-06-09T00:00:00+09:00","dateModified":"2020-06-21T17:29:35+09:00","datePublished":"2020-06-09T00:00:00+09:00","description":"\nGoogle TPU 사용해서 Transfer Learning하여 모바일에 심기 - (3) \nAnnotation Labelling하기, tfrecord 파일 만들기 \n","headline":"Running a pretrained model on Android with TPU (3)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/06/09/tensorflow_object_detection_with_tpu_3/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2020/06/09/tensorflow_object_detection_with_tpu_3/","keywords":"tutorial, TPU, deep_learning, transfer learning, tensorflow object detection api"}</script>
     <meta name="description" content="Google TPU 사용해서 Transfer Learning하여 모바일에 심기 - (3)  Annotation Labelling하기, tfrecord 파일 만들기">
 <meta name="keywords" content="tutorial,TPU,deep_learning,transfer learning,tensorflow object detection api">
 <meta property="og:type" content="blog">
@@ -37,6 +39,8 @@
         
     
     
+        <meta property="og:image" content="http://www.stand-firm-peter.me/assets/images/avatar.jpeg">
+    
     
     
     
@@ -44,6 +48,15 @@
     <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
     <!--STYLES END-->
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-124184693-1');
+    </script>
+
 
     
 
@@ -58,6 +71,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -71,6 +88,8 @@
             <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
         
         
+            <img class="header-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+        
         </a>
     
 </header>
@@ -78,8 +97,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about" aria-label="Read more about the author">
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+                </a>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -110,22 +144,6 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
-                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archives</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
                         <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">About</span>
@@ -138,7 +156,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <a class="sidebar-button-link " href="https://github.com/petercha90" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
                     </a>
@@ -146,61 +164,9 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/in/peter-cha-022927134/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
                         <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
-                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -568,11 +534,17 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
         
             <h4 id="about-card-name">Peter Cha</h4>
         
@@ -587,6 +559,12 @@
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                Cheonan / Korea
+            </div>
         
     </div>
 </div>

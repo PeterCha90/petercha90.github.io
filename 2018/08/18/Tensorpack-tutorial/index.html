@@ -12,12 +12,14 @@
         <meta name="keywords" content="AI,Machine Learning,">
     
     
+        <link rel="icon" href="http://www.stand-firm-peter.me/assets/images/favicon.ico">
+    
     
         
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\nTensorflow Wrapper인 Tensorpack을 소개합니다.\nTensorflow, Tensorpack\n\n\n\nModelDesc와 Trainer를 중심으로Peter ChaTensorpack을 공부하면,\n우선 모르는 것들 투성이다. 알고나면 너무 쓰기 편하지만, 처음 접할 때는 너무 많이 추상화 된 API에 ‘이게 tensorflow는 맞는지..’할 정도니까.\n우선 이 튜토리얼을 보기 전, 필자의 tensorpack_tutorial.ipynb를 실행해 보길 바란다. 대략적인 dataflow는 데이터를 불러오는 부분으로 이해를 마쳤다고 생각을 하고, dataflow부분은 생략하고 설명을 진행하도록 하겠다. \n이번에는 Model의 선언하게 될 때 상속받은 ModelDesc class와, 학습을 실행하는 Trainer들의 모태가 되는 TowerTrainer 에 대해 알아보고자 한다.tensorpack_tutorial.ipynb에서 설명에 해당하는 부분을 함께 찾아보면 이해에 도움이 더 될 것 같다. \n이 Tutorial은 Tensorpack documentation을 참고해서 만들었다. \n\n\n\n\n\n1. Class ModelDescBase\nBase class for a model description이다.\n\n\nModelDesc는 ModelDescBase를 기반으로 만들어졌기 때문에, ModelDescBase를 먼저 설명한다. \n\n1.1. build_graph(*args)\n모든 symbolic graph (Model의 형태)를 Build한다. 이 함수가 뒤에서 설명할 TowerTrainer에서 tower function의 일부분이다.\n그 다음 설명할 inputs()에서 정의된 input list에 맞는 tf.Tensor를 parameter로 받는다. \n아무것도 리턴하지 않는다. \n\n1.2. inputs()\nModel에서 input으로 받을 텐서들의 placeholder들을 정의하는 함수다. \n후에 InputDesc로 변환될, tf.placeholder들을 return 한다.\n\n\n\n1.3. get_inputs_desc\n이름에서 알 수 있듯이, inputs()에서 정의된 모양대로 생긴 InputDesc를 list로 반환하는 함수다. \n\n\n\n\n2. Class ModelDesc\n주의사항: build_graph()를 꼭 cost를 return하도록 코딩해야 한다.\n앞에서 설명한 ModelDescBase를 상속받은 터라, 위의 3가지는 함수는 내장하고 있다. \n\n2.1. optimizer()\ntf.train.Optimizer를 여기에 선언해주고 Return하게끔 함수를 짜준다. \n\n2.2. get_optimizer()\noptimizer()를 호출하면, 계속 새로 optimizer를 만들어서 생성하는데, 이 함수를 쓰면 이미 optimizer()를 통해 생긴 optimizer를 기록해 놓았다가 반환시켜준다. \n\n\n\n\n3. Class TowerTrainerTensorpack에서는,\n우리가 흔히 말하는 Model을 계속 Tower라고 지칭한다.(왜 그런지 모르겠다.😶)\n그래서 아래에서 나오는 TowerTrainer는 만든 모델을 학습을 시키는 Trainer고, 그 트레이너가 어떤 특징들을 가진 함수들을 들고 다니는지 이해하면 이해가 쉽다. \n기본적으로 Tensorpack에 나오는 모든 Trainer들은 TowerTrainer의 subclass다. 이 개념이 그래서 궁극적으로는 모든 neural-network training을 가능하게 해준다. \n\n3.1. get_predictor(input_names, output_names, device=0)\nReturns a callable predictor built under TowerContext(is_training=False). \n\n\n이 함수가 호출되면, 가지고 있는 TowerContext(모델)가 training mode가 아닌 상태(is_training=False)로 돌려준다. 그러니까 Test data로 시험할 때만 부르는 함수. 그래서 이름도 predictor.\nParameters: input_names (list), output_names (list), device (int) – build the predictor on device ‘/gpu:{device}’ or use -1 for ‘/cpu:0’.\n파라미터로 들어가는 input, output이름은 모델 안에서 선언된 이름이 아니면 안 돌아가니까 조심.\n\n3.2. inputs_desc\nReturns – list[InputDesc]: metainfo about the inputs to the tower.\n\n\n말 그대로, 모델에 들어갈 Input의 크기와 같은 정보가 들어있는 list를 반환해준다. \n\n3.3. tower_func\nBuild Model.\n\n\n이 친구가 실제 모델을 정의하고, Build할 수 있는 함수를 세팅하는 부분!\nModelDesc interface로 정의된 model을 trainer로 돌려야 하는 상황이 자주 발생할 수 있는데, 이 때, ModelDesc에서 선언된 build_graph 함수가 이 역할을 대신해 줄 수 있다.\n\n3.4. towers\nReturns – a TowerTensorHandles object, to access the tower handles by either indices or names.\n\n\n모델 및 Train 전반에 걸쳐 관련된 변수들에 접근하고 싶을 때 사용한다! 그래서 이 함수는 Transfer learning을 할 때 유용할 거 같다.\n이미 모델 그래프가 Set up이 끝난 뒤에만 이 함수는 호출될 수 있다. \n각각의 layer와 attributes에 이 towers함수를 호출하면 접근할 수 있게 된다! 아래는 예시.\n\n12# Access the conv1/output tensor in the first training towertrainer.towers.training()[0].get_tensor('conv1/output')\n\n\n\n\n4. Class Trainer\nBase class for a trainer.\n\n\n분명히 위에서 금방, \n\n“기본적으로 Tensorpack에 나오는 모든 Trainer들은 TowerTrainer의 subclass다 “\n\n  라고 했는데, 이 TowerTrainer가 상속을 받는 class가 있었으니, 이름하여 TowerTrainer보다 더 단순한 Trainer 다.\n\n다른 TowerTrainer를 상속 받은 Trainer들을 사용할 때, 종종 TowerTrainer에서 본 적 없는 친구들이 나타나는데, 그 친구들이 Trainer의 것인 경우가 있다. \n\n하지만, Trainer 고유 함수나 요소에 직접적으로 접근할 일이 별로 없어서 아래의 3가지 정도만 알고 있으면 될 것 같다. 나머지는 문서를 참고하자. \n\n\n\n아래 1, 2번의 max_epoch과, steps_per_epoch은 TrainConfig에서 자주 만나는 키워드들인데, 이 친구들이 Trainer의 요소였다.\n\n4.1. max_epoch\nEpoch은 몇 번 돌릴 것인지\n\n4.2. steps_per_epoch\n한 에폭당 steps은 총 몇 번인지.\n\n\n\n\n4.3. register_callback(cb)\nRegister callbacks to the trainer. It can only be called before Trainer.train().\n\n\nTrainer가 모델을 돌릴 때마다(epoch이 진행 됨에 따라), 수행하게 될 부가적인 기능들을 Tensorpack에서는 callback이라고 부르고, 대표적인 callback으로 ModelSaver() 가 있다.\n이 Callback을 명시적으로 전달하여 Trainer Object에 세팅할 수 있는 기능이다. 주로 모델을 튜닝할 때, 설정하면서 종종 쓰는 것을 코드 상에서 확인할 수 있다. \n\n\n\n\n\n5. TowerContext\nTowerContext 는 Training과 Validation 혹은 Test시에 동작이 달라야 하는 BatchNorm이나, Dropout을 제어하기 위해서 만들어진 function이다. \n\ntensorpack_tutorial.ipynb에서는 이 친구를 찾아볼 수 없는데, SimpleTrainer 소스코드를 보니, 자체적으로 안에서 train/test time에 맞춰서 TrainTowerContext라는 것으로 조절하고 있기 때문이었다. 사용법은 간단하다. \n1234567# trainingwith TowerContext('', is_training=True):  # call any tensorpack layer# testwith TowerContext('name or empty', is_training=False):  # build the graph again\n\n\n\n\n그래서, 내가 세운 모델을 외부에서 사용하고 싶을 때, 즉, 나만의 Trainer를 새로 정의해서 train/test time때, 다르게 동작을 해야하는 상황이라면, TowerContext를 적절히 써서 분기시켜줘야 한다. \n\n아래는 Tensorpack Github에서 제공하는 GANTrainer에서 실제로 TowerContext를 어떻게 설정해주는지 보여주는 예시다. \n1234567891011class GANTrainer(TowerTrainer):    def __init__(self, input, model):    ..    ...    # Build the graph        self.tower_func = TowerFuncWrapper(model.build_graph, inputs_desc)        with TowerContext('', is_training=True):            self.tower_func(*input.get_input_tensors())        opt = model.get_optimizer()    ...\n\n\n\n\n\nThank you :)\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2018-08-18T15:00:30+09:00","dateModified":"2019-07-20T21:41:38+09:00","datePublished":"2018-08-18T15:00:30+09:00","description":"\nTensorflow Wrapper인 Tensorpack을 소개합니다.\nTensorflow, Tensorpack\n","headline":"Tensorpack tutorial","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2018/08/18/Tensorpack-tutorial/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2018/08/18/Tensorpack-tutorial/","keywords":"ml, tutorial, deep_learning, tensorflow, tensorpack"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg"},"articleBody":"\nTensorflow Wrapper인 Tensorpack을 소개합니다.\nTensorflow, Tensorpack\n\n\n\nModelDesc와 Trainer를 중심으로Peter ChaTensorpack을 공부하면,\n우선 모르는 것들 투성이다. 알고나면 너무 쓰기 편하지만, 처음 접할 때는 너무 많이 추상화 된 API에 ‘이게 tensorflow는 맞는지..’할 정도니까.\n우선 이 튜토리얼을 보기 전, 필자의 tensorpack_tutorial.ipynb를 실행해 보길 바란다. 대략적인 dataflow는 데이터를 불러오는 부분으로 이해를 마쳤다고 생각을 하고, dataflow부분은 생략하고 설명을 진행하도록 하겠다. \n이번에는 Model의 선언하게 될 때 상속받은 ModelDesc class와, 학습을 실행하는 Trainer들의 모태가 되는 TowerTrainer 에 대해 알아보고자 한다.tensorpack_tutorial.ipynb에서 설명에 해당하는 부분을 함께 찾아보면 이해에 도움이 더 될 것 같다. \n이 Tutorial은 Tensorpack documentation을 참고해서 만들었다. \n\n\n\n\n\n1. Class ModelDescBase\nBase class for a model description이다.\n\n\nModelDesc는 ModelDescBase를 기반으로 만들어졌기 때문에, ModelDescBase를 먼저 설명한다. \n\n1.1. build_graph(*args)\n모든 symbolic graph (Model의 형태)를 Build한다. 이 함수가 뒤에서 설명할 TowerTrainer에서 tower function의 일부분이다.\n그 다음 설명할 inputs()에서 정의된 input list에 맞는 tf.Tensor를 parameter로 받는다. \n아무것도 리턴하지 않는다. \n\n1.2. inputs()\nModel에서 input으로 받을 텐서들의 placeholder들을 정의하는 함수다. \n후에 InputDesc로 변환될, tf.placeholder들을 return 한다.\n\n\n\n1.3. get_inputs_desc\n이름에서 알 수 있듯이, inputs()에서 정의된 모양대로 생긴 InputDesc를 list로 반환하는 함수다. \n\n\n\n\n2. Class ModelDesc\n주의사항: build_graph()를 꼭 cost를 return하도록 코딩해야 한다.\n앞에서 설명한 ModelDescBase를 상속받은 터라, 위의 3가지는 함수는 내장하고 있다. \n\n2.1. optimizer()\ntf.train.Optimizer를 여기에 선언해주고 Return하게끔 함수를 짜준다. \n\n2.2. get_optimizer()\noptimizer()를 호출하면, 계속 새로 optimizer를 만들어서 생성하는데, 이 함수를 쓰면 이미 optimizer()를 통해 생긴 optimizer를 기록해 놓았다가 반환시켜준다. \n\n\n\n\n3. Class TowerTrainerTensorpack에서는,\n우리가 흔히 말하는 Model을 계속 Tower라고 지칭한다.(왜 그런지 모르겠다.😶)\n그래서 아래에서 나오는 TowerTrainer는 만든 모델을 학습을 시키는 Trainer고, 그 트레이너가 어떤 특징들을 가진 함수들을 들고 다니는지 이해하면 이해가 쉽다. \n기본적으로 Tensorpack에 나오는 모든 Trainer들은 TowerTrainer의 subclass다. 이 개념이 그래서 궁극적으로는 모든 neural-network training을 가능하게 해준다. \n\n3.1. get_predictor(input_names, output_names, device=0)\nReturns a callable predictor built under TowerContext(is_training=False). \n\n\n이 함수가 호출되면, 가지고 있는 TowerContext(모델)가 training mode가 아닌 상태(is_training=False)로 돌려준다. 그러니까 Test data로 시험할 때만 부르는 함수. 그래서 이름도 predictor.\nParameters: input_names (list), output_names (list), device (int) – build the predictor on device ‘/gpu:{device}’ or use -1 for ‘/cpu:0’.\n파라미터로 들어가는 input, output이름은 모델 안에서 선언된 이름이 아니면 안 돌아가니까 조심.\n\n3.2. inputs_desc\nReturns – list[InputDesc]: metainfo about the inputs to the tower.\n\n\n말 그대로, 모델에 들어갈 Input의 크기와 같은 정보가 들어있는 list를 반환해준다. \n\n3.3. tower_func\nBuild Model.\n\n\n이 친구가 실제 모델을 정의하고, Build할 수 있는 함수를 세팅하는 부분!\nModelDesc interface로 정의된 model을 trainer로 돌려야 하는 상황이 자주 발생할 수 있는데, 이 때, ModelDesc에서 선언된 build_graph 함수가 이 역할을 대신해 줄 수 있다.\n\n3.4. towers\nReturns – a TowerTensorHandles object, to access the tower handles by either indices or names.\n\n\n모델 및 Train 전반에 걸쳐 관련된 변수들에 접근하고 싶을 때 사용한다! 그래서 이 함수는 Transfer learning을 할 때 유용할 거 같다.\n이미 모델 그래프가 Set up이 끝난 뒤에만 이 함수는 호출될 수 있다. \n각각의 layer와 attributes에 이 towers함수를 호출하면 접근할 수 있게 된다! 아래는 예시.\n\n12# Access the conv1/output tensor in the first training towertrainer.towers.training()[0].get_tensor('conv1/output')\n\n\n\n\n4. Class Trainer\nBase class for a trainer.\n\n\n분명히 위에서 금방, \n\n“기본적으로 Tensorpack에 나오는 모든 Trainer들은 TowerTrainer의 subclass다 “\n\n  라고 했는데, 이 TowerTrainer가 상속을 받는 class가 있었으니, 이름하여 TowerTrainer보다 더 단순한 Trainer 다.\n\n다른 TowerTrainer를 상속 받은 Trainer들을 사용할 때, 종종 TowerTrainer에서 본 적 없는 친구들이 나타나는데, 그 친구들이 Trainer의 것인 경우가 있다. \n\n하지만, Trainer 고유 함수나 요소에 직접적으로 접근할 일이 별로 없어서 아래의 3가지 정도만 알고 있으면 될 것 같다. 나머지는 문서를 참고하자. \n\n\n\n아래 1, 2번의 max_epoch과, steps_per_epoch은 TrainConfig에서 자주 만나는 키워드들인데, 이 친구들이 Trainer의 요소였다.\n\n4.1. max_epoch\nEpoch은 몇 번 돌릴 것인지\n\n4.2. steps_per_epoch\n한 에폭당 steps은 총 몇 번인지.\n\n\n\n\n4.3. register_callback(cb)\nRegister callbacks to the trainer. It can only be called before Trainer.train().\n\n\nTrainer가 모델을 돌릴 때마다(epoch이 진행 됨에 따라), 수행하게 될 부가적인 기능들을 Tensorpack에서는 callback이라고 부르고, 대표적인 callback으로 ModelSaver() 가 있다.\n이 Callback을 명시적으로 전달하여 Trainer Object에 세팅할 수 있는 기능이다. 주로 모델을 튜닝할 때, 설정하면서 종종 쓰는 것을 코드 상에서 확인할 수 있다. \n\n\n\n\n\n5. TowerContext\nTowerContext 는 Training과 Validation 혹은 Test시에 동작이 달라야 하는 BatchNorm이나, Dropout을 제어하기 위해서 만들어진 function이다. \n\ntensorpack_tutorial.ipynb에서는 이 친구를 찾아볼 수 없는데, SimpleTrainer 소스코드를 보니, 자체적으로 안에서 train/test time에 맞춰서 TrainTowerContext라는 것으로 조절하고 있기 때문이었다. 사용법은 간단하다. \n1234567# trainingwith TowerContext('', is_training=True):  # call any tensorpack layer# testwith TowerContext('name or empty', is_training=False):  # build the graph again\n\n\n\n\n그래서, 내가 세운 모델을 외부에서 사용하고 싶을 때, 즉, 나만의 Trainer를 새로 정의해서 train/test time때, 다르게 동작을 해야하는 상황이라면, TowerContext를 적절히 써서 분기시켜줘야 한다. \n\n아래는 Tensorpack Github에서 제공하는 GANTrainer에서 실제로 TowerContext를 어떻게 설정해주는지 보여주는 예시다. \n1234567891011class GANTrainer(TowerTrainer):    def __init__(self, input, model):    ..    ...    # Build the graph        self.tower_func = TowerFuncWrapper(model.build_graph, inputs_desc)        with TowerContext('', is_training=True):            self.tower_func(*input.get_input_tensors())        opt = model.get_optimizer()    ...\n\n\n\n\n\nThank you :)\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2018-08-18T15:00:30+09:00","dateModified":"2019-07-20T21:41:38+09:00","datePublished":"2018-08-18T15:00:30+09:00","description":"\nTensorflow Wrapper인 Tensorpack을 소개합니다.\nTensorflow, Tensorpack\n","headline":"Tensorpack tutorial","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2018/08/18/Tensorpack-tutorial/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2018/08/18/Tensorpack-tutorial/","keywords":"ml, tutorial, deep_learning, tensorflow, tensorpack"}</script>
     <meta name="description" content="Tensorflow Wrapper인 Tensorpack을 소개합니다. Tensorflow, Tensorpack">
 <meta name="keywords" content="ml,tutorial,deep_learning,tensorflow,tensorpack">
 <meta property="og:type" content="blog">
@@ -38,6 +40,8 @@
         
     
     
+        <meta property="og:image" content="http://www.stand-firm-peter.me/assets/images/avatar.jpeg">
+    
     
     
     
@@ -45,6 +49,15 @@
     <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
     <!--STYLES END-->
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-124184693-1');
+    </script>
+
 
     
 
@@ -59,6 +72,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -72,6 +89,8 @@
             <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
         
         
+            <img class="header-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+        
         </a>
     
 </header>
@@ -79,8 +98,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about" aria-label="Read more about the author">
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+                </a>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -111,22 +145,6 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
-                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archives</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
                         <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">About</span>
@@ -139,7 +157,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <a class="sidebar-button-link " href="https://github.com/petercha90" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
                     </a>
@@ -147,61 +165,9 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/in/peter-cha-022927134/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
                         <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
-                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -636,11 +602,17 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
         
             <h4 id="about-card-name">Peter Cha</h4>
         
@@ -655,6 +627,12 @@
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                Cheonan / Korea
+            </div>
         
     </div>
 </div>

@@ -12,12 +12,14 @@
         <meta name="keywords" content="AI,Machine Learning,">
     
     
+        <link rel="icon" href="http://www.stand-firm-peter.me/assets/images/favicon.ico">
+    
     
         
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\nSimple Hexo Tutorial입니다. \n\n\n\n\n Hexo는 Github pages를 사용해서 만드는 블로그입니다. 그러니, Github 계정을 가지고 계셔야 사용하실 수 있습니다. Github pages는 username.github.io라는 이쁜 고유 도메인(무려 https)도 주는 아주 고마운 블로그입니다. 지금 보고 계신 이 블로그도, Hexo로 만들어졌습니다. 도메인만 제가 사서 바꿨을 뿐이구요. \n이 블로그를 설치하고 관리하고 사용하려면, HTML, Markdown, git에 대한 기본적인 이해는 있어야 합니다. 사실, 언급한 기술들을 잘은 몰라도, 대충 한 번씩만 해보셨으면, 하시다보면 익숙해져서 할만 하실 것도 같습니다. :) \n\n\n1. Make a repository at GithubGithub에 가셔서 새로 Repository를 만드시는데, 그 repository의 이름은 꼭, username.github.io로 하셔야 합니다. 아래 보이는 사진처럼요. \n\n\n\n\n2. Install Hexonode.js & gitHexo를 설치하고, 사용하려면 node.js와 git이 설치되어 있어야 합니다. 이 두가지 툴이 잘 설치가 되어있다면, 아래와 같은 명령어 한 줄로 간단하게 Hexo를 설치할 수 있습니다. \n\n$ npm install -g hexo-cli\n\nlocal directory본인이 사용 하고자 하는 폴더를 만드시고 들어가셔서, 명령어로 \n\n$ hexo init\n\n\n$ npm install\n\n를 순차적으로 입력합니다. 그리고 나서 설치가 끝나면, Hexo blog를 시작할 수 있는 파일들이 설치 된 것을 확인 할 수 있습니다. 저는 temp_blog라는 폴더를 만들어서 설치해 보았습니다. \n\n\n\n\n3. Start Hexo Blog믿기지는 않지만, 이렇게 위의 3개 명령어로 당신의 Hexo Blog가 생겼습니다. 생성된 Blog를 확인해 보도록 합시다. \n\n$ hexo server\n\n\n\nlocalhost:4000으로 접속을 하라고 하니, 웹브라우저 창을 통해 http://localhost:4000/ 을 입력하거나, 주소를 클릭해서 확인해 봅시다. \n\n\nTa da!! 블로그가 생겼다는 것을 확인할 수 있습니다! :D 가장 기본 테마인 landscape로 설정되어있고, 글은 Hello World 밖에 없지만, 이제 여러분의 취향대로 바꿔나가기만 하면 됩니다! 자, 그럼 차근차근히 어떻게 블로그의 설정을 바꿀 수 있는지, 글은 어떻게 쓰면 되는지, 실제로 나에게 부여된 도메인에 배포를 할 수 있는지 알아봅시다. \n\n\n4. Hexo _config.yml우리가 설치한 폴더를 보면, _config.yml파일을 확인 할 수 있습니다. 대략적인 모습은 아래와 같습니다. 간단하게, title, timezone, url, 그리고 deploy부분만 본인에게 맞는 정보로 고쳐보기로 합니다.\n1234567891011121314151617181920212223242526272829303132# Hexo Configuration## Docs: https://hexo.io/docs/configuration.html## Source: https://github.com/hexojs/hexo/# Sitetitle: Stand firm Petersubtitle:description:author: John Doelanguage: entimezone: Asia/Seoul# URL## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'url: http://petercha90.github.ioroot: /permalink: :year/:month/:day/:title/permalink_defaults:...# Extensions## Plugins: https://hexo.io/plugins/## Themes: https://hexo.io/themes/theme: landscape# Deployment## Docs: https://hexo.io/docs/deployment.html## 배포방식은 git으로, type은 본인의 repository 주소!deploy: \t  type: git  repo: https://github.com/PeterCha90/petercha90.github.io.git\n\nDeployment부분에서 deploy 방식(git)과, 우리 블로그와 실제 부여받은 도메인과의 연결을 할 수 있게 주소를 잘 적어줘야, 이후에 나오는 hexo deploy명령어를 통해 실제로 블로그를 배포할 수 있게 됩니다.hexo server로 켰던 로컬 서버를 Ctrl + c로 종료한 다음, hexo server로 서버를 구동시킨 뒤, localhost:4000으로 접속해서 확인해 보면, title이 잘 바뀌어 있습니다 :D\n\n\n\n\n5. Create a new post그럼, posting은 어떻게 하면 될까요?! 이역시, 매우 쉽습니다.\n\n$ hexo new “sample_posting”\n\n이 명령어를 치면, 자동으로 /source/_posts/ 밑에, sample_posting.md이라는 파일이 뙇.하고 생겼다는 메세지를 볼 수 있습니다. \n\n\n이 파일을 열어보시면 뭐가 적힌게 별로 없습니다. \n12345---title: sample_postingdate: 2018-01-13 22:56:29tags:---\n\n그래서 제가 몇 자 적어보았습니다. \n123456789101112---title: sample_postingdate: 2018-01-13 22:56:29tags:---Markdown > 몇자 적어 보았습니다. ## 두 자 적어 봤습니다. **세 자 입니다.**\n\n그럼 이 sample_posting.md파일을 저장하시고, 아래의 명령어를 수행해 봅니다. \n\n$ hexo generate\n\n뭔가 많이 생성됐다는 메세지가 나왔습니다. 그리고 다시 hexo server를 사용해서 서버를 여시고, 로컬 4000번 포트로 접속해서 확인해 주세요 :D\n\n\n 짜잔~ 이렇게 우리의 첫 번째 Posting이 잘 등록 됐습니다! 🎉🎉 위의 제가 적은 내용과 결과를 보시면 알 수 있듯이, Hexo는 기본적으로 Markdown 언어를 지원합니다. \n\n\n6. Deploy to remote sites자, 그럼 이번에는 마지막으로 이렇게 작성한 블로그와 포스팅을 우리의 실제 원격 저장소(Github repository)로 배포해보도록 합니다. \n먼저, 아래와 같이 hexo-deployer-git을 먼저 설치해주시고,\n1$ npm install --save hexo-deployer-git\n\n아래의 명령어를 입력하시면, 배포가 끝났습니다!😆\n1$ hexo deploy\n\n 2, 3분 뒤에 username.github.io로 접속하셔서 확인해 보세요 :) \n\n\n7. Summaryhexo server \n\nBlog contents가 올바르게 보이는지 확인할 수 있는 로컬 서버를 구동합니다.\n\nhexo new \"title\" \n\n새로운 “title”이라는 이름의 posting을 작성합니다. \n\nhexo generate\n\n수정된 사항으로 deploy할 수 있도록 contents를 생성합니다.\n\nhexo deploy\n\n원격 저장소(github repository)에 실제로 배포합니다. \n\nTips :\nhexo generate = hexo g\nhexo deploy = hexo d\nhexo clean: 게시글에 html문법이 rendering되지 않고 깨져서 나올 때, 가끔씩 실행Contents 생성 후 바로 배포하기\nhexo generate deploy = hexo g -d\n\n\n\n\n8. Themes기본 테마도 훌륭하지만, 좀 더 다른 느낌의 테마를 원하신다면, 여기로 들어가셔서, 테마를 고르시고 본인의 _config.yml파일을 수정하면 됩니다!구체적인 테마 적용 방식은 보통 선택한 테마에서 설명을 해주기 때문에, 세부설정이 제각각 다릅니다. _config.yml 파일에서, theme이라는 key 값을 본인이 선택한 테마의 이름으로 바꾼다는 점은 공통이겠지만요 :D 지금 이 튜토리얼을 그대로 따라하셨다면 지금 여러분들의 상태는 아래와 같을 겁니다. \n\ntheme: landscape\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2018-01-06T00:08:14+09:00","dateModified":"2019-07-20T21:41:33+09:00","datePublished":"2018-01-06T00:08:14+09:00","description":"\nSimple Hexo Tutorial입니다. \n","headline":"How to create a Hexo Blog","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2018/01/06/Start/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2018/01/06/Start/","keywords":"blog, hexo, tutorial, useful-info"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg"},"articleBody":"\nSimple Hexo Tutorial입니다. \n\n\n\n\n Hexo는 Github pages를 사용해서 만드는 블로그입니다. 그러니, Github 계정을 가지고 계셔야 사용하실 수 있습니다. Github pages는 username.github.io라는 이쁜 고유 도메인(무려 https)도 주는 아주 고마운 블로그입니다. 지금 보고 계신 이 블로그도, Hexo로 만들어졌습니다. 도메인만 제가 사서 바꿨을 뿐이구요. \n이 블로그를 설치하고 관리하고 사용하려면, HTML, Markdown, git에 대한 기본적인 이해는 있어야 합니다. 사실, 언급한 기술들을 잘은 몰라도, 대충 한 번씩만 해보셨으면, 하시다보면 익숙해져서 할만 하실 것도 같습니다. :) \n\n\n1. Make a repository at GithubGithub에 가셔서 새로 Repository를 만드시는데, 그 repository의 이름은 꼭, username.github.io로 하셔야 합니다. 아래 보이는 사진처럼요. \n\n\n\n\n2. Install Hexonode.js & gitHexo를 설치하고, 사용하려면 node.js와 git이 설치되어 있어야 합니다. 이 두가지 툴이 잘 설치가 되어있다면, 아래와 같은 명령어 한 줄로 간단하게 Hexo를 설치할 수 있습니다. \n\n$ npm install -g hexo-cli\n\nlocal directory본인이 사용 하고자 하는 폴더를 만드시고 들어가셔서, 명령어로 \n\n$ hexo init\n\n\n$ npm install\n\n를 순차적으로 입력합니다. 그리고 나서 설치가 끝나면, Hexo blog를 시작할 수 있는 파일들이 설치 된 것을 확인 할 수 있습니다. 저는 temp_blog라는 폴더를 만들어서 설치해 보았습니다. \n\n\n\n\n3. Start Hexo Blog믿기지는 않지만, 이렇게 위의 3개 명령어로 당신의 Hexo Blog가 생겼습니다. 생성된 Blog를 확인해 보도록 합시다. \n\n$ hexo server\n\n\n\nlocalhost:4000으로 접속을 하라고 하니, 웹브라우저 창을 통해 http://localhost:4000/ 을 입력하거나, 주소를 클릭해서 확인해 봅시다. \n\n\nTa da!! 블로그가 생겼다는 것을 확인할 수 있습니다! :D 가장 기본 테마인 landscape로 설정되어있고, 글은 Hello World 밖에 없지만, 이제 여러분의 취향대로 바꿔나가기만 하면 됩니다! 자, 그럼 차근차근히 어떻게 블로그의 설정을 바꿀 수 있는지, 글은 어떻게 쓰면 되는지, 실제로 나에게 부여된 도메인에 배포를 할 수 있는지 알아봅시다. \n\n\n4. Hexo _config.yml우리가 설치한 폴더를 보면, _config.yml파일을 확인 할 수 있습니다. 대략적인 모습은 아래와 같습니다. 간단하게, title, timezone, url, 그리고 deploy부분만 본인에게 맞는 정보로 고쳐보기로 합니다.\n1234567891011121314151617181920212223242526272829303132# Hexo Configuration## Docs: https://hexo.io/docs/configuration.html## Source: https://github.com/hexojs/hexo/# Sitetitle: Stand firm Petersubtitle:description:author: John Doelanguage: entimezone: Asia/Seoul# URL## If your site is put in a subdirectory, set url as 'http://yoursite.com/child' and root as '/child/'url: http://petercha90.github.ioroot: /permalink: :year/:month/:day/:title/permalink_defaults:...# Extensions## Plugins: https://hexo.io/plugins/## Themes: https://hexo.io/themes/theme: landscape# Deployment## Docs: https://hexo.io/docs/deployment.html## 배포방식은 git으로, type은 본인의 repository 주소!deploy: \t  type: git  repo: https://github.com/PeterCha90/petercha90.github.io.git\n\nDeployment부분에서 deploy 방식(git)과, 우리 블로그와 실제 부여받은 도메인과의 연결을 할 수 있게 주소를 잘 적어줘야, 이후에 나오는 hexo deploy명령어를 통해 실제로 블로그를 배포할 수 있게 됩니다.hexo server로 켰던 로컬 서버를 Ctrl + c로 종료한 다음, hexo server로 서버를 구동시킨 뒤, localhost:4000으로 접속해서 확인해 보면, title이 잘 바뀌어 있습니다 :D\n\n\n\n\n5. Create a new post그럼, posting은 어떻게 하면 될까요?! 이역시, 매우 쉽습니다.\n\n$ hexo new “sample_posting”\n\n이 명령어를 치면, 자동으로 /source/_posts/ 밑에, sample_posting.md이라는 파일이 뙇.하고 생겼다는 메세지를 볼 수 있습니다. \n\n\n이 파일을 열어보시면 뭐가 적힌게 별로 없습니다. \n12345---title: sample_postingdate: 2018-01-13 22:56:29tags:---\n\n그래서 제가 몇 자 적어보았습니다. \n123456789101112---title: sample_postingdate: 2018-01-13 22:56:29tags:---Markdown > 몇자 적어 보았습니다. ## 두 자 적어 봤습니다. **세 자 입니다.**\n\n그럼 이 sample_posting.md파일을 저장하시고, 아래의 명령어를 수행해 봅니다. \n\n$ hexo generate\n\n뭔가 많이 생성됐다는 메세지가 나왔습니다. 그리고 다시 hexo server를 사용해서 서버를 여시고, 로컬 4000번 포트로 접속해서 확인해 주세요 :D\n\n\n 짜잔~ 이렇게 우리의 첫 번째 Posting이 잘 등록 됐습니다! 🎉🎉 위의 제가 적은 내용과 결과를 보시면 알 수 있듯이, Hexo는 기본적으로 Markdown 언어를 지원합니다. \n\n\n6. Deploy to remote sites자, 그럼 이번에는 마지막으로 이렇게 작성한 블로그와 포스팅을 우리의 실제 원격 저장소(Github repository)로 배포해보도록 합니다. \n먼저, 아래와 같이 hexo-deployer-git을 먼저 설치해주시고,\n1$ npm install --save hexo-deployer-git\n\n아래의 명령어를 입력하시면, 배포가 끝났습니다!😆\n1$ hexo deploy\n\n 2, 3분 뒤에 username.github.io로 접속하셔서 확인해 보세요 :) \n\n\n7. Summaryhexo server \n\nBlog contents가 올바르게 보이는지 확인할 수 있는 로컬 서버를 구동합니다.\n\nhexo new \"title\" \n\n새로운 “title”이라는 이름의 posting을 작성합니다. \n\nhexo generate\n\n수정된 사항으로 deploy할 수 있도록 contents를 생성합니다.\n\nhexo deploy\n\n원격 저장소(github repository)에 실제로 배포합니다. \n\nTips :\nhexo generate = hexo g\nhexo deploy = hexo d\nhexo clean: 게시글에 html문법이 rendering되지 않고 깨져서 나올 때, 가끔씩 실행Contents 생성 후 바로 배포하기\nhexo generate deploy = hexo g -d\n\n\n\n\n8. Themes기본 테마도 훌륭하지만, 좀 더 다른 느낌의 테마를 원하신다면, 여기로 들어가셔서, 테마를 고르시고 본인의 _config.yml파일을 수정하면 됩니다!구체적인 테마 적용 방식은 보통 선택한 테마에서 설명을 해주기 때문에, 세부설정이 제각각 다릅니다. _config.yml 파일에서, theme이라는 key 값을 본인이 선택한 테마의 이름으로 바꾼다는 점은 공통이겠지만요 :D 지금 이 튜토리얼을 그대로 따라하셨다면 지금 여러분들의 상태는 아래와 같을 겁니다. \n\ntheme: landscape\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2018-01-06T00:08:14+09:00","dateModified":"2019-07-20T21:41:33+09:00","datePublished":"2018-01-06T00:08:14+09:00","description":"\nSimple Hexo Tutorial입니다. \n","headline":"How to create a Hexo Blog","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2018/01/06/Start/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2018/01/06/Start/","keywords":"blog, hexo, tutorial, useful-info"}</script>
     <meta name="description" content="Simple Hexo Tutorial입니다.">
 <meta name="keywords" content="blog,hexo,tutorial,useful-info">
 <meta property="og:type" content="blog">
@@ -43,6 +45,8 @@
         
     
     
+        <meta property="og:image" content="http://www.stand-firm-peter.me/assets/images/avatar.jpeg">
+    
     
     
     
@@ -50,6 +54,15 @@
     <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
     <!--STYLES END-->
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-124184693-1');
+    </script>
+
 
     
 
@@ -64,6 +77,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -77,6 +94,8 @@
             <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
         
         
+            <img class="header-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+        
         </a>
     
 </header>
@@ -84,8 +103,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about" aria-label="Read more about the author">
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+                </a>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -116,22 +150,6 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
-                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archives</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
                         <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">About</span>
@@ -144,7 +162,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <a class="sidebar-button-link " href="https://github.com/petercha90" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
                     </a>
@@ -152,61 +170,9 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/in/peter-cha-022927134/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
                         <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
-                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -605,11 +571,17 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
         
             <h4 id="about-card-name">Peter Cha</h4>
         
@@ -624,6 +596,12 @@
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                Cheonan / Korea
+            </div>
         
     </div>
 </div>

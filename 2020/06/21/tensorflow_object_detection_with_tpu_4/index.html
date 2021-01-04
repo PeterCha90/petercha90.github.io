@@ -12,12 +12,14 @@
         <meta name="keywords" content="AI,Machine Learning,">
     
     
+        <link rel="icon" href="http://www.stand-firm-peter.me/assets/images/favicon.ico">
+    
     
         
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\nGoogle TPU 사용해서 Transfer Learning하여 모바일에 심기 - (4) \nGoogle Cloud TPU 학습하기 \n\n\n\n\n\n본 Tutorial은 2020년 6월 기준으로 작성되었으며, Mac OS 기준으로 작성되어 Ubuntu 및 다른 Linux기반 OS에서는 검증되지 않았습니다. 잘못 기재되어 있거나 수정이 필요한 부분들은 알려주시면 감사하겠습니다 :)\n\n이번 포스팅에는,  \n\n1) Google Cloud Storage 세팅2) pipeline.config 세팅3) TPU 학습\n\n총 세 가지 과정을 통해 Transfer learning을 함께 진행해보겠습니다. \n\n\n\n\n\n\n\n1. Google Cloud Storage 💾\n자, 그럼 이제부터 본격적인 Transfer Learning을 시작해보자. 먼저는 학습을 돌리기 위한 pretrained model과 앞시간에서 생성한 tfrecord 데이터를 Google Cloud Storage bucket에 준비하는 것이다. \n필자는 이전 포스팅에서 함께 살펴 본 TPU로 학습할 수 있는 pretrained 모델 중, ssd_mobilenet_v1_quantized_300x300_coco14_sync_2018_07_1 를 다운 받았다. \n다운받은 파일을 살펴보면, 내용물은 총 4개다. Model Checkpoint파일 3개. model.ckpt.data-00000-of-00001, model.ckpt.index, model.ckpt.meta. 그리고 구체적인 학습 디테일을 설정할 수 있는, pipeline.config. 이 데이터들을 이제 Storage로 옮겨주자. \n\nBucket 구성하기\n생성한 버킷 안에 train, data 폴더를 만들어 주고, train 에는 Model Checkpoint파일 3개. model.ckpt.data-00000-of-00001, model.ckpt.index, model.ckpt.meta를, data폴더 에는 앞 시간에 만든 tfrecord 파일들과 pipeline.config를 넣어주자. \n\n마지막으로 label map 데이터를 추가해야한다. 우리가 Tranfer Learning 하고자 하는 대상은 pascal VOC dataset + 포크레인 = 21가지 클래스다. models/research/object_detection/data/안을 보면, pascal_label_map.pbtxt파일을 찾을 수 있는데, 학습하고자 하는 label마다의 번호와 이름을 명시해 놓은 파일이다. 여기에 우리가 추가로 학습하고자 하는 클래스에 해당하는 가지 수만큼 뒤에 추가해주자. 필자는 아래와 같이 포크레인을 21번째 클래스로 등록해주었다. \n  12345678910111213141516item {  id: 1  name: 'aeroplane'}...... item {  id: 20  name: 'tvmonitor'}item {  \t\t# 포크레인 추가  id: 21  name: 'excavator'}\n\n\n\n\n\n이렇게 수정이 끝난 label_map 데이터도 data 폴더 안에 넣어주자.  \n\n2. pipeline.config 세팅 ⛏\n이렇게 받은 모델이 pretrained 되어있는 대상은 무려 90가지의 class를 구별하는 COCO dataset이다. 그럼 다시 학습을 할 때는 우리가 원하는 데이터 셋의 Class 가지 수만큼 구별할 수 있게 하려면 어떻게 해야할까? \n\n실제 날코딩 레벨에서는 제일 마지막 Fully Conneted layer를 날리고, 원하는 클래스 만큼 구별할 수 있게 세팅한 FC layer를 추가해줘야 하겠지만, pipelin.config의 숫자 하나만 바꿔주면 우리는 이 작업을 쉽게 할 수 있다. 필자는 VOC dataset의 20가지 + 포크레인을 더해서 총 21가지 Class를 구별할 수 있게 세팅하였다. \n  123456789model {  ssd {    num_classes: 21          # 90 -> 21!    image_resizer {      fixed_shape_resizer {        height: 300        width: 300      }    }\n\n\n\n\n\n자, 그리고 하단부에는 실제로 학습을 시작하면서 학습데이터는 어디서 가져와야하는지 등을 알려주는 부분이 있는데, 아래와 같이 각자의 bucket 위치로 잘 바꿔서 수정해주자. 대략적으로 수정해줘야 하는 부분은 아래와 같다.\n  12345678910111213141516171819202122232425262728...  fine_tune_checkpoint: \"gs://{YOUR_BUCKET_NAME}/train/model.ckpt\"  num_steps: 50000  startup_delay_steps: 0.0  replicas_to_aggregate: 8  max_number_of_boxes: 100  unpad_groundtruth_tensors: false}train_input_reader {  label_map_path: \"gs://{YOUR_BUCKET_NAME}/data/label_map.pbtxt\"  tf_record_input_reader {    input_path: \"gs://{YOUR_BUCKET_NAME}/data/train.record\"  }}eval_config {  num_examples: {NUM_OF_YOUR_VALIDATION_DATA}  metrics_set: \"coco_detection_metrics\"  use_moving_averages: false}eval_input_reader {  label_map_path: \"gs://{YOUR_BUCKET_NAME}/data/label_map.pbtxt\"  shuffle: false  num_readers: 1  tf_record_input_reader {    input_path: \"gs://{YOUR_BUCKET_NAME}/data/val.record\"  }}...\n\n이미 눈치챘겠지만, 사용자는 이 pipeline.config를 통해 batch size와 step size 등등을 조절해서 학습의 디테일을 바꿀 수 있다. \n\n\n\n\n\n2. Train the model! 🏃\n자! 이제 드디어 학습을 시작 하기 전에.. 마지막으로 다시 models/research로 이동하여, 아래 명령어를 실행하자. 학습에 사용될 패키지를 압축하는 과정이다. \n  123$ bash object_detection/dataset_tools/create_pycocotools_package.sh /tmp/pycocotools$ python setup.py sdist$ (cd slim && python setup.py sdist)  # must execute this line, too.\n\n\n\nTraining\n드디어! 진짜로! 학습을 시작해보자. 아래 명령어를 각자의 버킷이름에 맞춰서 수정 후 입력.\n  1234567891011$ gcloud ai-platform jobs submit training `whoami`_object_detection_`date +%s` \\--job-dir=gs://{YOUR_BUCKET_NAME}/train \\--packages dist/object_detection-0.1.tar.gz,slim/dist/slim-0.1.tar.gz,/tmp/pycocotools/pycocotools-2.0.tar.gz \\--module-name object_detection.model_tpu_main \\--runtime-version 1.15 \\--scale-tier BASIC_TPU \\--region us-central1 \\-- \\--model_dir=gs://{YOUR_BUCKET_NAME}/train \\--tpu_zone us-central1 \\--pipeline_config_path=gs://{YOUR_BUCKET_NAME}/data/pipeline.config\n\n잘 실행이 되었다면, 학습 진행상황 log를 볼 수 있는 링크를 터미널에서 자동으로 알려주는데, 그 링크를 타고 들어가면 아래와 같이 GCP Console이나, Terminal에서 log를 관찰할 수 있다. \n  \n  \n\n\nEvaluation\n학습된 모델의 성능을 평가하려면, 아래의 명령어로 할 수 있다. 자동으로 train에 저장되어 있는 가장 학습이 많이된 모델을 자동으로 선택해서 Evaluation을 한다. \n  1234567891011$ gcloud ai-platform jobs submit training `whoami`_object_detection_eval_validation_`date +%s` \\--job-dir=gs://ddp/train \\--packages dist/object_detection-0.1.tar.gz,slim/dist/slim-0.1.tar.gz,/tmp/pycocotools/pycocotools-2.0.tar.gz \\--module-name object_detection.model_main \\--runtime-version 1.15 \\--scale-tier BASIC_TPU \\--region us-central1 \\-- \\--model_dir=gs://ddp/train \\--pipeline_config_path=gs://ddp/data/pipeline.config \\--checkpoint_dir=gs://ddp/train\n\nEvaluation이 잘 끝나면, 아래와 같은 평가표를 받아볼 수 있다. \n  1234567891011121314151617181920212223...Saving dict for global step 50000: DetectionBoxes_Precision/mAP = 0.57654905, DetectionBoxes_Precision/mAP (large) = 0.7432713, DetectionBoxes_Precision/mAP (medium) = 0.2553529, DetectionBoxes_Precision/mAP (small) = 0.044851754, DetectionBoxes_Precision/mAP@.50IOU = 0.8106554, DetectionBoxes_Precision/mAP@.75IOU = 0.6466306, DetectionBoxes_Recall/AR@1 = 0.4816028, DetectionBoxes_Recall/AR@10 = 0.63472164, DetectionBoxes_Recall/AR@100 = 0.6432252, DetectionBoxes_Recall/AR@100 (large) = 0.7970598, DetectionBoxes_Recall/AR@100 (medium) = 0.39382252,DetectionBoxes_Recall/AR@100 (small) = 0.10790066, Loss/classification_loss = 0.15321705, Loss/localization_loss = 0.10001469, Loss/regularization_loss = 0.12372323, Loss/total_loss = 0.37696198, global_step = 50000, learning_rate = 0.15243073, loss = 0.37696198\n\n\n\nRetreive the model to your machine\n학습이 성공적으로 끝났다면 아래의 명령어를 통해서, local machine으로 학습이 끝난 모델을 다운받을 수 있다! 먼저, 받아올 모델과 다운받을 곳을 설정하고,\n  123$ export CONFIG_FILE=gs://${YOUR_GCS_BUCKET}/data/pipeline.config$ export CHECKPOINT_PATH=gs://${YOUR_GCS_BUCKET}/train/model.ckpt-{NUM_STEP_SIZE}$ export OUTPUT_DIR=~/Desktop/tflite\n\n  그 다음, 학습된 모델 그래프를 추출해서 받아오자. \n  12345$ python object_detection/export_tflite_ssd_graph.py \\--pipeline_config_path=$CONFIG_FILE \\--trained_checkpoint_prefix=$CHECKPOINT_PATH \\--output_directory=$OUTPUT_DIR \\--add_postprocessing_op=true\n\n잘 끝났다면, 학습이 끝난 tflite_graph.pb, 과 tflite_graph.pbtxt 두 파일을 다운 받기로 설정한 폴더 안에서 만날 수 있다! 이 파일을 이제 경량화해서 tflite파일로 만들고, 그 경령화된 모델을 android app에 심는 대망의 마지막 작업을 .. 다음 포스팅에서..! 아디다스⭐\n\n\n\n\n\nP.S. Make bucket public\n실제 학습할 시, bucket의 데이터에 접근할 수 없다는 permission error로 인해 고통받는 것이 싫다면, 학습의 편의를 위해 bucket을 아래와 같이 객체 access 방식을 균일한 액세스 제어로 설정하고, 버킷 권한 설정을 통해 전체공개로 바꾸는 것을 추천.\n  \n  \n\nBucket을 전체 공개하는 방법은 다음과 같다. 1) 구성원 추가를 눌러서 나오는 대상이름에 allUsers 혹은 allAuthenticatedUsers를 타이핑해서 추가 한다. \n  \n  \n\n\n \n\n\n2) 권한으로 아래와 같이, 저장소 기존 개체 소유자, 저장소 기존 버킷 소유자로 선택해서 추가해준다. \n  \n\n\n\n\n\n\n\n수고하셨습니다. :) 다음 시간에는, 학습이 끝난 모델을 경량화하고, Tensorflow에서 제공해주는 Android example 코드에 탑재하는 것으로 튜토리얼을 마무리 짓도록 하겠습니다. \n\n이 글은 DataCrew 에서도 보실 수 있습니다. \n\n\n\n\n\n\nReferences\nTraining and serving a realtime mobile object detector in 30 minutes with Cloud TPUs - Link\nGCP Project Setting - Link\nStep by Step TensorFlow Object Detection API Tutorial - Part 1 ~ 5 - Link\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-06-21T00:00:00+09:00","dateModified":"2020-06-22T12:56:26+09:00","datePublished":"2020-06-21T00:00:00+09:00","description":"\nGoogle TPU 사용해서 Transfer Learning하여 모바일에 심기 - (4) \nGoogle Cloud TPU 학습하기 \n","headline":"Running a pretrained model on Android with TPU (4)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/06/21/tensorflow_object_detection_with_tpu_4/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2020/06/21/tensorflow_object_detection_with_tpu_4/","keywords":"tutorial, TPU, deep_learning, transfer learning, tensorflow object detection api"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg"},"articleBody":"\nGoogle TPU 사용해서 Transfer Learning하여 모바일에 심기 - (4) \nGoogle Cloud TPU 학습하기 \n\n\n\n\n\n본 Tutorial은 2020년 6월 기준으로 작성되었으며, Mac OS 기준으로 작성되어 Ubuntu 및 다른 Linux기반 OS에서는 검증되지 않았습니다. 잘못 기재되어 있거나 수정이 필요한 부분들은 알려주시면 감사하겠습니다 :)\n\n이번 포스팅에는,  \n\n1) Google Cloud Storage 세팅2) pipeline.config 세팅3) TPU 학습\n\n총 세 가지 과정을 통해 Transfer learning을 함께 진행해보겠습니다. \n\n\n\n\n\n\n\n1. Google Cloud Storage 💾\n자, 그럼 이제부터 본격적인 Transfer Learning을 시작해보자. 먼저는 학습을 돌리기 위한 pretrained model과 앞시간에서 생성한 tfrecord 데이터를 Google Cloud Storage bucket에 준비하는 것이다. \n필자는 이전 포스팅에서 함께 살펴 본 TPU로 학습할 수 있는 pretrained 모델 중, ssd_mobilenet_v1_quantized_300x300_coco14_sync_2018_07_1 를 다운 받았다. \n다운받은 파일을 살펴보면, 내용물은 총 4개다. Model Checkpoint파일 3개. model.ckpt.data-00000-of-00001, model.ckpt.index, model.ckpt.meta. 그리고 구체적인 학습 디테일을 설정할 수 있는, pipeline.config. 이 데이터들을 이제 Storage로 옮겨주자. \n\nBucket 구성하기\n생성한 버킷 안에 train, data 폴더를 만들어 주고, train 에는 Model Checkpoint파일 3개. model.ckpt.data-00000-of-00001, model.ckpt.index, model.ckpt.meta를, data폴더 에는 앞 시간에 만든 tfrecord 파일들과 pipeline.config를 넣어주자. \n\n마지막으로 label map 데이터를 추가해야한다. 우리가 Tranfer Learning 하고자 하는 대상은 pascal VOC dataset + 포크레인 = 21가지 클래스다. models/research/object_detection/data/안을 보면, pascal_label_map.pbtxt파일을 찾을 수 있는데, 학습하고자 하는 label마다의 번호와 이름을 명시해 놓은 파일이다. 여기에 우리가 추가로 학습하고자 하는 클래스에 해당하는 가지 수만큼 뒤에 추가해주자. 필자는 아래와 같이 포크레인을 21번째 클래스로 등록해주었다. \n  12345678910111213141516item {  id: 1  name: 'aeroplane'}...... item {  id: 20  name: 'tvmonitor'}item {  \t\t# 포크레인 추가  id: 21  name: 'excavator'}\n\n\n\n\n\n이렇게 수정이 끝난 label_map 데이터도 data 폴더 안에 넣어주자.  \n\n2. pipeline.config 세팅 ⛏\n이렇게 받은 모델이 pretrained 되어있는 대상은 무려 90가지의 class를 구별하는 COCO dataset이다. 그럼 다시 학습을 할 때는 우리가 원하는 데이터 셋의 Class 가지 수만큼 구별할 수 있게 하려면 어떻게 해야할까? \n\n실제 날코딩 레벨에서는 제일 마지막 Fully Conneted layer를 날리고, 원하는 클래스 만큼 구별할 수 있게 세팅한 FC layer를 추가해줘야 하겠지만, pipelin.config의 숫자 하나만 바꿔주면 우리는 이 작업을 쉽게 할 수 있다. 필자는 VOC dataset의 20가지 + 포크레인을 더해서 총 21가지 Class를 구별할 수 있게 세팅하였다. \n  123456789model {  ssd {    num_classes: 21          # 90 -> 21!    image_resizer {      fixed_shape_resizer {        height: 300        width: 300      }    }\n\n\n\n\n\n자, 그리고 하단부에는 실제로 학습을 시작하면서 학습데이터는 어디서 가져와야하는지 등을 알려주는 부분이 있는데, 아래와 같이 각자의 bucket 위치로 잘 바꿔서 수정해주자. 대략적으로 수정해줘야 하는 부분은 아래와 같다.\n  12345678910111213141516171819202122232425262728...  fine_tune_checkpoint: \"gs://{YOUR_BUCKET_NAME}/train/model.ckpt\"  num_steps: 50000  startup_delay_steps: 0.0  replicas_to_aggregate: 8  max_number_of_boxes: 100  unpad_groundtruth_tensors: false}train_input_reader {  label_map_path: \"gs://{YOUR_BUCKET_NAME}/data/label_map.pbtxt\"  tf_record_input_reader {    input_path: \"gs://{YOUR_BUCKET_NAME}/data/train.record\"  }}eval_config {  num_examples: {NUM_OF_YOUR_VALIDATION_DATA}  metrics_set: \"coco_detection_metrics\"  use_moving_averages: false}eval_input_reader {  label_map_path: \"gs://{YOUR_BUCKET_NAME}/data/label_map.pbtxt\"  shuffle: false  num_readers: 1  tf_record_input_reader {    input_path: \"gs://{YOUR_BUCKET_NAME}/data/val.record\"  }}...\n\n이미 눈치챘겠지만, 사용자는 이 pipeline.config를 통해 batch size와 step size 등등을 조절해서 학습의 디테일을 바꿀 수 있다. \n\n\n\n\n\n2. Train the model! 🏃\n자! 이제 드디어 학습을 시작 하기 전에.. 마지막으로 다시 models/research로 이동하여, 아래 명령어를 실행하자. 학습에 사용될 패키지를 압축하는 과정이다. \n  123$ bash object_detection/dataset_tools/create_pycocotools_package.sh /tmp/pycocotools$ python setup.py sdist$ (cd slim && python setup.py sdist)  # must execute this line, too.\n\n\n\nTraining\n드디어! 진짜로! 학습을 시작해보자. 아래 명령어를 각자의 버킷이름에 맞춰서 수정 후 입력.\n  1234567891011$ gcloud ai-platform jobs submit training `whoami`_object_detection_`date +%s` \\--job-dir=gs://{YOUR_BUCKET_NAME}/train \\--packages dist/object_detection-0.1.tar.gz,slim/dist/slim-0.1.tar.gz,/tmp/pycocotools/pycocotools-2.0.tar.gz \\--module-name object_detection.model_tpu_main \\--runtime-version 1.15 \\--scale-tier BASIC_TPU \\--region us-central1 \\-- \\--model_dir=gs://{YOUR_BUCKET_NAME}/train \\--tpu_zone us-central1 \\--pipeline_config_path=gs://{YOUR_BUCKET_NAME}/data/pipeline.config\n\n잘 실행이 되었다면, 학습 진행상황 log를 볼 수 있는 링크를 터미널에서 자동으로 알려주는데, 그 링크를 타고 들어가면 아래와 같이 GCP Console이나, Terminal에서 log를 관찰할 수 있다. \n  \n  \n\n\nEvaluation\n학습된 모델의 성능을 평가하려면, 아래의 명령어로 할 수 있다. 자동으로 train에 저장되어 있는 가장 학습이 많이된 모델을 자동으로 선택해서 Evaluation을 한다. \n  1234567891011$ gcloud ai-platform jobs submit training `whoami`_object_detection_eval_validation_`date +%s` \\--job-dir=gs://ddp/train \\--packages dist/object_detection-0.1.tar.gz,slim/dist/slim-0.1.tar.gz,/tmp/pycocotools/pycocotools-2.0.tar.gz \\--module-name object_detection.model_main \\--runtime-version 1.15 \\--scale-tier BASIC_TPU \\--region us-central1 \\-- \\--model_dir=gs://ddp/train \\--pipeline_config_path=gs://ddp/data/pipeline.config \\--checkpoint_dir=gs://ddp/train\n\nEvaluation이 잘 끝나면, 아래와 같은 평가표를 받아볼 수 있다. \n  1234567891011121314151617181920212223...Saving dict for global step 50000: DetectionBoxes_Precision/mAP = 0.57654905, DetectionBoxes_Precision/mAP (large) = 0.7432713, DetectionBoxes_Precision/mAP (medium) = 0.2553529, DetectionBoxes_Precision/mAP (small) = 0.044851754, DetectionBoxes_Precision/mAP@.50IOU = 0.8106554, DetectionBoxes_Precision/mAP@.75IOU = 0.6466306, DetectionBoxes_Recall/AR@1 = 0.4816028, DetectionBoxes_Recall/AR@10 = 0.63472164, DetectionBoxes_Recall/AR@100 = 0.6432252, DetectionBoxes_Recall/AR@100 (large) = 0.7970598, DetectionBoxes_Recall/AR@100 (medium) = 0.39382252,DetectionBoxes_Recall/AR@100 (small) = 0.10790066, Loss/classification_loss = 0.15321705, Loss/localization_loss = 0.10001469, Loss/regularization_loss = 0.12372323, Loss/total_loss = 0.37696198, global_step = 50000, learning_rate = 0.15243073, loss = 0.37696198\n\n\n\nRetreive the model to your machine\n학습이 성공적으로 끝났다면 아래의 명령어를 통해서, local machine으로 학습이 끝난 모델을 다운받을 수 있다! 먼저, 받아올 모델과 다운받을 곳을 설정하고,\n  123$ export CONFIG_FILE=gs://${YOUR_GCS_BUCKET}/data/pipeline.config$ export CHECKPOINT_PATH=gs://${YOUR_GCS_BUCKET}/train/model.ckpt-{NUM_STEP_SIZE}$ export OUTPUT_DIR=~/Desktop/tflite\n\n  그 다음, 학습된 모델 그래프를 추출해서 받아오자. \n  12345$ python object_detection/export_tflite_ssd_graph.py \\--pipeline_config_path=$CONFIG_FILE \\--trained_checkpoint_prefix=$CHECKPOINT_PATH \\--output_directory=$OUTPUT_DIR \\--add_postprocessing_op=true\n\n잘 끝났다면, 학습이 끝난 tflite_graph.pb, 과 tflite_graph.pbtxt 두 파일을 다운 받기로 설정한 폴더 안에서 만날 수 있다! 이 파일을 이제 경량화해서 tflite파일로 만들고, 그 경령화된 모델을 android app에 심는 대망의 마지막 작업을 .. 다음 포스팅에서..! 아디다스⭐\n\n\n\n\n\nP.S. Make bucket public\n실제 학습할 시, bucket의 데이터에 접근할 수 없다는 permission error로 인해 고통받는 것이 싫다면, 학습의 편의를 위해 bucket을 아래와 같이 객체 access 방식을 균일한 액세스 제어로 설정하고, 버킷 권한 설정을 통해 전체공개로 바꾸는 것을 추천.\n  \n  \n\nBucket을 전체 공개하는 방법은 다음과 같다. 1) 구성원 추가를 눌러서 나오는 대상이름에 allUsers 혹은 allAuthenticatedUsers를 타이핑해서 추가 한다. \n  \n  \n\n\n \n\n\n2) 권한으로 아래와 같이, 저장소 기존 개체 소유자, 저장소 기존 버킷 소유자로 선택해서 추가해준다. \n  \n\n\n\n\n\n\n\n수고하셨습니다. :) 다음 시간에는, 학습이 끝난 모델을 경량화하고, Tensorflow에서 제공해주는 Android example 코드에 탑재하는 것으로 튜토리얼을 마무리 짓도록 하겠습니다. \n\n이 글은 DataCrew 에서도 보실 수 있습니다. \n\n\n\n\n\n\nReferences\nTraining and serving a realtime mobile object detector in 30 minutes with Cloud TPUs - Link\nGCP Project Setting - Link\nStep by Step TensorFlow Object Detection API Tutorial - Part 1 ~ 5 - Link\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-06-21T00:00:00+09:00","dateModified":"2020-06-22T12:56:26+09:00","datePublished":"2020-06-21T00:00:00+09:00","description":"\nGoogle TPU 사용해서 Transfer Learning하여 모바일에 심기 - (4) \nGoogle Cloud TPU 학습하기 \n","headline":"Running a pretrained model on Android with TPU (4)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/06/21/tensorflow_object_detection_with_tpu_4/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2020/06/21/tensorflow_object_detection_with_tpu_4/","keywords":"tutorial, TPU, deep_learning, transfer learning, tensorflow object detection api"}</script>
     <meta name="description" content="Google TPU 사용해서 Transfer Learning하여 모바일에 심기 - (4)  Google Cloud TPU 학습하기">
 <meta name="keywords" content="tutorial,TPU,deep_learning,transfer learning,tensorflow object detection api">
 <meta property="og:type" content="blog">
@@ -43,6 +45,8 @@
         
     
     
+        <meta property="og:image" content="http://www.stand-firm-peter.me/assets/images/avatar.jpeg">
+    
     
     
     
@@ -50,6 +54,15 @@
     <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
     <!--STYLES END-->
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-124184693-1');
+    </script>
+
 
     
 
@@ -64,6 +77,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -77,6 +94,8 @@
             <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
         
         
+            <img class="header-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+        
         </a>
     
 </header>
@@ -84,8 +103,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about" aria-label="Read more about the author">
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+                </a>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -116,22 +150,6 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
-                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archives</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
                         <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">About</span>
@@ -144,7 +162,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <a class="sidebar-button-link " href="https://github.com/petercha90" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
                     </a>
@@ -152,61 +170,9 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/in/peter-cha-022927134/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
                         <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
-                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -625,11 +591,17 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
         
             <h4 id="about-card-name">Peter Cha</h4>
         
@@ -644,6 +616,12 @@
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                Cheonan / Korea
+            </div>
         
     </div>
 </div>

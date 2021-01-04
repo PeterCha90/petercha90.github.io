@@ -12,12 +12,14 @@
         <meta name="keywords" content="AI,Machine Learning,">
     
     
+        <link rel="icon" href="http://www.stand-firm-peter.me/assets/images/favicon.ico">
+    
     
         
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\nDocker Container에 SSH 접속\n현재 내 컨테이너를 이미지로 저장하기\n\n\n\n\n\n\nDocker Tutorial, 세 번째⭐입니다! \n\n\n\n\n이번 포스팅에서는 이전 글에서 노출시킨 22 port 를 사용, 컨테이너 환경으로 외부에서 SSH 접속을 하는 방법에 대해 다루고, SSH Setting이 끝난 컨테이너 자체를 이미지로 만드는 방법을 알아보도록 하겠습니다. \n\n최근들어 많은 회사나 단체, 개인들이 AWS나 Google Cloud Platform 등을 사용하면서 GPU 및 TPU Server를 사용하고 있죠. 그래서 당연히 AWS나 Google Cloud에서도 Docker를 사용할 수 있게 됐고, 자연스럽게 언제 어디서든 무거운 계산이나 학습은 Cloud나 원격 서버에서 처리하고 실제 사용자는 자유롭게 접속하고 해당 머신을 사용할 수 있게 되었습니다. Digital Nomad🐑가 가까워지고 있습니다. 혹은 Digital Slave..\n\n이런 현실에 맞춰, SSH로 내 Deocker Container에 접속하는 법 정도는 아는 것이 좋겠죠?  물론 키와 패스워드 관리 및 보안상의 이유로 일각에서는 SSH로 컨테이너에 접속할 수 있게 하는 것을 우려하지만, 개인적인 학습이나 가벼운 실험 용도로만 사용한다고 했을 때는 효율적이라고 생각해 포스팅을 하기로 했습니다. \n\n\n\n\nSSH Server in Container1. Container 생성 (--cap-add)\n먼저 SSH을 사용할 수 있게 이미지로 부터 컨테이너를 생성할 때, 아래와 같은 옵션을 함께 줍니다. 이미지는 Hi, Docker! :) (2)에서 생성한 docker101이미지를 사용합니다. \n1$ docker run -d --name ssh_container --cap-add=NET_ADMIN --cap-add=NET_RAW -p 8888:8888 -p 22022:22 docker101\n\n--cap-add=NET_ADMIN에서 --cap-add 옵션은, 컨테이너에게 특정한 cgroups 을 사용하게 해주는 것으로, 여기서는 admin의 network를 사용하겠다는 의미로 NET_ADMIN 을, admin의 iptables를 그대로 사용하겠다는 의미 NET_RAW 를 변수로 줍니다. \n\ncgroups: control groups의 약자 - 프로세스들의 자원의 사용(CPU, 메모리, 디스크 입출력, 네트워크 등)을 제한하고 격리시키는 리눅스 커널 기능 (feat. wikipedia) \n\n\n\n\n\n\n저는 -p 22022:22 로, 컨테이너가 SSH 접속을 허용할 22번 포트를 Host의 22022와 연결시켜 주겠습니다. \n\n2. SSH, ufw 설치\n이렇게 생성한 컨테이너에 이제 SSH 접속을 할 수 있도록 하려면, 손봐줄 것이 많기때문에…👊 백그라운드에서 돌아가고 있는 ssh_container에 exec로 접속합니다. \n  1$ docker exec -it ssh_container /bin/bash\n\n그리고 SSH와, 리눅스에서 방화벽을 관리해주는 ufw를 설치합니다. \n  1$ apt-get install ssh ufw -y\n\n  아래와 같이 sshd의 위치가 잘 나온다면 설치가 잘 된 것입니다!\n  12[work] # which sshd/usr/sbin/sshd\n\n\n\n3. 비밀번호 설정 (sshd_config, passwd root)\nSSH 접속을 할 때 물어볼 비밀번호를 설정하려면, 먼저 /etc/ssh/ 아래에 있는 sshd_config파일을 좀 수정해야합니다. \n  1$ vim /etc/ssh/sshd_config\n\n  를 보시면, \n  123456789#       $OpenBSD: sshd_config,v 1.101 2017/03/14 07:19:07 djm Exp $# This is the sshd server system-wide configuration file.  See# sshd_config(5) for more information.# 어쩌구저쩌구......#LoginGraceTime 2m#PermitRootLogin prohibit-password#StrictModes yes...\n\n  라고 뜰 텐데요, 여기서 아래와 같이 #PermitRootLogin prohibit-password 부분의 주석을 해제하고, prohibit-password를 yes로 바꿔줍니다. \n  12345...#LoginGraceTime 2mPermitRootLogin yes#StrictModes yes...\n\n그렇게 저장을 하신 뒤에, 다시 bash로 돌아와 passwd root 을 입력해서 비밀번호를 설정해주면 끝입니다!\n1234[work] # passwd rootEnter new UNIX password:Retype new UNIX password: passwd: password updated successfully\n\n\n\n\n4. ufw 세팅\netc/ufw/아래에 있는 ufw.conf파일에서 ENABLED=no를,\n1$ vim /etc/ufw/ufw.conf\n\n1234# /etc/ufw/ufw.conf...ENABLED=no...\n\nENABLED=yes로 👇 바꿔줍니다.\n123...ENABLED=yes...\n\n그 뒤에, bash로 돌아와서 ufw enable 로 활성화를 해주고,\n12[work] # ufw enableFirewall is active and enabled on system startup\n\n이제 실제로 22번 port를 방화벽에서 허락할 수 있게 ufw allow 를 사용합니다. \n123[work] # ufw allow 22/tcpRule addedRule added (v6)\n\n\n\n\n5. SSH server 시작\n수고하셨습니다. 이제 귀찮은 일은 다 끝났습니다.service ssh start로 ssh를 시작하고, \n12[work] # service ssh start * Starting OpenBSD Secure Shell server sshd              [ OK ]\n\nservice ssh status로 동작을 확인하면 끝!\n12[work] # service ssh status * sshd is running\n\n\n\n\n\nSSH Client\n자, 그럼 열심히 세팅한 컨테이너로 이제 접속을 해봐야겠죠?😎 당연하지만 기본 개념은 Port forwarding입니다. Host의 22022번 port가 ssh_container의 22번 port와 연결되어있기 때문에, 기본적으로 외부에서 Docker 컨테이너로 접속을 하려면 Docker가 실행되고 있는 Host 머신을 통해서 연결을 해야합니다. \n\n먼저 도커가 실행되고 있는 제 PC는 맥북인 관계로 ifconfig를 사용해서 제 컴퓨터의 IP가 172.16.8.236라는 것을 알아냈습니다. (linux: ifconfig - window: ipconfig) 따라서, ssh 명령어도 아래와 같습니다. \n  1$ ssh -p 22022 root@172.16.8.236\n\n  그렇다면 이 명령을 내리는 의미는 아래의 그림과 같습니다. \n  \n\n\n\n\n\n아래와 같이 접속을 허용하겠냐는 물음에 답하면 비밀번호를 물어보고, \n  12345The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.ECDSA key fingerprint is SHA256:iMDl7X79mKNZEA5oadtMr2zQdJhJ4n2toAeJ58o9Tsg.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.root@172.16.8.236's password:\n\n 비밀번호를 입력하면 드디어 ssh_container 안으로 입성(?)하게 됩니다!\n 123456789101112131415161718Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64) * Documentation:  https://help.ubuntu.com * Management:     https://landscape.canonical.com * Support:        https://ubuntu.com/advantageThis system has been minimized by removing packages and content that arenot required on a system that users do not log into.To restore this content, you can run the 'unminimize' command.The programs included with the Ubuntu system are free software;the exact distribution terms for each program are described in theindividual files in /usr/share/doc/*/copyright.Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted byapplicable law.\t[~] #\n\n\n\n\n\nssh를 사용해서 컨테이너 안으로 들어왔습니다! work directory안에 반가운 Data폴더도 그대로 잘 있네요. 이제 곧 Digital Nomad🐑가 될 것같은 기분 은 희망사항 입니다. \n  1234[~] # cd work[work] # ls -a.  ..  .empty  Data[work] #\n\n이번 포스팅에서 예시로 들었던 IP 172.16.8.236은 내부망(같은 공유기를 쓰는, 혹은 같은 사내망)입니다. 따라서, 때로는 192.xx.xxx.xx가 될 수도 있죠. 같은 내부망뿐만 아니라, 진정으로 인터넷을 통해 어디서나 접근을 가능하게 하고 싶다면 저 IP는 Host가 부여받은 Public IP인 external IP이어야 합니다. \n\nAWS나 GCP에서 Docker 컨테이너를 사용하고 계신다면, 사용하고 계신 Cloud Machine에 접근할 수 있는 IP를 알면 되는 것이고, 자체 사설 서버를 운영하신다고 해도 마찬가지 입니다. 해당 Host 머신이 가지고 있는 Static IP, 고정IP가 되겠죠.\n\n다만 각각의 환경에 따라 ssh 접속을 허용하기 위한 SSH Server측의 방화벽 및 구체적인 세팅을 다 설명하기에는 이번 포스팅의 논지를 흐릴 것 같아 사실 제가 힘들어서😞, 내부망 접속이라는 예시를 통해 ssh container 접속의 개념만 살펴보았습니다. 외부망을 통해 Docker Container에 접속을 하시려면, 필요에 따라 가지고 계신 환경에 따른 더 많은 정보가 필요합니다.\n\n\n\n\nSave My Container as an Image.(commit)\n더 게으르고 싶은 개발자가 좋은 개발자기 때문에, 우리는 이 귀찮은 작업들을, 매번 컨테이너를 생성할 때마다 해줄 수는 없습니다! 이렇게 힘들게(?) 세팅한, SSH 접속이 되는 ssh_container를 image로 만들어서 Docker Hub에도 올리고, 편하게 사용하고 싶습니다. \n\n이것을 가능하게 해주는 명령어가 commit 입니다. 말이 나온 김에 지금 당장 사용하도록 하겠습니다. ssh_container로 ssh_machine_learning이라는 이름으로 Image를 만듭니다. \n  12$ docker commit ssh_container ssh_machine_learningsha256:2e134384b1c846ee76a069db2aad0b2664610c195b9d8c1b03d79b9e3de74a0e\n\n  이미지가 잘 생성이 됐는지 확인을 해보니, 잘 생성이 되었네요! 참 쉽죠?😇🤘\n  1234$ docker imagesREPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZEssh_machine_learning                          latest              4d9c11b16e4c        4 seconds ago       4.75GBdocker101                                     latest              71522855bd07        4 days ago          4.72GB\n\n\n\n\n\nTest\n그럼 정말로 의도대로 잘 생성된 이미지인지 확인하기 위해, 기존의 ssh_container와, docker101 이미지를 삭제합니다. \n  123456$ docker stop ssh_containerssh_container$ docker rm ssh_containerssh_container$ docker rmi docker101Untagged: docker101:latest\n\n  그리고 생성한 ssh_machine_learning 이미지로 컨테이너를 생성하고 확인합니다. happy_cori라는 이름의 컨테이너로 생성이 되어있습니다. \n  12345$ docker run -d --cap-add=NET_ADMIN --cap-add=NET_RAW -p 8888:8888 -p 22022:22 ssh_machine_learninge3f1a95dc804632ed1802c17c90b44046f13301a261d06ebd48dcd7cb8f57447$ docker ps CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                           NAMES292970ce1cff        ssh_machine_learning   \"/tini -- /bin/sh -c…\"   3 seconds ago       Up 2 seconds        0.0.0.0:8888->8888/tcp, 0.0.0.0:22022->22/tcp   happy_cori\n\n  happy_cori로 exec 접속을 해서 SSH Server를 시작시킵니다.\n  123$ docker exec -it happy_cori /bin/bash[work] # service ssh start * Starting OpenBSD Secure Shell server sshd                  [ OK ]\n\n위에 나왔던 같은 방식으로, SSH 접속을 해봅니다.팝콘준비🍟\n\n\nDealing with an Error\n아, 지금 저처럼 같은 PC로 접속을 하신다면 아마도..\n  123456789 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!   @ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!어쩌구저쵸구.....Add correct host key in /Users/chayesol/.ssh/known_hosts to get rid of this message....\n\n  이런 멋진 친구를 먼저 만나게 될 것입니다. 그도 그럴만한 것이, 접속을 하려는 PC 입장에서는 똑같은 IP로 접속을 하려고 하는데, 전혀 다른 Server인데??라고 하면서 '뭐냐이거'라고 정색을 하는 것이죠.  이럴 경우, PC가 가지고 있떤 ssh-key를 아예 초기화시켜주는, \n  1$ ssh-keygen -R YOUR.IP.ADDR.ESS\n\n  를 실행한 뒤에 다시 하면 된다는 분들이 계시고, 저같은 경우 이 방법이 안먹혀서 에러 메세지 하단쯤에 친절히 적혀 있는 /Users/chayesol/.ssh/known_hosts을 파일을 열고 해당 IP를 지워버렸습니다. \n  \n\n  \n\n  그리고나서 다시, 도즈언🏊 하니 잘 되네요!\n  123456789101112131415161718192021222324$ ssh -p 22022 root@172.16.8.236The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.ECDSA key fingerprint is SHA256:XFFyjB4g0y4cJzd08AV2nDfxGxzcm8qBoS5n7VRc9fo.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.root@172.16.8.236's password: Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64) * Documentation:  https://help.ubuntu.com * Management:     https://landscape.canonical.com * Support:        https://ubuntu.com/advantageThis system has been minimized by removing packages and content that arenot required on a system that users do not log into.To restore this content, you can run the 'unminimize' command.The programs included with the Ubuntu system are free software;the exact distribution terms for each program are described in theindividual files in /usr/share/doc/*/copyright.Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted byapplicable law.[~] #\n\n\n\n\n\n\n읽어주셔서 감사합니다. 🙇\n\n\n\nReferences\nruo91 - GitHub Gist\ndocker의 ubuntu container에 ssh로 접속하기\nHOW TO CREATE A DOCKER IMAGE FROM A CONTAINER\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2019-05-25T15:26:56+09:00","dateModified":"2020-06-13T15:24:33+09:00","datePublished":"2019-05-25T15:26:56+09:00","description":"\nDocker Container에 SSH 접속\n현재 내 컨테이너를 이미지로 저장하기\n","headline":"Docker tutorial (3)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2019/05/25/docker-103/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2019/05/25/docker-103/","keywords":"useful-info, Docker, docker, ssh, container ssh"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg"},"articleBody":"\nDocker Container에 SSH 접속\n현재 내 컨테이너를 이미지로 저장하기\n\n\n\n\n\n\nDocker Tutorial, 세 번째⭐입니다! \n\n\n\n\n이번 포스팅에서는 이전 글에서 노출시킨 22 port 를 사용, 컨테이너 환경으로 외부에서 SSH 접속을 하는 방법에 대해 다루고, SSH Setting이 끝난 컨테이너 자체를 이미지로 만드는 방법을 알아보도록 하겠습니다. \n\n최근들어 많은 회사나 단체, 개인들이 AWS나 Google Cloud Platform 등을 사용하면서 GPU 및 TPU Server를 사용하고 있죠. 그래서 당연히 AWS나 Google Cloud에서도 Docker를 사용할 수 있게 됐고, 자연스럽게 언제 어디서든 무거운 계산이나 학습은 Cloud나 원격 서버에서 처리하고 실제 사용자는 자유롭게 접속하고 해당 머신을 사용할 수 있게 되었습니다. Digital Nomad🐑가 가까워지고 있습니다. 혹은 Digital Slave..\n\n이런 현실에 맞춰, SSH로 내 Deocker Container에 접속하는 법 정도는 아는 것이 좋겠죠?  물론 키와 패스워드 관리 및 보안상의 이유로 일각에서는 SSH로 컨테이너에 접속할 수 있게 하는 것을 우려하지만, 개인적인 학습이나 가벼운 실험 용도로만 사용한다고 했을 때는 효율적이라고 생각해 포스팅을 하기로 했습니다. \n\n\n\n\nSSH Server in Container1. Container 생성 (--cap-add)\n먼저 SSH을 사용할 수 있게 이미지로 부터 컨테이너를 생성할 때, 아래와 같은 옵션을 함께 줍니다. 이미지는 Hi, Docker! :) (2)에서 생성한 docker101이미지를 사용합니다. \n1$ docker run -d --name ssh_container --cap-add=NET_ADMIN --cap-add=NET_RAW -p 8888:8888 -p 22022:22 docker101\n\n--cap-add=NET_ADMIN에서 --cap-add 옵션은, 컨테이너에게 특정한 cgroups 을 사용하게 해주는 것으로, 여기서는 admin의 network를 사용하겠다는 의미로 NET_ADMIN 을, admin의 iptables를 그대로 사용하겠다는 의미 NET_RAW 를 변수로 줍니다. \n\ncgroups: control groups의 약자 - 프로세스들의 자원의 사용(CPU, 메모리, 디스크 입출력, 네트워크 등)을 제한하고 격리시키는 리눅스 커널 기능 (feat. wikipedia) \n\n\n\n\n\n\n저는 -p 22022:22 로, 컨테이너가 SSH 접속을 허용할 22번 포트를 Host의 22022와 연결시켜 주겠습니다. \n\n2. SSH, ufw 설치\n이렇게 생성한 컨테이너에 이제 SSH 접속을 할 수 있도록 하려면, 손봐줄 것이 많기때문에…👊 백그라운드에서 돌아가고 있는 ssh_container에 exec로 접속합니다. \n  1$ docker exec -it ssh_container /bin/bash\n\n그리고 SSH와, 리눅스에서 방화벽을 관리해주는 ufw를 설치합니다. \n  1$ apt-get install ssh ufw -y\n\n  아래와 같이 sshd의 위치가 잘 나온다면 설치가 잘 된 것입니다!\n  12[work] # which sshd/usr/sbin/sshd\n\n\n\n3. 비밀번호 설정 (sshd_config, passwd root)\nSSH 접속을 할 때 물어볼 비밀번호를 설정하려면, 먼저 /etc/ssh/ 아래에 있는 sshd_config파일을 좀 수정해야합니다. \n  1$ vim /etc/ssh/sshd_config\n\n  를 보시면, \n  123456789#       $OpenBSD: sshd_config,v 1.101 2017/03/14 07:19:07 djm Exp $# This is the sshd server system-wide configuration file.  See# sshd_config(5) for more information.# 어쩌구저쩌구......#LoginGraceTime 2m#PermitRootLogin prohibit-password#StrictModes yes...\n\n  라고 뜰 텐데요, 여기서 아래와 같이 #PermitRootLogin prohibit-password 부분의 주석을 해제하고, prohibit-password를 yes로 바꿔줍니다. \n  12345...#LoginGraceTime 2mPermitRootLogin yes#StrictModes yes...\n\n그렇게 저장을 하신 뒤에, 다시 bash로 돌아와 passwd root 을 입력해서 비밀번호를 설정해주면 끝입니다!\n1234[work] # passwd rootEnter new UNIX password:Retype new UNIX password: passwd: password updated successfully\n\n\n\n\n4. ufw 세팅\netc/ufw/아래에 있는 ufw.conf파일에서 ENABLED=no를,\n1$ vim /etc/ufw/ufw.conf\n\n1234# /etc/ufw/ufw.conf...ENABLED=no...\n\nENABLED=yes로 👇 바꿔줍니다.\n123...ENABLED=yes...\n\n그 뒤에, bash로 돌아와서 ufw enable 로 활성화를 해주고,\n12[work] # ufw enableFirewall is active and enabled on system startup\n\n이제 실제로 22번 port를 방화벽에서 허락할 수 있게 ufw allow 를 사용합니다. \n123[work] # ufw allow 22/tcpRule addedRule added (v6)\n\n\n\n\n5. SSH server 시작\n수고하셨습니다. 이제 귀찮은 일은 다 끝났습니다.service ssh start로 ssh를 시작하고, \n12[work] # service ssh start * Starting OpenBSD Secure Shell server sshd              [ OK ]\n\nservice ssh status로 동작을 확인하면 끝!\n12[work] # service ssh status * sshd is running\n\n\n\n\n\nSSH Client\n자, 그럼 열심히 세팅한 컨테이너로 이제 접속을 해봐야겠죠?😎 당연하지만 기본 개념은 Port forwarding입니다. Host의 22022번 port가 ssh_container의 22번 port와 연결되어있기 때문에, 기본적으로 외부에서 Docker 컨테이너로 접속을 하려면 Docker가 실행되고 있는 Host 머신을 통해서 연결을 해야합니다. \n\n먼저 도커가 실행되고 있는 제 PC는 맥북인 관계로 ifconfig를 사용해서 제 컴퓨터의 IP가 172.16.8.236라는 것을 알아냈습니다. (linux: ifconfig - window: ipconfig) 따라서, ssh 명령어도 아래와 같습니다. \n  1$ ssh -p 22022 root@172.16.8.236\n\n  그렇다면 이 명령을 내리는 의미는 아래의 그림과 같습니다. \n  \n\n\n\n\n\n아래와 같이 접속을 허용하겠냐는 물음에 답하면 비밀번호를 물어보고, \n  12345The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.ECDSA key fingerprint is SHA256:iMDl7X79mKNZEA5oadtMr2zQdJhJ4n2toAeJ58o9Tsg.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.root@172.16.8.236's password:\n\n 비밀번호를 입력하면 드디어 ssh_container 안으로 입성(?)하게 됩니다!\n 123456789101112131415161718Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64) * Documentation:  https://help.ubuntu.com * Management:     https://landscape.canonical.com * Support:        https://ubuntu.com/advantageThis system has been minimized by removing packages and content that arenot required on a system that users do not log into.To restore this content, you can run the 'unminimize' command.The programs included with the Ubuntu system are free software;the exact distribution terms for each program are described in theindividual files in /usr/share/doc/*/copyright.Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted byapplicable law.\t[~] #\n\n\n\n\n\nssh를 사용해서 컨테이너 안으로 들어왔습니다! work directory안에 반가운 Data폴더도 그대로 잘 있네요. 이제 곧 Digital Nomad🐑가 될 것같은 기분 은 희망사항 입니다. \n  1234[~] # cd work[work] # ls -a.  ..  .empty  Data[work] #\n\n이번 포스팅에서 예시로 들었던 IP 172.16.8.236은 내부망(같은 공유기를 쓰는, 혹은 같은 사내망)입니다. 따라서, 때로는 192.xx.xxx.xx가 될 수도 있죠. 같은 내부망뿐만 아니라, 진정으로 인터넷을 통해 어디서나 접근을 가능하게 하고 싶다면 저 IP는 Host가 부여받은 Public IP인 external IP이어야 합니다. \n\nAWS나 GCP에서 Docker 컨테이너를 사용하고 계신다면, 사용하고 계신 Cloud Machine에 접근할 수 있는 IP를 알면 되는 것이고, 자체 사설 서버를 운영하신다고 해도 마찬가지 입니다. 해당 Host 머신이 가지고 있는 Static IP, 고정IP가 되겠죠.\n\n다만 각각의 환경에 따라 ssh 접속을 허용하기 위한 SSH Server측의 방화벽 및 구체적인 세팅을 다 설명하기에는 이번 포스팅의 논지를 흐릴 것 같아 사실 제가 힘들어서😞, 내부망 접속이라는 예시를 통해 ssh container 접속의 개념만 살펴보았습니다. 외부망을 통해 Docker Container에 접속을 하시려면, 필요에 따라 가지고 계신 환경에 따른 더 많은 정보가 필요합니다.\n\n\n\n\nSave My Container as an Image.(commit)\n더 게으르고 싶은 개발자가 좋은 개발자기 때문에, 우리는 이 귀찮은 작업들을, 매번 컨테이너를 생성할 때마다 해줄 수는 없습니다! 이렇게 힘들게(?) 세팅한, SSH 접속이 되는 ssh_container를 image로 만들어서 Docker Hub에도 올리고, 편하게 사용하고 싶습니다. \n\n이것을 가능하게 해주는 명령어가 commit 입니다. 말이 나온 김에 지금 당장 사용하도록 하겠습니다. ssh_container로 ssh_machine_learning이라는 이름으로 Image를 만듭니다. \n  12$ docker commit ssh_container ssh_machine_learningsha256:2e134384b1c846ee76a069db2aad0b2664610c195b9d8c1b03d79b9e3de74a0e\n\n  이미지가 잘 생성이 됐는지 확인을 해보니, 잘 생성이 되었네요! 참 쉽죠?😇🤘\n  1234$ docker imagesREPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZEssh_machine_learning                          latest              4d9c11b16e4c        4 seconds ago       4.75GBdocker101                                     latest              71522855bd07        4 days ago          4.72GB\n\n\n\n\n\nTest\n그럼 정말로 의도대로 잘 생성된 이미지인지 확인하기 위해, 기존의 ssh_container와, docker101 이미지를 삭제합니다. \n  123456$ docker stop ssh_containerssh_container$ docker rm ssh_containerssh_container$ docker rmi docker101Untagged: docker101:latest\n\n  그리고 생성한 ssh_machine_learning 이미지로 컨테이너를 생성하고 확인합니다. happy_cori라는 이름의 컨테이너로 생성이 되어있습니다. \n  12345$ docker run -d --cap-add=NET_ADMIN --cap-add=NET_RAW -p 8888:8888 -p 22022:22 ssh_machine_learninge3f1a95dc804632ed1802c17c90b44046f13301a261d06ebd48dcd7cb8f57447$ docker ps CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                           NAMES292970ce1cff        ssh_machine_learning   \"/tini -- /bin/sh -c…\"   3 seconds ago       Up 2 seconds        0.0.0.0:8888->8888/tcp, 0.0.0.0:22022->22/tcp   happy_cori\n\n  happy_cori로 exec 접속을 해서 SSH Server를 시작시킵니다.\n  123$ docker exec -it happy_cori /bin/bash[work] # service ssh start * Starting OpenBSD Secure Shell server sshd                  [ OK ]\n\n위에 나왔던 같은 방식으로, SSH 접속을 해봅니다.팝콘준비🍟\n\n\nDealing with an Error\n아, 지금 저처럼 같은 PC로 접속을 하신다면 아마도..\n  123456789 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!   @ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!어쩌구저쵸구.....Add correct host key in /Users/chayesol/.ssh/known_hosts to get rid of this message....\n\n  이런 멋진 친구를 먼저 만나게 될 것입니다. 그도 그럴만한 것이, 접속을 하려는 PC 입장에서는 똑같은 IP로 접속을 하려고 하는데, 전혀 다른 Server인데??라고 하면서 '뭐냐이거'라고 정색을 하는 것이죠.  이럴 경우, PC가 가지고 있떤 ssh-key를 아예 초기화시켜주는, \n  1$ ssh-keygen -R YOUR.IP.ADDR.ESS\n\n  를 실행한 뒤에 다시 하면 된다는 분들이 계시고, 저같은 경우 이 방법이 안먹혀서 에러 메세지 하단쯤에 친절히 적혀 있는 /Users/chayesol/.ssh/known_hosts을 파일을 열고 해당 IP를 지워버렸습니다. \n  \n\n  \n\n  그리고나서 다시, 도즈언🏊 하니 잘 되네요!\n  123456789101112131415161718192021222324$ ssh -p 22022 root@172.16.8.236The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.ECDSA key fingerprint is SHA256:XFFyjB4g0y4cJzd08AV2nDfxGxzcm8qBoS5n7VRc9fo.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.root@172.16.8.236's password: Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64) * Documentation:  https://help.ubuntu.com * Management:     https://landscape.canonical.com * Support:        https://ubuntu.com/advantageThis system has been minimized by removing packages and content that arenot required on a system that users do not log into.To restore this content, you can run the 'unminimize' command.The programs included with the Ubuntu system are free software;the exact distribution terms for each program are described in theindividual files in /usr/share/doc/*/copyright.Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted byapplicable law.[~] #\n\n\n\n\n\n\n읽어주셔서 감사합니다. 🙇\n\n\n\nReferences\nruo91 - GitHub Gist\ndocker의 ubuntu container에 ssh로 접속하기\nHOW TO CREATE A DOCKER IMAGE FROM A CONTAINER\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2019-05-25T15:26:56+09:00","dateModified":"2020-06-13T15:24:33+09:00","datePublished":"2019-05-25T15:26:56+09:00","description":"\nDocker Container에 SSH 접속\n현재 내 컨테이너를 이미지로 저장하기\n","headline":"Docker tutorial (3)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2019/05/25/docker-103/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2019/05/25/docker-103/","keywords":"useful-info, Docker, docker, ssh, container ssh"}</script>
     <meta name="description" content="Docker Container에 SSH 접속 현재 내 컨테이너를 이미지로 저장하기">
 <meta name="keywords" content="useful-info,Docker,docker,ssh,container ssh">
 <meta property="og:type" content="blog">
@@ -38,6 +40,8 @@
         
     
     
+        <meta property="og:image" content="http://www.stand-firm-peter.me/assets/images/avatar.jpeg">
+    
     
     
     
@@ -45,6 +49,15 @@
     <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
     <!--STYLES END-->
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-124184693-1');
+    </script>
+
 
     
 
@@ -59,6 +72,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -72,6 +89,8 @@
             <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
         
         
+            <img class="header-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+        
         </a>
     
 </header>
@@ -79,8 +98,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about" aria-label="Read more about the author">
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+                </a>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -111,22 +145,6 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
-                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archives</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
                         <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">About</span>
@@ -139,7 +157,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <a class="sidebar-button-link " href="https://github.com/petercha90" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
                     </a>
@@ -147,61 +165,9 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/in/peter-cha-022927134/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
                         <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
-                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -674,11 +640,17 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
         
             <h4 id="about-card-name">Peter Cha</h4>
         
@@ -693,6 +665,12 @@
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                Cheonan / Korea
+            </div>
         
     </div>
 </div>

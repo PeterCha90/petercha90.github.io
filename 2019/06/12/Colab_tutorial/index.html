@@ -12,12 +12,14 @@
         <meta name="keywords" content="AI,Machine Learning,">
     
     
+        <link rel="icon" href="http://www.stand-firm-peter.me/assets/images/favicon.ico">
+    
     
         
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\nCloud Jupyter Notebook powered by Google\nColab Introduction\n2020.01.14 - Update\n\n\n\n\nColab이란? 😶\nJupyter Notebook를 구글 드라이브에서 사용할 수 있는 것인데, 여태 있었던 구글 문서나 구글 스프레드시트처럼, 실시간 협업이 가능한 버전이라고 생각하면 된다고 합니다. 원래 구글 내부에서 직원들이 사용하던 것이라고 하네요! 그래서 error가 생기면 STACK OVERFLOW 버튼이 ..:+1:\n그렇기 때문에, Jupyter Notebook나 다른 IDE에서 흔히 제공하는 Variable다음 .을 찍고, Tab키를 치면 하위요소(함수 or 변수)의 일부만 쳐도 나타나게 하는 친숙한 기능들도, 조금 반응이 느리긴 하지만, 0.5초 정도 뒤에 나타납니다. :D \nGPU, TPU 사용 설정을 하시려거든, 맨처음 Notebook을 생성하실 때, 선택하실 수도 있고, 수정 -> 노트 설정을 누르시면 GPU, TPU 사용 설정을 할 수 있습니다. 😄\n\n시작하기\n구글 아이디를 가지고 계신다면, 이 링크를 클릭하시거나 간단하게 Colab이라고 검색을 하시면 쉽게 Colab을 시작하실 수 있습니다. 그러면, 아래와 같은 첫 화면을 보실 수 있습니다. \n  \n\n그럼 새 PYTHON 3 노트 버튼을 누르시고, Jupyter notebook을 사용하듯 사용하시면 됩니다. :)\n\n\nLinux 명령어 사용하기 😲\nColab에서는 느낌표로 쓴 뒤에 명령어를 치면 terminal에서 작동하는 것으로 처리해줍니다. 로컬에서 Bash창을 켜서 설치하고 다시 Jupyter로 돌아와야했던 귀찮은 과정이 매우 심플해졌습니다! 하지만,\n  1$ cat sample.txt\n\n  같은 native Linux에서나 가능한 몇몇 문법들은 작동하지 않습니다. \n\n그래서, 100% Linux native 명령어를 쓸 수 있는 것은 아니며, 어디까지나 그때 그때, 필요한 library, package 설치 편의를 위한 수준이라고 볼 수 있을 것 같습니다.\n\n리눅스 명령어에서 익숙한 분들은 당연히 경로 이동을 할때 cd를 쓸 텐데, !cd는 먹히지 않고, os를 import하신 뒤에, os.chdir()로 이동해야 합니다. \n\n빈 폴더를 하나 만들고 그 안에 짧은 txt파일을 만들어 확인해 봅시다.\nCell. 1  123456import os!mkdir testos.chdir('test')!pwd# 명령어는 못찾는다고 나오지만 생성은 합니다 :)!'Sample text!' > sample.txt\n\n  Output:\n  123/content/test   /bin/bash: Sample text!: command not found   sample.txt\n\n\n\n\n\nCell. 21234# 목록에는 파일이 확인되지만, !ls# cat은 작동하지 않습니다. !cat sample.txt\n\nOutput:\n1sample.txt\n\n\n\nColab.에서 쓸 수 있는 GPU 😉\n먼저 수정 - 노트 설정 에 들어가셔서, 하드웨어 가속기 를 None에서 GPU로 설정합니다.  \n  \n\n일단 필요한 Util을 다운을 받고,\n1234!ln -sf /opt/bin/nvidia-smi /usr/bin/nvidia-smi!pip install gputil!pip install psutil!pip install humanize\n\nImport 해줍시다. \n1234import psutilimport humanizeimport osimport GPUtil as GPU\n\n\n\n\n\nGPU는 하나만 허락해 줍니다만… 갓글님의 그 하나는 에이스입니다. (2020.01.13 update) 현재. 무려 Tesla P100-PCIE-16GB. 😭 개인 실험용으로는 충분한 것 같습니다. \n123456GPUs = GPU.getGPUs()gpu = GPUs[0]print(gpu.__dict__[\"name\"])print(\"The number of GPUs: {}\".format(len(GPUs)))print(\"GPU RAM Free: {0:.0f}MB | Used: {1:.0f}MB | Util {2:3.0f}% | Total {3:.0f}MB\".format(gpu.memoryFree, gpu.memoryUsed, gpu.memoryUtil* 100, gpu.memoryTotal))\n\n  Output:\n123Tesla P100-PCIE-16GB  The number of GPUs: 1GPU RAM Free: 16280MB | Used: 0MB | Util   0% | Total 16280MB\n\n\n\n\n\n참고사항\n안타깝지만, Colab은 Docker기반의 Container로 실행되기 때문에 한 번에 12시간까지만 사용 할 수 있습니다. 그래서, 작업 하시던 Colab을 껏다가 잠시 후 다시 시작하면 새로운 docker container를 받기 때문에 새로운 인스턴스 위에서 시작할 때마다 설치가 필요한 패키지들을 매번 다시 설치해야 합니다.\n\n그 다음 부터는 Jupyter notebook을 사용하듯 사용하면 됩니다.\n\n\nLocal file Upload! 😀\nLocal 파일을 업로드하는 것은 아래와 같이 좌측의 화살표 버튼을 눌러 탭을 여신 뒤에, 파일 탭을 누르시면 됩니다. :) \n\n\n\n\n\n그 다음 업로드 버튼을 누르시고 올리실 파일을 선택하시면 업로드가 잘 됐다는 것을 파일 목록에서 확인하실 수 있습니다. 이미지를 업로드 하시면 알림창 하나를 보실 수 있으실텐데, 로컬에서 가져온 업로드한 데이터들은 instance가 바뀌면(= 새로 시작하면) 없어진다는 말이니, 참고하세요.\n\n아래의 코드를 실행해보면, 업로드한 그림을 확인해 볼 수 있습니다. \n 12345678import ioimport matplotlib.pyplot as pltfrom PIL import Imageos.chdir('..')image = Image.open('./person-walking.png')plt.imshow(image)\n\n \n\n\n\n\n\n\n사실 이렇게 이미지를 올리면, upload 하고자 하는 데이터가 많을 수록 업로드 속도도 느릴 뿐만 아니라 브라우저를 다시 시작할 때마다, 또 업로드를 해야합니다. 잠깐 확인하는 용도로는 상관이 없겠지만요 :) \n일괄적으로 Colab을 이용하되, 같은 데이터를 매번 사용해야하는 경우에는 개인 Google Drive에 업로드 한 다음, 그 directory 안에서 작업을 하면 더 편합니다. Google Drive를 Mount 하는 방법을 알아보도록 하겠습니다. :) \n\n\n\nMount your Google Drive\nGoogle Drive를 마운트하는 것도, 이전에 비해서 더 직관적으로 편하게 되었습니다. \n\n아래와 같이, 드라이브 마운트 버튼을 눌리면 갑자기 코드가 하나 생기고, 그 셀을 실행하게되면 나오는 URL을 클릭하시고 연결하고 싶은 Google Drive를 가지고 있는 구글 아이디로 인증을 거칩니다. \n  \n\n인증을 마치면 아래와 같은 키를 하나 생성해줍니다. 그 키를 복사에서 Colab으로 돌아가,  Enter your authorization code: 부분에 입력해줍니다. \n\n\n\n\n\n\n그러면 아래와 같이 본인의 Google Drive가 Mount된 것을 확인하실 수 있습니다. \n\n\n\n\n\n\n\n\nGoogle Cloud Storage\n개인 실험은 위와 같이 로컬데이터 업로드나 구글 드라이브를 사용하겠지만, 단체의 프로젝트라고 하면, Google Storage와 같은 데이터 저장소를 공유해야합니다. 이번에는 그 방법입니다. \n\nGoogle Cloud Storage(이하 GCS)와 함께 Colaboratory를 사용하려면 Google Cloud 프로젝트를 만들거나 기존 프로젝트를 사용해야 합니다. \n\n저는 아래와 같이 colab-test이라는 이름의 프로젝트를 만들었고 프로젝트 ID는 colab-test-265006이네요. 만들기 버튼을 눌러서 프로젝트를 만들어줍니다. \n\n\n\n아래의 코드를 실행해서 인증을 통해, GCS에 접근합니다.\n12from google.colab import authauth.authenticate_user()\n\n그러면 Google Drive를 Mount할 때와 똑같은 인증 과정을 거치게 됩니다. \n\n\n\n  그 뒤로는 Command-line Utility인 gsutil 혹은 Python API 를 통해 GCS에 접근할 수 있습니다. 먼저 GCS에 파일을 업로드 하는 방법부터 알아보겠습니다. 데이터를 넣어놔야, Colab에서 접근해서 그 데이터를 사용할 수 있을테니까요.\n\n\n\n\nUpload data into the GCS Bucket\ngsutil이나 PythonAPI를 사용해서 GCS에 Bucket을 만들고 데이터를 업로드 할 수 있습니다. 하지만, 이 포스팅에서는 브라우저를 사용해서 간단하게 Bucket을 생성하고, Drag & Drop으로 데이터를 업로드 하도록 하겠습니다. \n\nCreat a bucket\n생성한 프로젝트를 선택하시고, 좌상단에 위치한 탐색 메뉴를 클릭하셔서 아래와 같이 많은 제품들 중 저장소 카테고리 아래에 있는 Storage를 선택합니다. \n\n\n\n\n\n\n그 다음은 버켓을 만들어 봅니다. 버킷 생성 , 혹은 버킷 만들기를 눌러 버킷을 생성해봅니다. \n\n\n버킷의 이름, 데이터 저장 위치, 기본 스토리지, 액세스 제어 방법을 선택하는 옵션이 나오는데 필자의 경우, 이름은 colab-sample, 데이터 저장 위치는 Multi-region유형으로 asia, 클래스는 Standard, 객체 접근 방식은 세분화된 엑세스 제어로 하였고, 고급설정은 암호화 Google 관리 키인 상태에서 나머지는 아무것도 건드리지 않았습니다. 그렇게 아래와 같이 Bucket이 생성되었습니다. \n\n\nUpload data\n그럼 데이터를 Drag & Drop이나 버튼을 눌러서 Upload 합니다. \n\n\n\n\n\n\nUpload가 잘 된 것을 확인한 후, 창을 닫아도 좋습니다.\n\n\n\n\n\n\n\nDownload using gsutil\n먼저 gcloud를 사용해서 생성한 프로젝트를 설정해줍니다. \n1!gcloud config set project colab-test-265006\n\nOutput:\n1Updated property [core/project].\n\n그 다음, 해당 버킷에 접근해서 업로드했던 파일을 다운로드 해봅니다.!gsutil cp gs://다음에는 사용하는 bucket의 이름부터 다운로드하고자 하는(정확하게는 cp 복사) 파일에 대한 절대경로를 명시하시고, 그 다음 다운로드 받을 위치를 명시해주면 됩니다. \n\n저는 똑같은 파일을 위의 Local Upload에서 사용해서, 이름을 person-walking2.png로 하였습니다. \n  1!gsutil cp gs://colab-sample/person-walking.png ./person-walking2.png\n\n  Output:\n  123Copying gs://colab-sample/person-walking.png.../ [1 files][  2.1 KiB/  2.1 KiB]                                                Operation completed over 1 objects/2.1 KiB.\n\n다운로드가 잘 됐는지 이미지를 열어서 확인해봅니다. \n  12image = Image.open('./person-walking2.png')plt.imshow(image)\n\n\n\n\n\n\n\n\n\nDownload using Python API\n먼저 서비스 클라이언트를 만듭니다. \n  12   from googleapiclient.discovery import buildgcs_service = build('storage', 'v1')\n\n\n\n\n\n파일을 다운로드 합니다. gcs_service.objects().get_media()함수에 매개변수로, bucket 부분에 접근하고자 하는 Bucket의 이름은, object에는 해당 파일의 절대경로를 적어 주시면 됩니다. \n\n이번에는 같은 파일을 person-walking3.png로 받도록 하겠습니다. \n  12345678910111213from apiclient.http import MediaIoBaseDownloadwith open('./person-walking3.png', 'wb') as f:  request = gcs_service.objects().get_media(bucket='colab-sample',                          object='person-walking.png')  media = MediaIoBaseDownload(f, request)  done = False  while not done:    # _ is a placeholder for a progress object that we ignore.    # (Our file is small, so we skip reporting progress.)    _, done = media.next_chunk()print('Download complete')\n\n\n\n\n\n\nOutput:\n  1Download complete\n\n다운이 잘 됐는지 확인해봅니다.\n  12image = Image.open('./person-walking3.png')plt.imshow(image)\n\n\n\n\n\n\n\n\n\n\nReferences\nJaeyeon Baek님의 블로그, \n최건호님의 Google Colaboratory 사용법\nColab:로컬 파일, 드라이브, 스프레드시트, Cloud Storage\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2019-06-12T21:31:02+09:00","dateModified":"2021-01-05T01:21:34+09:00","datePublished":"2019-06-12T21:31:02+09:00","description":"\nCloud Jupyter Notebook powered by Google\nColab Introduction\n2020.01.14 - Update\n","headline":"Colab tutorial :)","image":["colabimg3.jpg","colabimg3.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/","keywords":"tutorial, useful-info, deep_learning, Colab","thumbnailUrl":"colabimg3.jpg"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg"},"articleBody":"\nCloud Jupyter Notebook powered by Google\nColab Introduction\n2020.01.14 - Update\n\n\n\n\nColab이란? 😶\nJupyter Notebook를 구글 드라이브에서 사용할 수 있는 것인데, 여태 있었던 구글 문서나 구글 스프레드시트처럼, 실시간 협업이 가능한 버전이라고 생각하면 된다고 합니다. 원래 구글 내부에서 직원들이 사용하던 것이라고 하네요! 그래서 error가 생기면 STACK OVERFLOW 버튼이 ..:+1:\n그렇기 때문에, Jupyter Notebook나 다른 IDE에서 흔히 제공하는 Variable다음 .을 찍고, Tab키를 치면 하위요소(함수 or 변수)의 일부만 쳐도 나타나게 하는 친숙한 기능들도, 조금 반응이 느리긴 하지만, 0.5초 정도 뒤에 나타납니다. :D \nGPU, TPU 사용 설정을 하시려거든, 맨처음 Notebook을 생성하실 때, 선택하실 수도 있고, 수정 -> 노트 설정을 누르시면 GPU, TPU 사용 설정을 할 수 있습니다. 😄\n\n시작하기\n구글 아이디를 가지고 계신다면, 이 링크를 클릭하시거나 간단하게 Colab이라고 검색을 하시면 쉽게 Colab을 시작하실 수 있습니다. 그러면, 아래와 같은 첫 화면을 보실 수 있습니다. \n  \n\n그럼 새 PYTHON 3 노트 버튼을 누르시고, Jupyter notebook을 사용하듯 사용하시면 됩니다. :)\n\n\nLinux 명령어 사용하기 😲\nColab에서는 느낌표로 쓴 뒤에 명령어를 치면 terminal에서 작동하는 것으로 처리해줍니다. 로컬에서 Bash창을 켜서 설치하고 다시 Jupyter로 돌아와야했던 귀찮은 과정이 매우 심플해졌습니다! 하지만,\n  1$ cat sample.txt\n\n  같은 native Linux에서나 가능한 몇몇 문법들은 작동하지 않습니다. \n\n그래서, 100% Linux native 명령어를 쓸 수 있는 것은 아니며, 어디까지나 그때 그때, 필요한 library, package 설치 편의를 위한 수준이라고 볼 수 있을 것 같습니다.\n\n리눅스 명령어에서 익숙한 분들은 당연히 경로 이동을 할때 cd를 쓸 텐데, !cd는 먹히지 않고, os를 import하신 뒤에, os.chdir()로 이동해야 합니다. \n\n빈 폴더를 하나 만들고 그 안에 짧은 txt파일을 만들어 확인해 봅시다.\nCell. 1  123456import os!mkdir testos.chdir('test')!pwd# 명령어는 못찾는다고 나오지만 생성은 합니다 :)!'Sample text!' > sample.txt\n\n  Output:\n  123/content/test   /bin/bash: Sample text!: command not found   sample.txt\n\n\n\n\n\nCell. 21234# 목록에는 파일이 확인되지만, !ls# cat은 작동하지 않습니다. !cat sample.txt\n\nOutput:\n1sample.txt\n\n\n\nColab.에서 쓸 수 있는 GPU 😉\n먼저 수정 - 노트 설정 에 들어가셔서, 하드웨어 가속기 를 None에서 GPU로 설정합니다.  \n  \n\n일단 필요한 Util을 다운을 받고,\n1234!ln -sf /opt/bin/nvidia-smi /usr/bin/nvidia-smi!pip install gputil!pip install psutil!pip install humanize\n\nImport 해줍시다. \n1234import psutilimport humanizeimport osimport GPUtil as GPU\n\n\n\n\n\nGPU는 하나만 허락해 줍니다만… 갓글님의 그 하나는 에이스입니다. (2020.01.13 update) 현재. 무려 Tesla P100-PCIE-16GB. 😭 개인 실험용으로는 충분한 것 같습니다. \n123456GPUs = GPU.getGPUs()gpu = GPUs[0]print(gpu.__dict__[\"name\"])print(\"The number of GPUs: {}\".format(len(GPUs)))print(\"GPU RAM Free: {0:.0f}MB | Used: {1:.0f}MB | Util {2:3.0f}% | Total {3:.0f}MB\".format(gpu.memoryFree, gpu.memoryUsed, gpu.memoryUtil* 100, gpu.memoryTotal))\n\n  Output:\n123Tesla P100-PCIE-16GB  The number of GPUs: 1GPU RAM Free: 16280MB | Used: 0MB | Util   0% | Total 16280MB\n\n\n\n\n\n참고사항\n안타깝지만, Colab은 Docker기반의 Container로 실행되기 때문에 한 번에 12시간까지만 사용 할 수 있습니다. 그래서, 작업 하시던 Colab을 껏다가 잠시 후 다시 시작하면 새로운 docker container를 받기 때문에 새로운 인스턴스 위에서 시작할 때마다 설치가 필요한 패키지들을 매번 다시 설치해야 합니다.\n\n그 다음 부터는 Jupyter notebook을 사용하듯 사용하면 됩니다.\n\n\nLocal file Upload! 😀\nLocal 파일을 업로드하는 것은 아래와 같이 좌측의 화살표 버튼을 눌러 탭을 여신 뒤에, 파일 탭을 누르시면 됩니다. :) \n\n\n\n\n\n그 다음 업로드 버튼을 누르시고 올리실 파일을 선택하시면 업로드가 잘 됐다는 것을 파일 목록에서 확인하실 수 있습니다. 이미지를 업로드 하시면 알림창 하나를 보실 수 있으실텐데, 로컬에서 가져온 업로드한 데이터들은 instance가 바뀌면(= 새로 시작하면) 없어진다는 말이니, 참고하세요.\n\n아래의 코드를 실행해보면, 업로드한 그림을 확인해 볼 수 있습니다. \n 12345678import ioimport matplotlib.pyplot as pltfrom PIL import Imageos.chdir('..')image = Image.open('./person-walking.png')plt.imshow(image)\n\n \n\n\n\n\n\n\n사실 이렇게 이미지를 올리면, upload 하고자 하는 데이터가 많을 수록 업로드 속도도 느릴 뿐만 아니라 브라우저를 다시 시작할 때마다, 또 업로드를 해야합니다. 잠깐 확인하는 용도로는 상관이 없겠지만요 :) \n일괄적으로 Colab을 이용하되, 같은 데이터를 매번 사용해야하는 경우에는 개인 Google Drive에 업로드 한 다음, 그 directory 안에서 작업을 하면 더 편합니다. Google Drive를 Mount 하는 방법을 알아보도록 하겠습니다. :) \n\n\n\nMount your Google Drive\nGoogle Drive를 마운트하는 것도, 이전에 비해서 더 직관적으로 편하게 되었습니다. \n\n아래와 같이, 드라이브 마운트 버튼을 눌리면 갑자기 코드가 하나 생기고, 그 셀을 실행하게되면 나오는 URL을 클릭하시고 연결하고 싶은 Google Drive를 가지고 있는 구글 아이디로 인증을 거칩니다. \n  \n\n인증을 마치면 아래와 같은 키를 하나 생성해줍니다. 그 키를 복사에서 Colab으로 돌아가,  Enter your authorization code: 부분에 입력해줍니다. \n\n\n\n\n\n\n그러면 아래와 같이 본인의 Google Drive가 Mount된 것을 확인하실 수 있습니다. \n\n\n\n\n\n\n\n\nGoogle Cloud Storage\n개인 실험은 위와 같이 로컬데이터 업로드나 구글 드라이브를 사용하겠지만, 단체의 프로젝트라고 하면, Google Storage와 같은 데이터 저장소를 공유해야합니다. 이번에는 그 방법입니다. \n\nGoogle Cloud Storage(이하 GCS)와 함께 Colaboratory를 사용하려면 Google Cloud 프로젝트를 만들거나 기존 프로젝트를 사용해야 합니다. \n\n저는 아래와 같이 colab-test이라는 이름의 프로젝트를 만들었고 프로젝트 ID는 colab-test-265006이네요. 만들기 버튼을 눌러서 프로젝트를 만들어줍니다. \n\n\n\n아래의 코드를 실행해서 인증을 통해, GCS에 접근합니다.\n12from google.colab import authauth.authenticate_user()\n\n그러면 Google Drive를 Mount할 때와 똑같은 인증 과정을 거치게 됩니다. \n\n\n\n  그 뒤로는 Command-line Utility인 gsutil 혹은 Python API 를 통해 GCS에 접근할 수 있습니다. 먼저 GCS에 파일을 업로드 하는 방법부터 알아보겠습니다. 데이터를 넣어놔야, Colab에서 접근해서 그 데이터를 사용할 수 있을테니까요.\n\n\n\n\nUpload data into the GCS Bucket\ngsutil이나 PythonAPI를 사용해서 GCS에 Bucket을 만들고 데이터를 업로드 할 수 있습니다. 하지만, 이 포스팅에서는 브라우저를 사용해서 간단하게 Bucket을 생성하고, Drag & Drop으로 데이터를 업로드 하도록 하겠습니다. \n\nCreat a bucket\n생성한 프로젝트를 선택하시고, 좌상단에 위치한 탐색 메뉴를 클릭하셔서 아래와 같이 많은 제품들 중 저장소 카테고리 아래에 있는 Storage를 선택합니다. \n\n\n\n\n\n\n그 다음은 버켓을 만들어 봅니다. 버킷 생성 , 혹은 버킷 만들기를 눌러 버킷을 생성해봅니다. \n\n\n버킷의 이름, 데이터 저장 위치, 기본 스토리지, 액세스 제어 방법을 선택하는 옵션이 나오는데 필자의 경우, 이름은 colab-sample, 데이터 저장 위치는 Multi-region유형으로 asia, 클래스는 Standard, 객체 접근 방식은 세분화된 엑세스 제어로 하였고, 고급설정은 암호화 Google 관리 키인 상태에서 나머지는 아무것도 건드리지 않았습니다. 그렇게 아래와 같이 Bucket이 생성되었습니다. \n\n\nUpload data\n그럼 데이터를 Drag & Drop이나 버튼을 눌러서 Upload 합니다. \n\n\n\n\n\n\nUpload가 잘 된 것을 확인한 후, 창을 닫아도 좋습니다.\n\n\n\n\n\n\n\nDownload using gsutil\n먼저 gcloud를 사용해서 생성한 프로젝트를 설정해줍니다. \n1!gcloud config set project colab-test-265006\n\nOutput:\n1Updated property [core/project].\n\n그 다음, 해당 버킷에 접근해서 업로드했던 파일을 다운로드 해봅니다.!gsutil cp gs://다음에는 사용하는 bucket의 이름부터 다운로드하고자 하는(정확하게는 cp 복사) 파일에 대한 절대경로를 명시하시고, 그 다음 다운로드 받을 위치를 명시해주면 됩니다. \n\n저는 똑같은 파일을 위의 Local Upload에서 사용해서, 이름을 person-walking2.png로 하였습니다. \n  1!gsutil cp gs://colab-sample/person-walking.png ./person-walking2.png\n\n  Output:\n  123Copying gs://colab-sample/person-walking.png.../ [1 files][  2.1 KiB/  2.1 KiB]                                                Operation completed over 1 objects/2.1 KiB.\n\n다운로드가 잘 됐는지 이미지를 열어서 확인해봅니다. \n  12image = Image.open('./person-walking2.png')plt.imshow(image)\n\n\n\n\n\n\n\n\n\nDownload using Python API\n먼저 서비스 클라이언트를 만듭니다. \n  12   from googleapiclient.discovery import buildgcs_service = build('storage', 'v1')\n\n\n\n\n\n파일을 다운로드 합니다. gcs_service.objects().get_media()함수에 매개변수로, bucket 부분에 접근하고자 하는 Bucket의 이름은, object에는 해당 파일의 절대경로를 적어 주시면 됩니다. \n\n이번에는 같은 파일을 person-walking3.png로 받도록 하겠습니다. \n  12345678910111213from apiclient.http import MediaIoBaseDownloadwith open('./person-walking3.png', 'wb') as f:  request = gcs_service.objects().get_media(bucket='colab-sample',                          object='person-walking.png')  media = MediaIoBaseDownload(f, request)  done = False  while not done:    # _ is a placeholder for a progress object that we ignore.    # (Our file is small, so we skip reporting progress.)    _, done = media.next_chunk()print('Download complete')\n\n\n\n\n\n\nOutput:\n  1Download complete\n\n다운이 잘 됐는지 확인해봅니다.\n  12image = Image.open('./person-walking3.png')plt.imshow(image)\n\n\n\n\n\n\n\n\n\n\nReferences\nJaeyeon Baek님의 블로그, \n최건호님의 Google Colaboratory 사용법\nColab:로컬 파일, 드라이브, 스프레드시트, Cloud Storage\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2019-06-12T21:31:02+09:00","dateModified":"2021-01-05T01:21:34+09:00","datePublished":"2019-06-12T21:31:02+09:00","description":"\nCloud Jupyter Notebook powered by Google\nColab Introduction\n2020.01.14 - Update\n","headline":"Colab tutorial :)","image":["colabimg3.jpg","colabimg3.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/","keywords":"tutorial, useful-info, deep_learning, Colab","thumbnailUrl":"colabimg3.jpg"}</script>
     <meta name="description" content="Cloud Jupyter Notebook powered by Google Colab Introduction 2020.01.14 - Update">
 <meta name="keywords" content="tutorial,useful-info,deep_learning,Colab">
 <meta property="og:type" content="blog">
@@ -52,6 +54,8 @@
         
     
     
+        <meta property="og:image" content="http://www.stand-firm-peter.me/assets/images/avatar.jpeg">
+    
     
         <meta property="og:image" content="http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/colabimg3.jpg">
         <meta class="swiftype" name="image" data-type="enum" content="http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/colabimg3.jpg">
@@ -65,6 +69,15 @@
     <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
     <!--STYLES END-->
     
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'UA-124184693-1');
+    </script>
+
 
     
 
@@ -79,6 +92,10 @@
 
 
     
+        
+            
+        
+    
 
 <header id="header" data-behavior="4">
     <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
@@ -92,6 +109,8 @@
             <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
         
         
+            <img class="header-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+        
         </a>
     
 </header>
@@ -99,8 +118,23 @@
             <!-- Define author's picture -->
 
 
+
+        
+    
+
 <nav id="sidebar" data-behavior="4">
     <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a href="/#about" aria-label="Read more about the author">
+                    <img class="sidebar-profile-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
+                </a>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
+                
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                
+            </div>
         
         
             <ul class="sidebar-buttons">
@@ -131,22 +165,6 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
-                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Archives</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
-                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Search</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
                         <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
                         <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">About</span>
@@ -159,7 +177,7 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <a class="sidebar-button-link " href="https://github.com/petercha90" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
                         <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">GitHub</span>
                     </a>
@@ -167,61 +185,9 @@
             
                 <li class="sidebar-button">
                     
-                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
-                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Stack Overflow</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
-                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Twitter</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
-                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Facebook</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
-                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Google +</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/in/peter-cha-022927134/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
                         <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
                         <span class="sidebar-button-desc">LinkedIn</span>
-                    </a>
-            </li>
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
-                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">Mail</span>
-                    </a>
-            </li>
-            
-        </ul>
-        
-            <ul class="sidebar-buttons">
-            
-                <li class="sidebar-button">
-                    
-                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
-                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
-                        <span class="sidebar-button-desc">RSS</span>
                     </a>
             </li>
             
@@ -756,11 +722,17 @@
         
 
 
+    
+        
+    
+
 <div id="about">
     <div id="about-card">
         <div id="about-btn-close">
             <i class="fa fa-times"></i>
         </div>
+        
+            <img id="about-card-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
         
             <h4 id="about-card-name">Peter Cha</h4>
         
@@ -775,6 +747,12 @@
 
             </div>
         
+        
+            <div id="about-card-location">
+                <i class="fa fa-map-marker-alt"></i>
+                <br>
+                Cheonan / Korea
+            </div>
         
     </div>
 </div>
