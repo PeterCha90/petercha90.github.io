@@ -1,186 +1,253 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head><meta name="generator" content="Hexo 3.9.0">
-    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5d32dc3eba941200129ff9a8&product=sop" async="async"></script>
-    <meta charset="utf-8">
-<title>Keras tutorial (1) - Stand firm Peter</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-<link rel="canonical" href="http://www.stand-firm-peter.me/2019/06/12/keras_101/">
-
-
-<meta property="og:image" content="/gallery/keras1.jpg">
-
-
-
-<!-- <meta property="og:title" content=Keras tutorial (1) - Stand firm Peter> -->
-<meta property="og:description" content="Peter's playground.">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({
-    google_ad_client: "ca-pub-4926107872672843",
-    enable_page_level_ads: true
-  });
-</script>
-
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "ca-pub-4926107872672843",
-          enable_page_level_ads: true
-     });
-</script>
-
-
-<link rel="alternative" href="/rss.xml" title="Keras tutorial (1)" type="application/atom+xml">
-
-
-
-<link rel="icon" href="/images/favicon.ico">
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
-
-
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Stand firm Peter">
+    <title>Keras tutorial (1) - Stand firm Peter</title>
+    <meta name="author" content="Peter Cha">
+    
+        <meta name="keywords" content="AI,Machine Learning,">
     
     
     
-    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+        
+            <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+        
     
-
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\nA Keras Usage with fashion MNIST\nKeras example using Colab\n\n\n\n\n\n\n\n\n\n\n\nPytorch와 Tensorflow의 Wrapper인 Tensorpack만 써봤던 저는, 올해 처음으로 Keras를 사용해보게 되었습니다. \n\n블록과 함께 하는 파이썬 딥러닝 케라스 라는 책으로 공부하면서 그 간결함에 놀랐고, 대충대충 이해하고 넘어갔던 개념들이 좋은 예시로 설명되어 있어, 그 내용들을 정리해보고자 포스팅을 하게 되었습니다. \n\n이번 포스팅은 책의 Part 1, 케라스 시작하기와 Part 2. 딥러닝 개념잡기에 나오는 Keras 예제들을 Fashion MNIST 데이터로 재구성해 본 것입니다. 😬 \n\n책 내용 이외에 추가된 부분은, Colab의 Notebook으로 이번 포스팅이 구성이 되었다는 것이고, 여기에서 Colab Notebook으도 동일한 내용 확인하실 수 있습니다.\n\n또, matplotlib의 plot 대신에, Tensorboardcolab을 사용하여서 plot 시각화를 하도록 방식을 바꿔보았습니다. \n\n흔쾌히 블로그 포스팅을 허락해주신 저자 김태영님께 다시 한 번 감사를 표합니다. ☺\n\n\n\n\n\n\nImport packages\n자, 시작해볼까요! 😎1234567891011121314import osimport kerasimport tensorflow as tfimport keras.utils as utils import matplotlib.pyplot  as pltfrom tqdm import tqdm_notebookfrom keras.datasets import fashion_mnistfrom keras.layers import Dense, Activationfrom keras.models import Sequential, load_model# remove error message from tensorflowtf.logging.set_verbosity(tf.logging.ERROR)%matplotlib inline\n\n\n\n\n\nOutput:\n1Using TensorFlow backend.\n\nkeras.utils:\n\n자주 사용되는 유용한 기능들 모음. 대표적으로 One-hot encoding을 해주는 to_categorical(), l1-l2 normalize를 가능하게 해주는 normalize() 등이 있다. \n\n\nkeras.datasets:\n\nMNIST,  Fashion MNIST, CIFAR10, CIFAR100, IMDB Movie reviews 긍정-부정 판별셋,   Reuters 뉴스토픽 분류셋, Boston 부동산가격 dataset을 불러올 수 있다.  \n\n\nkeras.layers:\n\nDense부터 CNN, Pooling, Padding, RNN 등등.. 익숙한 딥러닝 layer들의 집합소.\n\n\nkeras.models:\n\nkeras 모델을 만드는 방법은 크게, Sequential과 Model - functional API를 사용하는 방법 2가지로 나뉜다. Pytorch랑 비슷하다. \nSequential은 사용할 모델의 부품을 다 설정한 뒤 Input을 넣으면 한번에 레이어와 레이어 사이 설정을 세팅한 output에 맞게 맞춰주고, functional API인 Model을 사용하면 한땀한땀(?) 그 흐름을 구체적으로 설정할 수 있는 자유도를 가진다. \n본 포스팅에서는 Sequential을 사용할 것이니, Model을 사용하는 예시는 여기에서 확인.\n\n\n\n\n\nLoading Data\nFashion MNIST \n1(x_train, y_train),  (x_test, y_test) = fashion_mnist.load_data()\n\nOutput:\n12345678Downloading data from http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-labels-idx1-ubyte.gz32768/29515 [=================================] - 0s 9us/stepDownloading data from http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/train-images-idx3-ubyte.gz26427392/26421880 [==============================] - 5s 0us/stepDownloading data from http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-labels-idx1-ubyte.gz8192/5148 [===============================================] - 0s 0us/stepDownloading data from http://fashion-mnist.s3-website.eu-central-1.amazonaws.com/t10k-images-idx3-ubyte.gz4423680/4422102 [==============================] - 2s 1us/step\n\n\n\n\n\nPeeking the data\n10개의 Fashion MNIST 데이터들을 시각화! 😏123456789101112class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',               \t'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']plt.figure(figsize=(8, 4))for i in range(10):    plt.subplot(2, 5, i+1)    plt.xticks([])    plt.yticks([])    plt.imshow(x_train[i], cmap=plt.cm.binary)    plt.xlabel(class_names[y_train[i]])    plt.grid(False)plt.show()\n\n\n\n\n\n\n\nPreprocessing\n50000 for Training, 10000 for Validation, 10000 for Test\n123456789x_val = x_train[50000:]y_val = y_train[50000:]x_train = x_train[:50000]y_train = y_train[:50000]# preprocessing x_train = x_train.reshape(50000, 784).astype('float32') / 255.0x_val = x_val.reshape(10000, 784).astype('float32') / 255.0x_test = x_test.reshape(10000, 784).astype('float32') / 255.0\n\n\n\n\n\nLabel one-hot encoding (utils.to_categorical):keras.utils.to_categorical API\n1234# label one-hot encoding.y_train = utils.to_categorical(y_train)y_val = utils.to_categorical(y_val)y_test = utils.to_categorical(y_test)\n\n\n\n\n\nCallbacks\nTensorboard 띄우기\n\nEarly Stopping / 5번을 기다려도 성능이 나아지지 않을 경우 학습 중단\n\nModel Checkpoint  / val_loss가 가장 낮을 때만 저장\n  123456789101112131415161718from tensorboardcolab import *from keras.callbacks import EarlyStopping, ModelCheckpoint# 3. Tensorboard 세팅tbc=TensorBoardColab()# 4. Early Stopping  early_stopping = EarlyStopping(patience=5) # 5. Model Checkpointpath = './model/'if not os.path.exists(path):    os.mkdir(path)    model_path = path + '{epoch:02d}-{val_loss:.4f}.h5'checkpoint = ModelCheckpoint(filepath = model_path,                                monitor = 'val_loss',                               verbose = 0,                               save_best_only = True)\n\n\n\n\n\nOutput:123Wait for 8 seconds...TensorBoard link:https://57207182.ngrok.io\n\n\n\n\n\n\nCreate a model / Train / Test\nSequential() - 모델 생성\n\nadd() - 모델 블럭끼우기\n\ncompile() - 모델 학습에 쓸 도구 세팅하기\n\nfit() - 학습시키기\n\nevaluate() - 평가하기 \n  123456789101112131415161718192021222324252627282930313233343536373839# GPU 사용# with tf.device('/device:GPU:0'):# 1. 모델 구성model = Sequential()model.add(Dense(units=64, input_dim=28*28, activation='relu'))model.add(Dense(units=10, activation='softmax'))# 2. 모델 학습과정 설정하기 model.compile(loss='categorical_crossentropy',               optimizer='sgd',               metrics=['accuracy'])# 3. 모델 학습시키기for epoch in tqdm_notebook(range(50)):    hist = model.fit(x_train, y_train, epochs=1, batch_size=32,                      verbose=0, validation_data=(x_test, y_test),                     callbacks=[TensorBoardColabCallback(tbc),                                 early_stopping, checkpoint])    # tensorboard lines    tbc.save_value(\"fasion mnist\", \"train_acc\", epoch, hist.history['acc'][0])    tbc.save_value(\"fasion mnist\", \"val_acc\", epoch, hist.history['val_acc'][0])    tbc.save_value(\"fasion mnist\", \"train_loss\", epoch, hist.history['loss'][0])    tbc.save_value(\"fasion mnist\", \"val_loss\", epoch, hist.history['val_loss'][0])    tbc.flush_line(\"train_acc\")    tbc.flush_line(\"val_acc\")    tbc.flush_line(\"train_loss\")    tbc.flush_line(\"val_loss\")    if (epoch+1)%10 == 0:        print('-----'*5)        print(\"Epoch: {} | Loss: {:0.3f} | Acc: {:0.3f}\".format(              epoch+1, hist.history['loss'][0], hist.history['acc'][0]))loss_and_metrics = model.evaluate(x_test, y_test, batch_size=32)tbc.close()print('-----'*10)print('\\nLoss and metrics: ' + str(loss_and_metrics))\n\n\n\n\n\nOutput:12345678910111213141516HBox(children=(IntProgress(value=0, max=50), HTML(value='')))-------------------------Epoch: 10 | Loss: 0.393 | Acc: 0.864-------------------------Epoch: 20 | Loss: 0.342 | Acc: 0.879-------------------------Epoch: 30 | Loss: 0.312 | Acc: 0.890-------------------------Epoch: 40 | Loss: 0.288 | Acc: 0.898-------------------------Epoch: 50 | Loss: 0.270 | Acc: 0.90510000/10000 [==============================] - 1s 60us/step--------------------------------------------------Loss and metrics: [0.3537946595430374, 0.8761]\n\n\n\n\n\nTensorboard Plot:\n  \n\n\n\n\n\nModel Structure Visualization\nModel 구조 시각화하기: model.summary() & SVG() 😃\n  12345from IPython.display import SVGfrom keras.utils.vis_utils import model_to_dotprint(model.summary())SVG(model_to_dot(model, show_shapes=True).create(prog='dot', format='svg'))\n\nOutput:\n123456789101112_________________________________________________________________Layer (type)                 Output Shape              Param #   =================================================================dense_1 (Dense)              (None, 64)                50240     _________________________________________________________________dense_2 (Dense)              (None, 10)                650       =================================================================Total params: 50,890Trainable params: 50,890Non-trainable params: 0_________________________________________________________________None\n\n\n\n\n\n\n\n\nSave & Load Model\nModel 저장 & 불러오기\n  12 model.save('fashion_mnist_model.h5')model = load_model('fashion_mnist_model.h5')\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2019-06-12T23:03:01+09:00","dateModified":"2019-08-25T17:05:55+09:00","datePublished":"2019-06-12T23:03:01+09:00","description":"\nA Keras Usage with fashion MNIST\nKeras example using Colab","headline":"Keras tutorial (1)","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2019/06/12/keras_101/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2019/06/12/keras_101/","keywords":"ml, tutorial, deep_learning, keras"}</script>
+    <meta name="description" content="A Keras Usage with fashion MNIST Keras example using Colab">
+<meta name="keywords" content="ml,tutorial,deep_learning,keras">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Keras tutorial (1)">
+<meta property="og:url" content="http://www.stand-firm-peter.me/2019/06/12/keras_101/index.html">
+<meta property="og:site_name" content="Stand firm Peter">
+<meta property="og:description" content="A Keras Usage with fashion MNIST Keras example using Colab">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/keras4.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/keras2.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/keras5.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/keras3.png">
+<meta property="og:updated_time" content="2019-08-25T08:05:55.906Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Keras tutorial (1)">
+<meta name="twitter:description" content="A Keras Usage with fashion MNIST Keras example using Colab">
+<meta name="twitter:image" content="http://www.stand-firm-peter.me/gallery/keras4.png">
     
     
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
-    
-
-    
-    
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
-
-
+        
     
     
     
     
-
-<link rel="stylesheet" href="/css/back-to-top.css">
-
-
     
-    
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-124184693-1');
-</script>
-
-
-    
-    
-    
-    
-<link rel="stylesheet" href="/css/progressbar.css">
-<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
-
-    
-    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
+    <!--STYLES END-->
     
 
     
-    
-    
 
-
-<link rel="stylesheet" href="/css/style.css">
+    
+        
+    
 </head>
-<body class="is-2-column">
-    <nav class="navbar navbar-main">
-    <div class="container">
-        <div class="navbar-brand is-flex-center">
-            <a class="navbar-item navbar-logo" href="/">
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/" aria-label>
+            Stand firm Peter
+        </a>
+    </div>
+    
+        
+            <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
             
-                <img src="/images/dog.jpg" alt="Keras tutorial (1)" height="28">
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/" rel="noopener" title="Home">
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
             
-            </a>
-        </div>
-        <div class="navbar-menu">
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" rel="noopener" title="Categories">
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
             
-            <div class="navbar-start">
-                
-                <a class="navbar-item" href="/">Home</a>
-                
-                <a class="navbar-item" href="/archives">Archives</a>
-                
-                <a class="navbar-item" href="/categories">Categories</a>
-                
-                <a class="navbar-item" href="/tags">Tags</a>
-                
-            </div>
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" rel="noopener" title="Tags">
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
             
-            <div class="navbar-end">
-                
-                
-                
-                <a class="navbar-item search" title="Search" href="javascript:;">
-                    <i class="fas fa-search"></i>
-                </a>
-                
-            </div>
-        </div>
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google +</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
     </div>
 </nav>
-    
-    <section class="section">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-8-tablet is-8-desktop is-8-widescreen has-order-2 column-main"><div class="card">
-    
-    <div class="card-image">
-        <span class="image is-7by1">
-            <img class="thumbnail" src="/gallery/keras1.jpg" alt="Keras tutorial (1)">
-        </span>
-    </div>
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2019-06-12T14:03:01.000Z">2019-06-12</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    9 minutes read (About 1379 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+
             
-                Keras tutorial (1)
-            
+            <div id="main" data-behavior="4" class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Keras tutorial (1)
         </h1>
-        <div class="content">
+    
+    
+        <div class="post-meta">
+    <time datetime="2019-06-12T23:03:01+09:00">
+	
+		    Jun 12, 2019
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Machine-Learning/">Machine Learning</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
             <ul>
 <li>A Keras Usage with fashion MNIST</li>
 <li>Keras example using Colab<a id="more"></a>
@@ -213,14 +280,14 @@
 <hr>
 
 <h2 id="Import-packages"><a href="#Import-packages" class="headerlink" title="Import packages"></a>Import packages</h2><ul>
-<li>자, 시작해볼까요! <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">import</span> os</span><br><span class="line"><span class="hljs-keyword">import</span> keras</span><br><span class="line"><span class="hljs-keyword">import</span> tensorflow <span class="hljs-keyword">as</span> tf</span><br><span class="line"><span class="hljs-keyword">import</span> keras.utils <span class="hljs-keyword">as</span> utils </span><br><span class="line"><span class="hljs-keyword">import</span> matplotlib.pyplot  <span class="hljs-keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="hljs-keyword">from</span> tqdm <span class="hljs-keyword">import</span> tqdm_notebook</span><br><span class="line"><span class="hljs-keyword">from</span> keras.datasets <span class="hljs-keyword">import</span> fashion_mnist</span><br><span class="line"><span class="hljs-keyword">from</span> keras.layers <span class="hljs-keyword">import</span> Dense, Activation</span><br><span class="line"><span class="hljs-keyword">from</span> keras.models <span class="hljs-keyword">import</span> Sequential, load_model</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># remove error message from tensorflow</span></span><br><span class="line">tf.logging.set_verbosity(tf.logging.ERROR)</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></tbody></table></figure>
+<li>자, 시작해볼까요! <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">import</span> os</span><br><span class="line"><span class="keyword">import</span> keras</span><br><span class="line"><span class="keyword">import</span> tensorflow <span class="keyword">as</span> tf</span><br><span class="line"><span class="keyword">import</span> keras.utils <span class="keyword">as</span> utils </span><br><span class="line"><span class="keyword">import</span> matplotlib.pyplot  <span class="keyword">as</span> plt</span><br><span class="line"></span><br><span class="line"><span class="keyword">from</span> tqdm <span class="keyword">import</span> tqdm_notebook</span><br><span class="line"><span class="keyword">from</span> keras.datasets <span class="keyword">import</span> fashion_mnist</span><br><span class="line"><span class="keyword">from</span> keras.layers <span class="keyword">import</span> Dense, Activation</span><br><span class="line"><span class="keyword">from</span> keras.models <span class="keyword">import</span> Sequential, load_model</span><br><span class="line"></span><br><span class="line"><span class="comment"># remove error message from tensorflow</span></span><br><span class="line">tf.logging.set_verbosity(tf.logging.ERROR)</span><br><span class="line">%matplotlib inline</span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
 </ul>
 <ul>
 <li><p><strong>Output:</strong></p>
-<figure class="highlight shell hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Using TensorFlow backend.</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Using TensorFlow backend.</span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><strong>keras.utils</strong>:</p>
 <ul>
@@ -249,17 +316,17 @@
 
 <h2 id="Loading-Data"><a href="#Loading-Data" class="headerlink" title="Loading Data"></a>Loading Data</h2><ul>
 <li><p>Fashion MNIST </p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(x_train, y_train),  (x_test, y_test) = fashion_mnist.load_data()</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">(x_train, y_train),  (x_test, y_test) = fashion_mnist.load_data()</span><br></pre></td></tr></tbody></table></figure>
 
 <p><strong>Output:</strong></p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Downloading data <span class="hljs-keyword">from</span> http://fashion-mnist.s3-website.eu-central<span class="hljs-number">-1.</span>amazonaws.com/train-labels-idx1-ubyte.gz</span><br><span class="line"><span class="hljs-number">32768</span>/<span class="hljs-number">29515</span> [=================================] - <span class="hljs-number">0</span>s <span class="hljs-number">9</span>us/step</span><br><span class="line">Downloading data <span class="hljs-keyword">from</span> http://fashion-mnist.s3-website.eu-central<span class="hljs-number">-1.</span>amazonaws.com/train-images-idx3-ubyte.gz</span><br><span class="line"><span class="hljs-number">26427392</span>/<span class="hljs-number">26421880</span> [==============================] - <span class="hljs-number">5</span>s <span class="hljs-number">0</span>us/step</span><br><span class="line">Downloading data <span class="hljs-keyword">from</span> http://fashion-mnist.s3-website.eu-central<span class="hljs-number">-1.</span>amazonaws.com/t10k-labels-idx1-ubyte.gz</span><br><span class="line"><span class="hljs-number">8192</span>/<span class="hljs-number">5148</span> [===============================================] - <span class="hljs-number">0</span>s <span class="hljs-number">0</span>us/step</span><br><span class="line">Downloading data <span class="hljs-keyword">from</span> http://fashion-mnist.s3-website.eu-central<span class="hljs-number">-1.</span>amazonaws.com/t10k-images-idx3-ubyte.gz</span><br><span class="line"><span class="hljs-number">4423680</span>/<span class="hljs-number">4422102</span> [==============================] - <span class="hljs-number">2</span>s <span class="hljs-number">1</span>us/step</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Downloading data <span class="keyword">from</span> http://fashion-mnist.s3-website.eu-central<span class="number">-1.</span>amazonaws.com/train-labels-idx1-ubyte.gz</span><br><span class="line"><span class="number">32768</span>/<span class="number">29515</span> [=================================] - <span class="number">0</span>s <span class="number">9</span>us/step</span><br><span class="line">Downloading data <span class="keyword">from</span> http://fashion-mnist.s3-website.eu-central<span class="number">-1.</span>amazonaws.com/train-images-idx3-ubyte.gz</span><br><span class="line"><span class="number">26427392</span>/<span class="number">26421880</span> [==============================] - <span class="number">5</span>s <span class="number">0</span>us/step</span><br><span class="line">Downloading data <span class="keyword">from</span> http://fashion-mnist.s3-website.eu-central<span class="number">-1.</span>amazonaws.com/t10k-labels-idx1-ubyte.gz</span><br><span class="line"><span class="number">8192</span>/<span class="number">5148</span> [===============================================] - <span class="number">0</span>s <span class="number">0</span>us/step</span><br><span class="line">Downloading data <span class="keyword">from</span> http://fashion-mnist.s3-website.eu-central<span class="number">-1.</span>amazonaws.com/t10k-images-idx3-ubyte.gz</span><br><span class="line"><span class="number">4423680</span>/<span class="number">4422102</span> [==============================] - <span class="number">2</span>s <span class="number">1</span>us/step</span><br></pre></td></tr></tbody></table></figure>
 
 </li>
 </ul>
 <br>
 
 <h2 id="Peeking-the-data"><a href="#Peeking-the-data" class="headerlink" title="Peeking the data"></a>Peeking the data</h2><ul>
-<li>10개의 Fashion MNIST 데이터들을 시각화! <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8">😏</span><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class_names = [<span class="hljs-string">'T-shirt/top'</span>, <span class="hljs-string">'Trouser'</span>, <span class="hljs-string">'Pullover'</span>, <span class="hljs-string">'Dress'</span>, <span class="hljs-string">'Coat'</span>,</span><br><span class="line">               	<span class="hljs-string">'Sandal'</span>, <span class="hljs-string">'Shirt'</span>, <span class="hljs-string">'Sneaker'</span>, <span class="hljs-string">'Bag'</span>, <span class="hljs-string">'Ankle boot'</span>]</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="hljs-number">8</span>, <span class="hljs-number">4</span>))</span><br><span class="line"><span class="hljs-keyword">for</span> i <span class="hljs-keyword">in</span> range(<span class="hljs-number">10</span>):</span><br><span class="line">    plt.subplot(<span class="hljs-number">2</span>, <span class="hljs-number">5</span>, i+<span class="hljs-number">1</span>)</span><br><span class="line">    plt.xticks([])</span><br><span class="line">    plt.yticks([])</span><br><span class="line">    plt.imshow(x_train[i], cmap=plt.cm.binary)</span><br><span class="line">    plt.xlabel(class_names[y_train[i]])</span><br><span class="line">    plt.grid(<span class="hljs-literal">False</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
+<li>10개의 Fashion MNIST 데이터들을 시각화! <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8">😏</span><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">class_names = [<span class="string">'T-shirt/top'</span>, <span class="string">'Trouser'</span>, <span class="string">'Pullover'</span>, <span class="string">'Dress'</span>, <span class="string">'Coat'</span>,</span><br><span class="line">               	<span class="string">'Sandal'</span>, <span class="string">'Shirt'</span>, <span class="string">'Sneaker'</span>, <span class="string">'Bag'</span>, <span class="string">'Ankle boot'</span>]</span><br><span class="line"></span><br><span class="line">plt.figure(figsize=(<span class="number">8</span>, <span class="number">4</span>))</span><br><span class="line"><span class="keyword">for</span> i <span class="keyword">in</span> range(<span class="number">10</span>):</span><br><span class="line">    plt.subplot(<span class="number">2</span>, <span class="number">5</span>, i+<span class="number">1</span>)</span><br><span class="line">    plt.xticks([])</span><br><span class="line">    plt.yticks([])</span><br><span class="line">    plt.imshow(x_train[i], cmap=plt.cm.binary)</span><br><span class="line">    plt.xlabel(class_names[y_train[i]])</span><br><span class="line">    plt.grid(<span class="literal">False</span>)</span><br><span class="line">plt.show()</span><br></pre></td></tr></tbody></table></figure>
 
 </li>
 </ul>
@@ -269,14 +336,14 @@
 
 <h2 id="Preprocessing"><a href="#Preprocessing" class="headerlink" title="Preprocessing"></a>Preprocessing</h2><ul>
 <li><p>50000 for Training, 10000 for Validation, 10000 for Test</p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">x_val = x_train[<span class="hljs-number">50000</span>:]</span><br><span class="line">y_val = y_train[<span class="hljs-number">50000</span>:]</span><br><span class="line">x_train = x_train[:<span class="hljs-number">50000</span>]</span><br><span class="line">y_train = y_train[:<span class="hljs-number">50000</span>]</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># preprocessing </span></span><br><span class="line">x_train = x_train.reshape(<span class="hljs-number">50000</span>, <span class="hljs-number">784</span>).astype(<span class="hljs-string">'float32'</span>) / <span class="hljs-number">255.0</span></span><br><span class="line">x_val = x_val.reshape(<span class="hljs-number">10000</span>, <span class="hljs-number">784</span>).astype(<span class="hljs-string">'float32'</span>) / <span class="hljs-number">255.0</span></span><br><span class="line">x_test = x_test.reshape(<span class="hljs-number">10000</span>, <span class="hljs-number">784</span>).astype(<span class="hljs-string">'float32'</span>) / <span class="hljs-number">255.0</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">x_val = x_train[<span class="number">50000</span>:]</span><br><span class="line">y_val = y_train[<span class="number">50000</span>:]</span><br><span class="line">x_train = x_train[:<span class="number">50000</span>]</span><br><span class="line">y_train = y_train[:<span class="number">50000</span>]</span><br><span class="line"></span><br><span class="line"><span class="comment"># preprocessing </span></span><br><span class="line">x_train = x_train.reshape(<span class="number">50000</span>, <span class="number">784</span>).astype(<span class="string">'float32'</span>) / <span class="number">255.0</span></span><br><span class="line">x_val = x_val.reshape(<span class="number">10000</span>, <span class="number">784</span>).astype(<span class="string">'float32'</span>) / <span class="number">255.0</span></span><br><span class="line">x_test = x_test.reshape(<span class="number">10000</span>, <span class="number">784</span>).astype(<span class="string">'float32'</span>) / <span class="number">255.0</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
 </ul>
 <ul>
 <li><p>Label one-hot encoding (<strong>utils.to_categorical</strong>):<br>keras.utils.to_categorical <a href="https://keras.io/utils/#to_categorical" rel="external nofollow noopener noreferrer" target="_blank">API</a></p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># label one-hot encoding.</span></span><br><span class="line">y_train = utils.to_categorical(y_train)</span><br><span class="line">y_val = utils.to_categorical(y_val)</span><br><span class="line">y_test = utils.to_categorical(y_test)</span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># label one-hot encoding.</span></span><br><span class="line">y_train = utils.to_categorical(y_train)</span><br><span class="line">y_val = utils.to_categorical(y_val)</span><br><span class="line">y_test = utils.to_categorical(y_test)</span><br></pre></td></tr></tbody></table></figure>
 
 </li>
 </ul>
@@ -288,13 +355,13 @@
 <li><p>Early Stopping / 5번을 기다려도 성능이 나아지지 않을 경우 학습 중단</p>
 </li>
 <li><p>Model Checkpoint  / val_loss가 가장 낮을 때만 저장</p>
-  <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> tensorboardcolab <span class="hljs-keyword">import</span> *</span><br><span class="line"><span class="hljs-keyword">from</span> keras.callbacks <span class="hljs-keyword">import</span> EarlyStopping, ModelCheckpoint</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 3. Tensorboard 세팅</span></span><br><span class="line">tbc=TensorBoardColab()</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 4. Early Stopping  </span></span><br><span class="line">early_stopping = EarlyStopping(patience=<span class="hljs-number">5</span>) </span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 5. Model Checkpoint</span></span><br><span class="line">path = <span class="hljs-string">'./model/'</span></span><br><span class="line"><span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(path):</span><br><span class="line">    os.mkdir(path)    </span><br><span class="line">model_path = path + <span class="hljs-string">'{epoch:02d}-{val_loss:.4f}.h5'</span></span><br><span class="line">checkpoint = ModelCheckpoint(filepath = model_path, </span><br><span class="line">                               monitor = <span class="hljs-string">'val_loss'</span>,</span><br><span class="line">                               verbose = <span class="hljs-number">0</span>,</span><br><span class="line">                               save_best_only = <span class="hljs-literal">True</span>)</span><br></pre></td></tr></tbody></table></figure>
+  <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> tensorboardcolab <span class="keyword">import</span> *</span><br><span class="line"><span class="keyword">from</span> keras.callbacks <span class="keyword">import</span> EarlyStopping, ModelCheckpoint</span><br><span class="line"></span><br><span class="line"><span class="comment"># 3. Tensorboard 세팅</span></span><br><span class="line">tbc=TensorBoardColab()</span><br><span class="line"></span><br><span class="line"><span class="comment"># 4. Early Stopping  </span></span><br><span class="line">early_stopping = EarlyStopping(patience=<span class="number">5</span>) </span><br><span class="line"></span><br><span class="line"><span class="comment"># 5. Model Checkpoint</span></span><br><span class="line">path = <span class="string">'./model/'</span></span><br><span class="line"><span class="keyword">if</span> <span class="keyword">not</span> os.path.exists(path):</span><br><span class="line">    os.mkdir(path)    </span><br><span class="line">model_path = path + <span class="string">'{epoch:02d}-{val_loss:.4f}.h5'</span></span><br><span class="line">checkpoint = ModelCheckpoint(filepath = model_path, </span><br><span class="line">                               monitor = <span class="string">'val_loss'</span>,</span><br><span class="line">                               verbose = <span class="number">0</span>,</span><br><span class="line">                               save_best_only = <span class="literal">True</span>)</span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
 </ul>
 <ul>
-<li><strong>Output:</strong><figure class="highlight shell hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Wait for 8 seconds...</span><br><span class="line">TensorBoard link:</span><br><span class="line">https://57207182.ngrok.io</span><br></pre></td></tr></tbody></table></figure>
+<li><strong>Output:</strong><figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Wait for 8 seconds...</span><br><span class="line">TensorBoard link:</span><br><span class="line">https://57207182.ngrok.io</span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
@@ -311,13 +378,13 @@
 <li><p><strong>fit()</strong> - 학습시키기</p>
 </li>
 <li><p><strong>evaluate()</strong> - 평가하기 </p>
-  <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-comment"># GPU 사용</span></span><br><span class="line"><span class="hljs-comment"># with tf.device('/device:GPU:0'):</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 1. 모델 구성</span></span><br><span class="line">model = Sequential()</span><br><span class="line">model.add(Dense(units=<span class="hljs-number">64</span>, input_dim=<span class="hljs-number">28</span>*<span class="hljs-number">28</span>, activation=<span class="hljs-string">'relu'</span>))</span><br><span class="line">model.add(Dense(units=<span class="hljs-number">10</span>, activation=<span class="hljs-string">'softmax'</span>))</span><br><span class="line"></span><br><span class="line"><span class="hljs-comment"># 2. 모델 학습과정 설정하기 </span></span><br><span class="line">model.compile(loss=<span class="hljs-string">'categorical_crossentropy'</span>, </span><br><span class="line">              optimizer=<span class="hljs-string">'sgd'</span>, </span><br><span class="line">              metrics=[<span class="hljs-string">'accuracy'</span>])</span><br><span class="line"><span class="hljs-comment"># 3. 모델 학습시키기</span></span><br><span class="line"><span class="hljs-keyword">for</span> epoch <span class="hljs-keyword">in</span> tqdm_notebook(range(<span class="hljs-number">50</span>)):</span><br><span class="line">    hist = model.fit(x_train, y_train, epochs=<span class="hljs-number">1</span>, batch_size=<span class="hljs-number">32</span>, </span><br><span class="line">                     verbose=<span class="hljs-number">0</span>, validation_data=(x_test, y_test),</span><br><span class="line">                     callbacks=[TensorBoardColabCallback(tbc), </span><br><span class="line">                                early_stopping, checkpoint])</span><br><span class="line">    <span class="hljs-comment"># tensorboard lines</span></span><br><span class="line">    tbc.save_value(<span class="hljs-string">"fasion mnist"</span>, <span class="hljs-string">"train_acc"</span>, epoch, hist.history[<span class="hljs-string">'acc'</span>][<span class="hljs-number">0</span>])</span><br><span class="line">    tbc.save_value(<span class="hljs-string">"fasion mnist"</span>, <span class="hljs-string">"val_acc"</span>, epoch, hist.history[<span class="hljs-string">'val_acc'</span>][<span class="hljs-number">0</span>])</span><br><span class="line">    tbc.save_value(<span class="hljs-string">"fasion mnist"</span>, <span class="hljs-string">"train_loss"</span>, epoch, hist.history[<span class="hljs-string">'loss'</span>][<span class="hljs-number">0</span>])</span><br><span class="line">    tbc.save_value(<span class="hljs-string">"fasion mnist"</span>, <span class="hljs-string">"val_loss"</span>, epoch, hist.history[<span class="hljs-string">'val_loss'</span>][<span class="hljs-number">0</span>])</span><br><span class="line"></span><br><span class="line">    tbc.flush_line(<span class="hljs-string">"train_acc"</span>)</span><br><span class="line">    tbc.flush_line(<span class="hljs-string">"val_acc"</span>)</span><br><span class="line">    tbc.flush_line(<span class="hljs-string">"train_loss"</span>)</span><br><span class="line">    tbc.flush_line(<span class="hljs-string">"val_loss"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="hljs-keyword">if</span> (epoch+<span class="hljs-number">1</span>)%<span class="hljs-number">10</span> == <span class="hljs-number">0</span>:</span><br><span class="line">        print(<span class="hljs-string">'-----'</span>*<span class="hljs-number">5</span>)</span><br><span class="line">        print(<span class="hljs-string">"Epoch: {} | Loss: {:0.3f} | Acc: {:0.3f}"</span>.format(</span><br><span class="line">              epoch+<span class="hljs-number">1</span>, hist.history[<span class="hljs-string">'loss'</span>][<span class="hljs-number">0</span>], hist.history[<span class="hljs-string">'acc'</span>][<span class="hljs-number">0</span>]))</span><br><span class="line"></span><br><span class="line">loss_and_metrics = model.evaluate(x_test, y_test, batch_size=<span class="hljs-number">32</span>)</span><br><span class="line">tbc.close()</span><br><span class="line"></span><br><span class="line">print(<span class="hljs-string">'-----'</span>*<span class="hljs-number">10</span>)</span><br><span class="line">print(<span class="hljs-string">'\nLoss and metrics: '</span> + str(loss_and_metrics))</span><br></pre></td></tr></tbody></table></figure>
+  <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># GPU 사용</span></span><br><span class="line"><span class="comment"># with tf.device('/device:GPU:0'):</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 1. 모델 구성</span></span><br><span class="line">model = Sequential()</span><br><span class="line">model.add(Dense(units=<span class="number">64</span>, input_dim=<span class="number">28</span>*<span class="number">28</span>, activation=<span class="string">'relu'</span>))</span><br><span class="line">model.add(Dense(units=<span class="number">10</span>, activation=<span class="string">'softmax'</span>))</span><br><span class="line"></span><br><span class="line"><span class="comment"># 2. 모델 학습과정 설정하기 </span></span><br><span class="line">model.compile(loss=<span class="string">'categorical_crossentropy'</span>, </span><br><span class="line">              optimizer=<span class="string">'sgd'</span>, </span><br><span class="line">              metrics=[<span class="string">'accuracy'</span>])</span><br><span class="line"><span class="comment"># 3. 모델 학습시키기</span></span><br><span class="line"><span class="keyword">for</span> epoch <span class="keyword">in</span> tqdm_notebook(range(<span class="number">50</span>)):</span><br><span class="line">    hist = model.fit(x_train, y_train, epochs=<span class="number">1</span>, batch_size=<span class="number">32</span>, </span><br><span class="line">                     verbose=<span class="number">0</span>, validation_data=(x_test, y_test),</span><br><span class="line">                     callbacks=[TensorBoardColabCallback(tbc), </span><br><span class="line">                                early_stopping, checkpoint])</span><br><span class="line">    <span class="comment"># tensorboard lines</span></span><br><span class="line">    tbc.save_value(<span class="string">"fasion mnist"</span>, <span class="string">"train_acc"</span>, epoch, hist.history[<span class="string">'acc'</span>][<span class="number">0</span>])</span><br><span class="line">    tbc.save_value(<span class="string">"fasion mnist"</span>, <span class="string">"val_acc"</span>, epoch, hist.history[<span class="string">'val_acc'</span>][<span class="number">0</span>])</span><br><span class="line">    tbc.save_value(<span class="string">"fasion mnist"</span>, <span class="string">"train_loss"</span>, epoch, hist.history[<span class="string">'loss'</span>][<span class="number">0</span>])</span><br><span class="line">    tbc.save_value(<span class="string">"fasion mnist"</span>, <span class="string">"val_loss"</span>, epoch, hist.history[<span class="string">'val_loss'</span>][<span class="number">0</span>])</span><br><span class="line"></span><br><span class="line">    tbc.flush_line(<span class="string">"train_acc"</span>)</span><br><span class="line">    tbc.flush_line(<span class="string">"val_acc"</span>)</span><br><span class="line">    tbc.flush_line(<span class="string">"train_loss"</span>)</span><br><span class="line">    tbc.flush_line(<span class="string">"val_loss"</span>)</span><br><span class="line"></span><br><span class="line">    <span class="keyword">if</span> (epoch+<span class="number">1</span>)%<span class="number">10</span> == <span class="number">0</span>:</span><br><span class="line">        print(<span class="string">'-----'</span>*<span class="number">5</span>)</span><br><span class="line">        print(<span class="string">"Epoch: {} | Loss: {:0.3f} | Acc: {:0.3f}"</span>.format(</span><br><span class="line">              epoch+<span class="number">1</span>, hist.history[<span class="string">'loss'</span>][<span class="number">0</span>], hist.history[<span class="string">'acc'</span>][<span class="number">0</span>]))</span><br><span class="line"></span><br><span class="line">loss_and_metrics = model.evaluate(x_test, y_test, batch_size=<span class="number">32</span>)</span><br><span class="line">tbc.close()</span><br><span class="line"></span><br><span class="line">print(<span class="string">'-----'</span>*<span class="number">10</span>)</span><br><span class="line">print(<span class="string">'\nLoss and metrics: '</span> + str(loss_and_metrics))</span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
 </ul>
 <ul>
-<li><strong>Output:</strong><figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">HBox(children=(IntProgress(value=<span class="hljs-number">0</span>, max=<span class="hljs-number">50</span>), HTML(value=<span class="hljs-string">''</span>)))</span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="hljs-number">10</span> | Loss: <span class="hljs-number">0.393</span> | Acc: <span class="hljs-number">0.864</span></span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="hljs-number">20</span> | Loss: <span class="hljs-number">0.342</span> | Acc: <span class="hljs-number">0.879</span></span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="hljs-number">30</span> | Loss: <span class="hljs-number">0.312</span> | Acc: <span class="hljs-number">0.890</span></span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="hljs-number">40</span> | Loss: <span class="hljs-number">0.288</span> | Acc: <span class="hljs-number">0.898</span></span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="hljs-number">50</span> | Loss: <span class="hljs-number">0.270</span> | Acc: <span class="hljs-number">0.905</span></span><br><span class="line"></span><br><span class="line"><span class="hljs-number">10000</span>/<span class="hljs-number">10000</span> [==============================] - <span class="hljs-number">1</span>s <span class="hljs-number">60</span>us/step</span><br><span class="line">--------------------------------------------------</span><br><span class="line"></span><br><span class="line">Loss <span class="hljs-keyword">and</span> metrics: [<span class="hljs-number">0.3537946595430374</span>, <span class="hljs-number">0.8761</span>]</span><br></pre></td></tr></tbody></table></figure>
+<li><strong>Output:</strong><figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">HBox(children=(IntProgress(value=<span class="number">0</span>, max=<span class="number">50</span>), HTML(value=<span class="string">''</span>)))</span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="number">10</span> | Loss: <span class="number">0.393</span> | Acc: <span class="number">0.864</span></span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="number">20</span> | Loss: <span class="number">0.342</span> | Acc: <span class="number">0.879</span></span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="number">30</span> | Loss: <span class="number">0.312</span> | Acc: <span class="number">0.890</span></span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="number">40</span> | Loss: <span class="number">0.288</span> | Acc: <span class="number">0.898</span></span><br><span class="line">-------------------------</span><br><span class="line">Epoch: <span class="number">50</span> | Loss: <span class="number">0.270</span> | Acc: <span class="number">0.905</span></span><br><span class="line"></span><br><span class="line"><span class="number">10000</span>/<span class="number">10000</span> [==============================] - <span class="number">1</span>s <span class="number">60</span>us/step</span><br><span class="line">--------------------------------------------------</span><br><span class="line"></span><br><span class="line">Loss <span class="keyword">and</span> metrics: [<span class="number">0.3537946595430374</span>, <span class="number">0.8761</span>]</span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
@@ -332,10 +399,10 @@
 
 <h2 id="Model-Structure-Visualization"><a href="#Model-Structure-Visualization" class="headerlink" title="Model Structure Visualization"></a>Model Structure Visualization</h2><ul>
 <li><p>Model 구조 시각화하기: <strong>model.summary() & SVG()</strong> <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f603.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f603.png?v8">😃</span></p>
-  <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="hljs-keyword">from</span> IPython.display <span class="hljs-keyword">import</span> SVG</span><br><span class="line"><span class="hljs-keyword">from</span> keras.utils.vis_utils <span class="hljs-keyword">import</span> model_to_dot</span><br><span class="line"></span><br><span class="line">print(model.summary())</span><br><span class="line">SVG(model_to_dot(model, show_shapes=<span class="hljs-literal">True</span>).create(prog=<span class="hljs-string">'dot'</span>, format=<span class="hljs-string">'svg'</span>))</span><br></pre></td></tr></tbody></table></figure>
+  <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">from</span> IPython.display <span class="keyword">import</span> SVG</span><br><span class="line"><span class="keyword">from</span> keras.utils.vis_utils <span class="keyword">import</span> model_to_dot</span><br><span class="line"></span><br><span class="line">print(model.summary())</span><br><span class="line">SVG(model_to_dot(model, show_shapes=<span class="literal">True</span>).create(prog=<span class="string">'dot'</span>, format=<span class="string">'svg'</span>))</span><br></pre></td></tr></tbody></table></figure>
 </li>
 <li><p><strong>Output:</strong></p>
-<figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">_________________________________________________________________</span><br><span class="line">Layer (type)                 Output Shape              Param <span class="hljs-comment">#   </span></span><br><span class="line">=================================================================</span><br><span class="line">dense_1 (Dense)              (<span class="hljs-literal">None</span>, <span class="hljs-number">64</span>)                <span class="hljs-number">50240</span>     </span><br><span class="line">_________________________________________________________________</span><br><span class="line">dense_2 (Dense)              (<span class="hljs-literal">None</span>, <span class="hljs-number">10</span>)                <span class="hljs-number">650</span>       </span><br><span class="line">=================================================================</span><br><span class="line">Total params: <span class="hljs-number">50</span>,<span class="hljs-number">890</span></span><br><span class="line">Trainable params: <span class="hljs-number">50</span>,<span class="hljs-number">890</span></span><br><span class="line">Non-trainable params: <span class="hljs-number">0</span></span><br><span class="line">_________________________________________________________________</span><br><span class="line"><span class="hljs-literal">None</span></span><br></pre></td></tr></tbody></table></figure>
+<figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line">_________________________________________________________________</span><br><span class="line">Layer (type)                 Output Shape              Param <span class="comment">#   </span></span><br><span class="line">=================================================================</span><br><span class="line">dense_1 (Dense)              (<span class="literal">None</span>, <span class="number">64</span>)                <span class="number">50240</span>     </span><br><span class="line">_________________________________________________________________</span><br><span class="line">dense_2 (Dense)              (<span class="literal">None</span>, <span class="number">10</span>)                <span class="number">650</span>       </span><br><span class="line">=================================================================</span><br><span class="line">Total params: <span class="number">50</span>,<span class="number">890</span></span><br><span class="line">Trainable params: <span class="number">50</span>,<span class="number">890</span></span><br><span class="line">Non-trainable params: <span class="number">0</span></span><br><span class="line">_________________________________________________________________</span><br><span class="line"><span class="literal">None</span></span><br></pre></td></tr></tbody></table></figure>
 
 
 </li>
@@ -346,7 +413,7 @@
 
 <h2 id="Save-amp-Load-Model"><a href="#Save-amp-Load-Model" class="headerlink" title="Save & Load Model"></a>Save & Load Model</h2><ul>
 <li><p>Model 저장 & 불러오기</p>
-  <figure class="highlight python hljs"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> model.save(<span class="hljs-string">'fashion_mnist_model.h5'</span>)</span><br><span class="line">model = load_model(<span class="hljs-string">'fashion_mnist_model.h5'</span>)</span><br></pre></td></tr></tbody></table></figure></li>
+  <figure class="highlight python"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"> model.save(<span class="string">'fashion_mnist_model.h5'</span>)</span><br><span class="line">model = load_model(<span class="string">'fashion_mnist_model.h5'</span>)</span><br></pre></td></tr></tbody></table></figure></li>
 </ul>
 <script>
         document.querySelectorAll('.github-emoji')
@@ -367,449 +434,284 @@
             document.body.appendChild(img);
           });
       </script>
+            
+
+
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-        <center><p>이 글이 독자님께 도움이 되었다면,</p><p>광고 한 번 클릭해 주시면 감사하겠습니다. &#128521;</p></center>
-        <br>
-        <div id="bmc" align="center">
-            <style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#000000 !important;background-color:#FFDD00 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#000000 !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/petercha" rel="external nofollow noopener noreferrer"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px">Buy me a coffee</span></a>
-        </div>
-        
-        
-            <p><br></p>
-            <div class="level is-size-7 is-uppercase">
-                <div class="level-start">
-                    <div class="level-item">
-                        <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                        <a class="has-link-grey -link" href="/tags/deep-learning/">deep_learning</a>, <a class="has-link-grey -link" href="/tags/keras/">keras</a>, <a class="has-link-grey -link" href="/tags/ml/">ml</a>, <a class="has-link-grey -link" href="/tags/tutorial/">tutorial</a>
-                    </div>
-                </div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/deep-learning/">deep_learning</a> <a class="tag tag--primary tag--small t-link" href="/tags/keras/">keras</a> <a class="tag tag--primary tag--small t-link" href="/tags/ml/">ml</a> <a class="tag tag--primary tag--small t-link" href="/tags/tutorial/">tutorial</a>
+
             </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/11/mobilenet/" data-tooltip="MobileNet V1" aria-label="PREVIOUS: MobileNet V1">
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/06/12/Colab_tutorial/" data-tooltip="Colab tutorial :)" aria-label="NEXT: Colab tutorial :)">
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2019/06/12/keras_101/" title="Share on Facebook" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2019/06/12/keras_101/" title="Share on Twitter" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2019/06/12/keras_101/" title="Share on Google+" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="Leave a comment">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
             
         
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Natural -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4926107872672843" data-ad-slot="1904278923" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-        <br>
-        
-<div class="sharethis-inline-share-buttons"></div>
-<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5d32dc3eba941200129ff9a8&amp;product=custom-share-buttons" async="async"></script>
-
-        
-        
-    </div>
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
 </div>
 
 
-
-
-
-
-
-<div class="card card-transparent">
-    <div class="level post-navigation is-flex-wrap is-mobile">
-        
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2019/08/11/mobilenet/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">MobileNet V1</span>
-            </a>
-        </div>
         
         
-        <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2019/06/12/Colab_tutorial/">
-                <span class="level-item">Colab tutorial :)</span>
-                <i class="level-item fas fa-chevron-right"></i>
-            </a>
-        </div>
-        
-    </div>
-</div>
-
-
-
-<div class="card">
-    <div class="card-content">
-        <h3 class="title is-5 has-text-weight-normal">Comments</h3>
-        
-<script>
-    var disqus_config = function () {
-        this.page.url = 'http://www.stand-firm-peter.me/2019/06/12/keras_101/';
-        this.page.identifier = '2019/06/12/keras_101/';
-    };
-    (function() {
-        var d = document, s = d.createElement('script');  
-        s.src = '//' + 'petercha90' + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-
-<div id="disqus_thread">
-    
+            
+                <div id="disqus_thread">
     <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-    </div>
-</div>
-</div>
-                
-                
-
-
-
-
-<div class="column is-4-tablet is-4-desktop is-4-widescreen  has-order-3 column-right ">
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <div class="menu">
-            <h3 class="menu-label">
-                Categories
-            </h3>
-            <ul class="menu-list">
-            <li>
-        <a class="level is-marginless" href="/categories/Deep-Learning-paper/">
-            <span class="level-start">
-                <span class="level-item">Deep Learning paper</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">9</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/">
-            <span class="level-start">
-                <span class="level-item">Machine Learning</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">8</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Tutorial/">
-            <span class="level-start">
-                <span class="level-item">Tutorial</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">11</span>
-            </span>
-        </a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            Recent
-        </h3>
-        
-        <article class="media">
             
-            <a href="/2020/09/30/resnet_2/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/resnet_inception_v4_1.jpg" alt="Resnet (2) - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-30T05:51:04.000Z">2020-09-30</time></div>
-                    <a href="/2020/09/30/resnet_2/" class="has-link-black-ter is-size-6">Resnet (2) - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/26/resnet/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/resnet_1.jpg" alt="Resnet (1) - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-26T05:51:04.000Z">2020-09-26</time></div>
-                    <a href="/2020/09/26/resnet/" class="has-link-black-ter is-size-6">Resnet (1) - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/06/inception_v2_v3/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/inception_2.jpg" alt="Inception v2, v3 - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T11:19:18.000Z">2020-09-06</time></div>
-                    <a href="/2020/09/06/inception_v2_v3/" class="has-link-black-ter is-size-6">Inception v2, v3 - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/05/vgg/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/vgg.jpg" alt="VGG - 2014">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-05T11:19:18.000Z">2020-09-05</time></div>
-                    <a href="/2020/09/05/vgg/" class="has-link-black-ter is-size-6">VGG - 2014</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/07/30/googlenet/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/inception.jpg" alt="Inception v1 - 2014">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-07-30T11:19:18.000Z">2020-07-30</time></div>
-                    <a href="/2020/07/30/googlenet/" class="has-link-black-ter is-size-6">Inception v1 - 2014</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
         
     </div>
-</div>
+</article>
 
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            Tag Cloud
-        </h3>
-        <a href="/tags/AlexNet/" style="font-size: 10px;">AlexNet</a> <a href="/tags/Back-propagation/" style="font-size: 10px;">Back propagation</a> <a href="/tags/Batch/" style="font-size: 10px;">Batch</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Colab/" style="font-size: 10px;">Colab</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/Epoch/" style="font-size: 10px;">Epoch</a> <a href="/tags/FLOPs/" style="font-size: 10px;">FLOPs</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/GCP/" style="font-size: 10px;">GCP</a> <a href="/tags/Google-Cloud-Platform/" style="font-size: 10px;">Google Cloud Platform</a> <a href="/tags/GoogleNet/" style="font-size: 10px;">GoogleNet</a> <a href="/tags/Inception/" style="font-size: 10px;">Inception</a> <a href="/tags/Kernel/" style="font-size: 10px;">Kernel</a> <a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2/" style="font-size: 10px;">L2</a> <a href="/tags/Label-Smoothing/" style="font-size: 10px;">Label Smoothing</a> <a href="/tags/Lasso/" style="font-size: 10px;">Lasso</a> <a href="/tags/LeNet/" style="font-size: 10px;">LeNet</a> <a href="/tags/Loss-function/" style="font-size: 10px;">Loss function</a> <a href="/tags/Network-in-Network/" style="font-size: 10px;">Network in Network</a> <a href="/tags/Optimizer/" style="font-size: 10px;">Optimizer</a> <a href="/tags/Padding/" style="font-size: 10px;">Padding</a> <a href="/tags/Pooling/" style="font-size: 10px;">Pooling</a> <a href="/tags/Ridge/" style="font-size: 10px;">Ridge</a> <a href="/tags/TPU/" style="font-size: 15.71px;">TPU</a> <a href="/tags/VGG/" style="font-size: 10px;">VGG</a> <a href="/tags/ZFNet/" style="font-size: 10px;">ZFNet</a> <a href="/tags/basic/" style="font-size: 11.43px;">basic</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/bottleneck/" style="font-size: 10px;">bottleneck</a> <a href="/tags/container-ssh/" style="font-size: 10px;">container ssh</a> <a href="/tags/convex-optimisation/" style="font-size: 10px;">convex_optimisation</a> <a href="/tags/dataframe/" style="font-size: 10px;">dataframe</a> <a href="/tags/deep-learning/" style="font-size: 20px;">deep_learning</a> <a href="/tags/docker/" style="font-size: 12.86px;">docker</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/highway-network/" style="font-size: 10px;">highway network</a> <a href="/tags/inception-v2/" style="font-size: 10px;">inception v2</a> <a href="/tags/inception-v3/" style="font-size: 10px;">inception v3</a> <a href="/tags/keras/" style="font-size: 10px;">keras</a> <a href="/tags/log/" style="font-size: 10px;">log</a> <a href="/tags/logarithm/" style="font-size: 10px;">logarithm</a> <a href="/tags/loss/" style="font-size: 10px;">loss</a> <a href="/tags/machine-learning/" style="font-size: 12.86px;">machine-learning</a> <a href="/tags/machine-learning/" style="font-size: 10px;">machine_learning</a> <a href="/tags/ml/" style="font-size: 18.57px;">ml</a> <a href="/tags/mobilenet/" style="font-size: 10px;">mobilenet</a> <a href="/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/tags/pseudo-label/" style="font-size: 10px;">pseudo-label</a> <a href="/tags/regularization/" style="font-size: 10px;">regularization</a> <a href="/tags/resnet/" style="font-size: 11.43px;">resnet</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tensorflow/" style="font-size: 11.43px;">tensorflow</a> <a href="/tags/tensorflow-object-detection-api/" style="font-size: 14.29px;">tensorflow object detection api</a> <a href="/tags/tensorpack/" style="font-size: 10px;">tensorpack</a> <a href="/tags/transfer-learning/" style="font-size: 15.71px;">transfer learning</a> <a href="/tags/tutorial/" style="font-size: 17.14px;">tutorial</a> <a href="/tags/useful-info/" style="font-size: 15.71px;">useful-info</a> <a href="/tags/vgg/" style="font-size: 10px;">vgg</a>
-    </div>
-</div>
 
-    
-    
-    <br>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Natural -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4926107872672843" data-ad-slot="1904278923" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-    
-</div>
 
-            </div>
-        </div>
-    </section>
-    <footer class="footer">
-    <div class="container">
-        <div class="level">
-            <div class="level-start has-text-centered-mobile">
-                <a class="footer-logo is-block has-mb-6" href="/">
-                
-                    <img src="/images/dog.jpg" alt="Keras tutorial (1)" height="28">
-                
-                </a>
-                <p class="is-size-7">
-                &copy; 2020 Peter Cha&nbsp;
-                Powered by <a href="https://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="external nofollow noopener noreferrer">Icarus</a>
-                
-                </p>
-            </div>
-            <div class="level-end">
-            
-                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
-                
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-creative-commons"></i>
-                        
-                    </a>
-                </p>
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-creative-commons-by"></i>
-                        
-                    </a>
-                </p>
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-github"></i>
-                        
-                    </a>
-                </p>
-                
-                </div>
-            
-            </div>
-        </div>
-    </div>
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Peter Cha. All Rights Reserved.
+    </span>
 </footer>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("en");</script>
 
-
-    
-    
-    
-    <script src="/js/animation.js"></script>
-    
-
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
-    <script src="/js/gallery.js" defer></script>
-    
-
-    
-    
-
-<div id="outdated">
-    <h6>Your browser is out-of-date!</h6>
-    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" rel="external nofollow noopener noreferrer" target="_blank">Update
-            my browser now </a></p>
-    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/08/11/mobilenet/" data-tooltip="MobileNet V1" aria-label="PREVIOUS: MobileNet V1">
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2019/06/12/Colab_tutorial/" data-tooltip="Colab tutorial :)" aria-label="NEXT: Colab tutorial :)">
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2019/06/12/keras_101/" title="Share on Facebook" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2019/06/12/keras_101/" title="Share on Twitter" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2019/06/12/keras_101/" title="Share on Google+" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="Leave a comment">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        outdatedBrowser({
-            bgColor: '#f25648',
-            color: '#ffffff',
-            lowerThan: 'flex'
-        });
-    });
-</script>
 
 
-    
-    
-<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    MathJax.Hub.Config({
-        'HTML-CSS': {
-            matchFontHeight: false
-        },
-        SVG: {
-            matchFontHeight: false
-        },
-        CommonHTML: {
-            matchFontHeight: false
-        },
-        tex2jax: {
-            inlineMath: [
-                ['$','$'],
-                ['\\(','\\)']
-            ]
-        }
-    });
-});
-</script>
-
-    
-    
-
-<a id="back-to-top" title="Back to Top" href="javascript:;">
-    <i class="fas fa-chevron-up"></i>
-</a>
-<script src="/js/back-to-top.js" defer></script>
-
-
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
-    <script src="/js/clipboard.js" defer></script>
-    
-
-    
-    
-    
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2019/06/12/keras_101/" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2019/06/12/keras_101/" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2019/06/12/keras_101/" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
 
 
-<script src="/js/main.js" defer></script>
-
-    
-    <div class="searchbox ins-search">
-    <div class="searchbox-container ins-search-container">
-        <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something...">
-            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+            
         </div>
-        <div class="searchbox-result-wrapper ins-section-wrapper">
-            <div class="ins-section-container"></div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
         </div>
+        
+            <h4 id="about-card-name">Peter Cha</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>author.job</p>
+
+            </div>
+        
+        
     </div>
 </div>
-<script>
-    (function (window) {
-        var INSIGHT_CONFIG = {
-            TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
-            },
-            CONTENT_URL: '/content.json',
-        };
-        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
-    })(window);
-</script>
-<script src="/js/insight.js" defer></script>
-<link rel="stylesheet" href="/css/search.css">
-<link rel="stylesheet" href="/css/insight.css">
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-rzzlf7xwh5hbhem4p6lp9lkt95wyxafyeomrlclykmqgqtpgasupbiy7nm53.min.js"></script>
+<!--SCRIPTS END-->
+
+
     
-<script type="text/x-mathjax-config">
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://www.stand-firm-peter.me/2019/06/12/keras_101/';
+              
+            this.page.identifier = '2019/06/12/keras_101/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'petercha90';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         tex2jax: {
             inlineMath: [ ["$","$"], ["\\(","\\)"] ],

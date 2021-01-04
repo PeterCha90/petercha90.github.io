@@ -1,186 +1,270 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head><meta name="generator" content="Hexo 3.9.0">
-    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5d32dc3eba941200129ff9a8&product=sop" async="async"></script>
-    <meta charset="utf-8">
-<title>Inception v1 - 2014 - Stand firm Peter</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-<link rel="canonical" href="http://www.stand-firm-peter.me/2020/07/30/googlenet/">
-
-
-<meta property="og:image" content="/gallery/inception.jpg">
-
-
-
-<!-- <meta property="og:title" content=Inception v1 - 2014 - Stand firm Peter> -->
-<meta property="og:description" content="Peter's playground.">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({
-    google_ad_client: "ca-pub-4926107872672843",
-    enable_page_level_ads: true
-  });
-</script>
-
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "ca-pub-4926107872672843",
-          enable_page_level_ads: true
-     });
-</script>
-
-
-<link rel="alternative" href="/rss.xml" title="Inception v1 - 2014" type="application/atom+xml">
-
-
-
-<link rel="icon" href="/images/favicon.ico">
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
-
-
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Stand firm Peter">
+    <title>Inception v1 - 2014 - Stand firm Peter</title>
+    <meta name="author" content="Peter Cha">
+    
+        <meta name="keywords" content="AI,Machine Learning,">
     
     
     
-    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+        
+            <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+        
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\n니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! \nfeat. Network in Network\n\n\n\n\n너무 오랜만에 딥러닝 논문 정주행 리뷰네요. 올 해가 가기 전에는 2020년에 도착하고 싶은게 목표인데.. 아직 2014년이라니..😢 더 분발해야겠습니다! 이번에 알아 볼 논문은 2014년 ILVRC에서 1위에 빛나는 GoogleNet입니다! 또 다른 이름으로, Inception이라고 불립니다. \n논문의 풀네임은 ‘Going deeper with convolutions’ 입니다. 저자는 Christian Szegedy et al.이고, 구글에서 발표한 논문이면서 동시에 CNN의 시초인 LeNet을 오마주하는 의미에서 이름을 GoogLeNet으로 부른다고 하네요!\n논문의 제목은 명작인.. 2010년 레오나르도 디카프리오 주연의 영화 Inception의 ‘We need to go deeper’라는 명대사로 유명했던 인터넷 Meme을 딴 것이라고 하네요 😆 ZFNet까지의 구조들은 끽해야 Conv layer 몇 개와 Fully Conneted 2, 3개를 붙이는 구조에서 더욱 깊어진 CNN 모델 구조가 가능하게 된 점을 자랑스럽게 소개합니다. 😎\n\n\n\nIntroduction\n2012 AlexNet을 시작으로 딥러닝 기술의 발전속도가 가속도가 한창 붙던 2014년. 🏃 이런 흐름은 단순히 하드웨어의 발전과 큰 데이터셋, 그리고 더 큰 모델구조 뿐만이 아니라, 새로운 아이디어들과 알고리즘, 그리고 발전된 Network Architecture 덕분이라고 설명합니다. \n\nGoogleNet은 AlexNet보다 12배 학습할 파라미터가 작지만 훨씬 더 정확도는 높은데요, 이것을 가능하게 한 코드네임 Inception. 그 모델 구조는 그 유명한 Network In Network에서 받은 영감으로부터 나오게 됐다고 합니다. 그럼, 이쯤에서 Network in Network에 대해 잠시 살펴보도록 할까요?\n\n\n\n\nRelated WorkNetwork in Network\nNetwork in Network는 2013년 12월에 소개된 논문으로, 또 한 번의 CNN의 급격한 발전을 이루도록 토태를 마련했다고나 할까요. 1x1 Conv layer의 유용성을 소개한 논문입니다.✨ \nNetwork in Network(이하 NIN)의 핵심 개념은 Conv-Activation-Conv와 같이 단순하게 이어지는 Linear convolution layer 구조로는, 더 상위 수준의 Nonlinearity를 충분히 표현 할 수 없기 때문에 이를 보완하여 뉴럴넷의 표현력을 증가시키기 위함입니다. \n그 결과, 아래와 같이 좀 더 비선형적인 요소를 더 추가하여 모델의 추상화 수준을 올려주는 MLP를 Conv layer 사이에 더 넣어줘서 mlpconv layer를 탄생시켰습니다. 👏👏 그 결과 conv연산으로 생성되는 feacture map들이 MLP를 거치면서 서로 상호작용을 하고 정보를 더 주고 받게 되겠죠. \n\n\n\n\n이런 mlpconv를 반복하는 구조를 Cascaded cross channel(혹은 cross feature map) parametric pooling structure이라고 말합니다. 이렇게 mlpconv layer가 하는 일이 1x1 conv가 하는 일과 상응한다고 논문에서 말하고 있습니다. 1x1 conv가 하는 일이, input으로 들어오는 이미지의 channel들을 재조합하고, 다시 재생성하는 역할이기 때문입니다! 그래서 mlp로써 1x1 conv를 사용합니다.\n\nNIN의 전체 구조는 아래와 같습니다. 왜 이름이 ‘Network in Network’인지 이해가 되는 부분입니다. \n\n\n\n\n\n\nMotivation and High Level Considerations\n모델의 성능을 높이는 방법은 사실 아주 간단합니다. 모델의 크기라고 할 수 있는, 깊이와 넓이를 더 크게 해주면 됩니다! 이 방법이 아주 쉽고, 안전하게 모델의 성능을 보장할 수 있는 방법이죠. 그러나 이런 간단한 솔루션에도 두 가지 큰 문제가 존재합니다. \n\n1. “Bigger size means a larger number of parameters.”\n모델의 사이즈가 클수록, 학습해야 할 파라미터들이 더 많아진다는 것을 의미합니다. 그 결과 Overfitting에 더 취약해진다는 말이 됩니다. 특히 Overfitting은 학습할 데이터의 labeled examples의 수가 한정적일 때 더 큰 주요 bottleneck이 됩니다. \n아래와 같이 시베리안 허스키🐶와 에스키모견🐶을 구별하는 것은 전문가 정도 되어야 잘 구별할 수 있지 않을까요? 아래 이미지는 실제 ImageNet 2014 데이터 중 일부입니다. \n\n\n\n\n그럼 이런 데이터를 더 만들면 되지!라고 하면, 일단 강형욱 선생님..까지는 아니더라도 데이터 생성에만 해도 코스트가 비싸지고, 쉽지 않아집니다. 이런 경우처럼 데이터는 한정적일 때, 쉽게 말해서 양으로 승부할 수 없을 때가 있다는 것이죠. \n\n2. “The dramatically increased use of computational resources.”\n당연한 이야기로, 컴퓨팅 파워의 문제가 있습니다. 현실적으로 계산적인 예산이라는 것은 한정적이기 마련이고, 모델이 무식하게 큰 것에 비해서 계산해야 할 것은 실제로 그정도까지 필요가 없다면 자원낭비도 그런 자원낭비가 없겠죠. \n\n3. “Moving from fully connected to sparsely connected architectures!”\n그래서, 위 두 가지 문제에 대한 해결책으로 Arora et al.의 획기적인 연구성과에 따르면,\n\n‘데이터셋의 확률 분포가 아주 깊고 넓은 뉴럴넷에 의해서 표현된다면, 최적의 네트워크 구조가 마지막 layer을 얼마나 활성화 하는지에 따라, 통계적 상관관계를 살핌으로서 layer by layer로 분석될 수 있음‘\n\n  을 밝히면서, 더 큰 Sparsity를 추구하여서 최적의 모델 구조를 찾아줄 필요(=GoogleNet)가 있음을 주창합니다. 실제로 여타 다른 fine tunnning을 거치는 것 보다, Inception Structure를 사용했다느 것이 Object Detection의 Base net으로 사용했을 때, 아주 유용했다고 말하고 있습니다. \n\n개인적인 생각으로는 이 GoogleNet을 발표할 때부터, 아마 Google 사람들은 미래에 가능할 AutoML를 머리 속에 그렸다고 생각이 되네요. 🌝\n\n\n\n\nArchitectural Details\n그렇기 때문에, GoogleNet의 핵심 아이디어는 “최적의 local sparse structure가 근사될 수 있는 방법을 어떻게 찾을 수 있는가”로 수렴합니다. 그 고민의 결과로 탄생한 것이 Inception architecture입니다.\n논문을 보면, Inception Module이라고 부는 이 Module이 어떻게 탄생하게 됐는지에 대해 구구절절 설명을 해 놓습니다만, 쉽게 말하자면 아래와 같이 정리할 수 있습니다. \nThe Nativity of Inception Module\n\nConv filter Size가 작으면 위치적 정보는 잘 보전되는데 너무 숲을 안보고 나무만 보고(local region에만 집착하고), filter Size가 크면 클수록 추상화 정도가 올라가서 숲은 보이는데 나무가 잘 안보인다(위치적 정보는 떨어진다).😦\n기존의 ConvNet들처럼 그냥 순차적으로 말이야.. ‘어떤 filter Size 순서로 Conv layer를 배치할 것인가’ 고민하니까, 결국에는 1번과 같은 trade off를 감수해야하는 것이더라. 😕\n그럼 순차적으로 안쓰고 다 같이 쓰면 되겠네? 😃\n\n\n\n\nInception Module\n그래서 맨 처음에는 naive version으로 아래와 같은 모델은 먼저 만듭니다. \n\n\n  \n    \n      Inception module, naive version\n  \n\n\n\n보시다시피, 계산량이 많은 5x5 conv의 output과 max pooling의 output을 함께 merge해야 한다는 것은 max pooling의 특성상 input channel과 output channel의 개수가 같아야 한다는 점 때문에, 이는 엄청난 계산비용을 의미합니다. 😶\n\n이 naive version을 그대로 썻다가는, 제 아무리 최적의 sparse한 Structure를 찾았다고 할지라도 몇 stage를 못 건너가서 그 계산량이 폭발하면서 매우 비효율 적일 것입니다.   \n\n그래서 아래와 같은 1x1 conv를 사용한 차원축소버전으로 다시 만들게 됩니다. \n\n\n\n  \n    \n      Inception module with dimension reductions\n  \n\n\n\nNIN에서 사용된 1x1 conv는 인셉션에서 두 가지 목적으로 사용되어집니다. 첫 번째는 가장 중요하게, 주로 계산량을 줄여서 bottleneck을 피하게 해주는 차원축소(dimension reduction)의 역할입니다. \n1x1 conv를 통해 input으로 들어오는 이미지의 channel을 줄여서 output으로 내보내면서 손실된 정보는 없는 차원축소를 가능케 하고, 그 뒤에 3x3 or 5x5 Conv를 수행할 수 있게 해주면서 계산량을 획기적으로 줄여줍니다. 이로써, 앞서 언급했던 이미지의 위치정보와 추상화된 정보 모두를 한 번에 보는 욕심쟁이 모델이 가능해졌습니다. 😏\n특히, naive version의 문제였던 max pooling의 결과로 나오는 output의 channel도 다른 conv filter의 output channel과 맞춰 줄 수 있게 되면서, naive version의 문제를 멋지게 해결합니다! Network in Network의 느낌을 가지면서 잠시 다른 꿈에 들어갔다가 다시 나오는 그 느낌. Inception이 느껴지시나요?\n\n\n두 번째는 이 1x1 conv가 모델의 깊이(depth)와 함께 넓이(width)도 넓힐 수 있게 된 점입니다. 1x1 conv가 매번 ReLU를 함께 수행하기 때문에 모델의 깊이를 한층 더 깊게 가져갈 수 있게 해주지만, 결정적으로 1x1 conv 덕에 아끼게 되는 Computational resources들로 계산량의 어려움 없이 모델을 더 넓고 깊에 가져갈 수 있게 해줍니다.😎\n\n5. GoogLeNet\n자 ~ 드디어 GoogLeNet 전체 구조에 대해서 살펴볼 시간입니다!🐬 먼 길이었다.. 도입부에 말했듯, GoogLeNet에 LeNet이 보이는 이유는 Yann LeCun의 LeNet 5에 대한 Homage임을 논문에서 밝히고 있습니다. 멋있죠? :+1:\n\nGoogleNet의 구조의 세부사항을 표로 정리하면 아래와 같습니다. 😄 구글넷은 총 9개의 Inception Module로 구성되어 있습니다. \n\n\n\n  \n    \n      \n  \n\n\n\n\n첫 번째 Inception Module인 inception(3a) 부분만 그 작동방식을 설명하자면, 아래와 같습니다. \n\n이전 max pool의 결과 192개의 channel로 들어온 input에 대해,1) 1x1 conv 차원축소로 64 channel output.2) 1x1 conv 차원축소로 96 channels로 변환 후, 3x3 conv의 결과로 128 channel output.3) 1x1 conv 차원축소로 16 channels로 변환 후, 5x5 conv의 결과로 32 channel output.4) 3x3 max pool 진행 후, 1x1 conv로 32개 channel output.= total, 64 + 128 + 32 + 32 = 256 channel output\n\n  이 되겠습니다. 이런 방식으로 Inception Module은 작동합니다. 당연히 concat을 위해서 이미지 사이즈는 똑같아야하기 때문에 3x3, 5x5, max pool 모두 padding을 아주 잘 똘똘 두르고 있습니다.  😇\n\n학습시에 메모리 효율성을 위해서, 보통은 모델의 Higher level layer라고 부를 수 있는 위치에 가서야 Inception Module을 사용한다고 합니다. Input 이미지가 들어온 초입 부분에서는 전통적인 Convolution 방식으로 처리한 뒤에 사용하는 것이죠. \n\n그리고 기본적으로 이 Inception Module은 앞 Module의 결과에 또 다른 Module을 쌓는 방식으로 진행이 되다보니, Input/Output 이미지 사이즈가 동일합니다. 그래서 Resolution을 줄일 때는 이따끔씩 stride 2로 세팅된 max-pooling을 사용합니다. \n\nGoogleNet 전체 구조를 도식화하면 아래와 같습니다. 구조가 엄청 복잡해보이지만 앞서 살펴 본 Inception Module을 캐치하고나면 그나마 좀 덜 복잡해 보이는 것도 같습니다. 😅 Input Image Size는 224x224x3입니다.\n\n\n\n  \n    \n      GoogLeNet\n  \n\n\nAuxiliary classifiers\n재밌는 부분은, Inception Module (4a), (4d) 뒤에, Softmax를 통한 Classifie를 모델 중간에 두 개 삽입한 점입니다. 문자그대로 auxiliary classifier라고 부르는 이 친구들이 들어간 이유는, 모델의 낮은 단계에 해당하는 layer에서도 back propagation되는 gradient signal을 증폭시켜 성능을 올리기 위함입니다. \n\n실제로 학습할 때, 최종 Loss를 계산함에 있어서, 이 두 auxiliary classifiers들은 30%의 가중치를 가지고 학습을 하고, 학습이 끝난 뒤 inference time에는 쓰지 않습니다. 이 auxiliary classifier network에 대한 구체적인 설명도 논문에서는 아래와 같이 친절히 잘 해줍니다. \n\nAuxiliary Network Recipe\n\n(4a)는 4x4x512 output이 되도록, (4d)에서는 4x4x528 output이 되도록,average pooling layer는 5x5 filter size에 strde 3\n1x1 conv는 128개 output으로 차원축소 진행 후, ReLU 통과\nfc layer도 1024개로 맞추고, RelU 통과\ndropout은 70% ratio of dropped outputs\n마지막으로 softmax loss를 가진 linear layer. \n\n\n\n\n6. Training Methodology & Data Augmentation\n이렇게 만들어진 GoogleNet을 실제로 ILSVRC 2014 Classification Challenge에 출전하면서, 다음과 같은 방법들을 사용해서 1위를 차지 합니다.\nEnsemble\nEnsemble of 7 versions of the same GoogLeNet model\n\nData Augmentation\nResize the image to bigger size 4 scales(256, 288, 320, 352)\nleft, center, right square cropping \n4 corners and center 224x224 cropping & resizing center to 224x224\nmirroring image \n\n\ntotal, 4 x 3 x 6 x 2 = 144 times data augmentation per image\n\n\n\n\n  \n    \n      \n  \n\n\n\n결론적으로는 이렇게 사용한 구글넷은 동시대 타 모델들과 비교했을 때, 단일 모델 성능은 1위는 아니었지만 모델 3개 이상의 앙상블을 실시했을 때 타 모델들과 3% 이상의 격차를 내면서 1위를 차지했다는 것을 보여줍니다.😏\n그렇게 앞서 설명했던 Sparse architecture가 얼마나 유용한지, 자신들이 생각한 이론이 맞았음을 증명해 준다는 것을 아래와 같이 밝히고 있습니다✨\n\n\n  \n    \n      \n  \n\n\n\n\n\n7. Conclusions\n끝으로 ‘다른 모델로도 구글넷과 비슷한 depth와 width를 가지고 비슷한 성능을 낼 수 있을지 모르나, 훨씬 무겁고 학습하기 힘들 것이다’라고 말하면서 동시에, 자신들이 Sparse Architecture 이론이 현실적으로 가능하고 보편적으로 사용할 수 있음을 확실히 증명했다고 벅차게 밝힙니다. 😎\n동시에, 그런 결론은 미래에 자동화된 더 정교한 sparse model을 만들 수 있다는 유망한 미래를 뜻한다고 말하고 있습니다. 그리고, 결국엔 머지 않아 실제로 구글은 AutoML을 만들어버리게 되죠. 😅\n\n\n\n\n\n여기까지, GoogleNet이라고 부르는 Inception v1리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 구글넷보다 훨씬 단순한 구조로 성능은 조금 더 떨어지지만 더 많이 사랑을 받은 VGG 리뷰를 하겠습니다! 읽어주셔서 감사합니다. 🙇\n이 글은 DataCrew에서도 보실 수 있습니다.\n\nReferences\nNetwork in Network paper\nInception paper\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-07-30T20:19:18+09:00","dateModified":"2021-01-05T01:18:29+09:00","datePublished":"2020-07-30T20:19:18+09:00","description":"\n니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! \nfeat. Network in Network\n","headline":"Inception v1 - 2014","image":["inception.jpg","inception.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/07/30/googlenet/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2020/07/30/googlenet/","keywords":"ml, deep_learning, GoogleNet, Inception, Network in Network","thumbnailUrl":"inception.jpg"}</script>
+    <meta name="description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!  feat. Network in Network">
+<meta name="keywords" content="ml,deep_learning,GoogleNet,Inception,Network in Network">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Inception v1 - 2014">
+<meta property="og:url" content="http://www.stand-firm-peter.me/2020/07/30/googlenet/index.html">
+<meta property="og:site_name" content="Stand firm Peter">
+<meta property="og:description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!  feat. Network in Network">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/nin1.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/nin.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/inception_1.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/inception_2.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/inception_3.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/googlenet_2.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/googlenet.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/googlenet_3.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/googlenet_4.png">
+<meta property="og:updated_time" content="2021-01-04T16:18:29.426Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Inception v1 - 2014">
+<meta name="twitter:description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!  feat. Network in Network">
+<meta name="twitter:image" content="http://www.stand-firm-peter.me/gallery/nin1.png">
+    
+    
+        
+    
+    
+    
+        <meta property="og:image" content="http://www.stand-firm-peter.me/2020/07/30/googlenet/inception.jpg">
+        <meta class="swiftype" name="image" data-type="enum" content="http://www.stand-firm-peter.me/2020/07/30/googlenet/inception.jpg">
+    
+    
+        <meta property="og:image" content="http://www.stand-firm-peter.me/2020/07/30/googlenet/inception.jpg">
+        <meta class="swiftype" name="image" data-type="enum" content="http://www.stand-firm-peter.me/2020/07/30/googlenet/inception.jpg">
+    
+    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
+    <!--STYLES END-->
     
 
     
-    
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
-    
 
     
+        
     
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
-
-
-    
-    
-    
-    
-
-<link rel="stylesheet" href="/css/back-to-top.css">
-
-
-    
-    
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-124184693-1');
-</script>
-
-
-    
-    
-    
-    
-<link rel="stylesheet" href="/css/progressbar.css">
-<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
-
-    
-    
-    
-
-    
-    
-    
-
-
-<link rel="stylesheet" href="/css/style.css">
 </head>
-<body class="is-2-column">
-    <nav class="navbar navbar-main">
-    <div class="container">
-        <div class="navbar-brand is-flex-center">
-            <a class="navbar-item navbar-logo" href="/">
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/" aria-label>
+            Stand firm Peter
+        </a>
+    </div>
+    
+        
+            <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
             
-                <img src="/images/dog.jpg" alt="Inception v1 - 2014" height="28">
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/" rel="noopener" title="Home">
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
             
-            </a>
-        </div>
-        <div class="navbar-menu">
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" rel="noopener" title="Categories">
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
             
-            <div class="navbar-start">
-                
-                <a class="navbar-item" href="/">Home</a>
-                
-                <a class="navbar-item" href="/archives">Archives</a>
-                
-                <a class="navbar-item" href="/categories">Categories</a>
-                
-                <a class="navbar-item" href="/tags">Tags</a>
-                
-            </div>
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" rel="noopener" title="Tags">
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
             
-            <div class="navbar-end">
-                
-                
-                
-                <a class="navbar-item search" title="Search" href="javascript:;">
-                    <i class="fas fa-search"></i>
-                </a>
-                
-            </div>
-        </div>
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google +</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
     </div>
 </nav>
-    
-    <section class="section">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-8-tablet is-8-desktop is-8-widescreen has-order-2 column-main"><div class="card">
-    
-    <div class="card-image">
-        <span class="image is-7by1">
-            <img class="thumbnail" src="/gallery/inception.jpg" alt="Inception v1 - 2014">
-        </span>
-    </div>
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2020-07-30T11:19:18.000Z">2020-07-30</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    25 minutes read (About 3801 words)
-                </span>
-                
-                
-            </div>
+
+            
+        <div class="post-header-cover
+                    text-left
+                    post-header-cover--partial" style="background-image:url('/2020/07/30/googlenet/inception.jpg');" data-behavior="4">
+            
         </div>
-        
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
-            
-                Inception v1 - 2014
-            
+
+            <div id="main" data-behavior="4" class="hasCover
+                        hasCoverMetaOut
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Inception v1 - 2014
         </h1>
-        <div class="content">
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-07-30T20:19:18+09:00">
+	
+		    Jul 30, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
             <ul>
 <li>니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! </li>
 <li>feat. Network in Network</li>
@@ -413,449 +497,284 @@
             document.body.appendChild(img);
           });
       </script>
+            
+
+
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-        <center><p>이 글이 독자님께 도움이 되었다면,</p><p>광고 한 번 클릭해 주시면 감사하겠습니다. &#128521;</p></center>
-        <br>
-        <div id="bmc" align="center">
-            <style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#000000 !important;background-color:#FFDD00 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#000000 !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/petercha" rel="external nofollow noopener noreferrer"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px">Buy me a coffee</span></a>
-        </div>
-        
-        
-            <p><br></p>
-            <div class="level is-size-7 is-uppercase">
-                <div class="level-start">
-                    <div class="level-item">
-                        <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                        <a class="has-link-grey -link" href="/tags/GoogleNet/">GoogleNet</a>, <a class="has-link-grey -link" href="/tags/Inception/">Inception</a>, <a class="has-link-grey -link" href="/tags/Network-in-Network/">Network in Network</a>, <a class="has-link-grey -link" href="/tags/deep-learning/">deep_learning</a>, <a class="has-link-grey -link" href="/tags/ml/">ml</a>
-                    </div>
-                </div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/GoogleNet/">GoogleNet</a> <a class="tag tag--primary tag--small t-link" href="/tags/Inception/">Inception</a> <a class="tag tag--primary tag--small t-link" href="/tags/Network-in-Network/">Network in Network</a> <a class="tag tag--primary tag--small t-link" href="/tags/deep-learning/">deep_learning</a> <a class="tag tag--primary tag--small t-link" href="/tags/ml/">ml</a>
+
             </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/09/05/vgg/" data-tooltip="VGG - 2014" aria-label="PREVIOUS: VGG - 2014">
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/07/16/ZFNet/" data-tooltip="ZFNet - 2013" aria-label="NEXT: ZFNet - 2013">
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2020/07/30/googlenet/" title="Share on Facebook" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2020/07/30/googlenet/" title="Share on Twitter" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2020/07/30/googlenet/" title="Share on Google+" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="Leave a comment">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
             
         
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Natural -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4926107872672843" data-ad-slot="1904278923" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-        <br>
-        
-<div class="sharethis-inline-share-buttons"></div>
-<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5d32dc3eba941200129ff9a8&amp;product=custom-share-buttons" async="async"></script>
-
-        
-        
-    </div>
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
 </div>
 
 
-
-
-
-
-
-<div class="card card-transparent">
-    <div class="level post-navigation is-flex-wrap is-mobile">
-        
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/09/05/vgg/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">VGG - 2014</span>
-            </a>
-        </div>
         
         
-        <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2020/07/16/ZFNet/">
-                <span class="level-item">ZFNet - 2013</span>
-                <i class="level-item fas fa-chevron-right"></i>
-            </a>
-        </div>
-        
-    </div>
-</div>
-
-
-
-<div class="card">
-    <div class="card-content">
-        <h3 class="title is-5 has-text-weight-normal">Comments</h3>
-        
-<script>
-    var disqus_config = function () {
-        this.page.url = 'http://www.stand-firm-peter.me/2020/07/30/googlenet/';
-        this.page.identifier = '2020/07/30/googlenet/';
-    };
-    (function() {
-        var d = document, s = d.createElement('script');  
-        s.src = '//' + 'petercha90' + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-
-<div id="disqus_thread">
-    
+            
+                <div id="disqus_thread">
     <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-    </div>
-</div>
-</div>
-                
-                
-
-
-
-
-<div class="column is-4-tablet is-4-desktop is-4-widescreen  has-order-3 column-right ">
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <div class="menu">
-            <h3 class="menu-label">
-                Categories
-            </h3>
-            <ul class="menu-list">
-            <li>
-        <a class="level is-marginless" href="/categories/Deep-Learning-paper/">
-            <span class="level-start">
-                <span class="level-item">Deep Learning paper</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">9</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/">
-            <span class="level-start">
-                <span class="level-item">Machine Learning</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">8</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Tutorial/">
-            <span class="level-start">
-                <span class="level-item">Tutorial</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">11</span>
-            </span>
-        </a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            Recent
-        </h3>
-        
-        <article class="media">
             
-            <a href="/2020/09/30/resnet_2/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/resnet_inception_v4_1.jpg" alt="Resnet (2) - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-30T05:51:04.000Z">2020-09-30</time></div>
-                    <a href="/2020/09/30/resnet_2/" class="has-link-black-ter is-size-6">Resnet (2) - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/26/resnet/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/resnet_1.jpg" alt="Resnet (1) - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-26T05:51:04.000Z">2020-09-26</time></div>
-                    <a href="/2020/09/26/resnet/" class="has-link-black-ter is-size-6">Resnet (1) - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/06/inception_v2_v3/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/inception_2.jpg" alt="Inception v2, v3 - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T11:19:18.000Z">2020-09-06</time></div>
-                    <a href="/2020/09/06/inception_v2_v3/" class="has-link-black-ter is-size-6">Inception v2, v3 - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/05/vgg/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/vgg.jpg" alt="VGG - 2014">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-05T11:19:18.000Z">2020-09-05</time></div>
-                    <a href="/2020/09/05/vgg/" class="has-link-black-ter is-size-6">VGG - 2014</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/07/30/googlenet/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/inception.jpg" alt="Inception v1 - 2014">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-07-30T11:19:18.000Z">2020-07-30</time></div>
-                    <a href="/2020/07/30/googlenet/" class="has-link-black-ter is-size-6">Inception v1 - 2014</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
         
     </div>
-</div>
+</article>
 
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            Tag Cloud
-        </h3>
-        <a href="/tags/AlexNet/" style="font-size: 10px;">AlexNet</a> <a href="/tags/Back-propagation/" style="font-size: 10px;">Back propagation</a> <a href="/tags/Batch/" style="font-size: 10px;">Batch</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Colab/" style="font-size: 10px;">Colab</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/Epoch/" style="font-size: 10px;">Epoch</a> <a href="/tags/FLOPs/" style="font-size: 10px;">FLOPs</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/GCP/" style="font-size: 10px;">GCP</a> <a href="/tags/Google-Cloud-Platform/" style="font-size: 10px;">Google Cloud Platform</a> <a href="/tags/GoogleNet/" style="font-size: 10px;">GoogleNet</a> <a href="/tags/Inception/" style="font-size: 10px;">Inception</a> <a href="/tags/Kernel/" style="font-size: 10px;">Kernel</a> <a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2/" style="font-size: 10px;">L2</a> <a href="/tags/Label-Smoothing/" style="font-size: 10px;">Label Smoothing</a> <a href="/tags/Lasso/" style="font-size: 10px;">Lasso</a> <a href="/tags/LeNet/" style="font-size: 10px;">LeNet</a> <a href="/tags/Loss-function/" style="font-size: 10px;">Loss function</a> <a href="/tags/Network-in-Network/" style="font-size: 10px;">Network in Network</a> <a href="/tags/Optimizer/" style="font-size: 10px;">Optimizer</a> <a href="/tags/Padding/" style="font-size: 10px;">Padding</a> <a href="/tags/Pooling/" style="font-size: 10px;">Pooling</a> <a href="/tags/Ridge/" style="font-size: 10px;">Ridge</a> <a href="/tags/TPU/" style="font-size: 15.71px;">TPU</a> <a href="/tags/VGG/" style="font-size: 10px;">VGG</a> <a href="/tags/ZFNet/" style="font-size: 10px;">ZFNet</a> <a href="/tags/basic/" style="font-size: 11.43px;">basic</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/bottleneck/" style="font-size: 10px;">bottleneck</a> <a href="/tags/container-ssh/" style="font-size: 10px;">container ssh</a> <a href="/tags/convex-optimisation/" style="font-size: 10px;">convex_optimisation</a> <a href="/tags/dataframe/" style="font-size: 10px;">dataframe</a> <a href="/tags/deep-learning/" style="font-size: 20px;">deep_learning</a> <a href="/tags/docker/" style="font-size: 12.86px;">docker</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/highway-network/" style="font-size: 10px;">highway network</a> <a href="/tags/inception-v2/" style="font-size: 10px;">inception v2</a> <a href="/tags/inception-v3/" style="font-size: 10px;">inception v3</a> <a href="/tags/keras/" style="font-size: 10px;">keras</a> <a href="/tags/log/" style="font-size: 10px;">log</a> <a href="/tags/logarithm/" style="font-size: 10px;">logarithm</a> <a href="/tags/loss/" style="font-size: 10px;">loss</a> <a href="/tags/machine-learning/" style="font-size: 12.86px;">machine-learning</a> <a href="/tags/machine-learning/" style="font-size: 10px;">machine_learning</a> <a href="/tags/ml/" style="font-size: 18.57px;">ml</a> <a href="/tags/mobilenet/" style="font-size: 10px;">mobilenet</a> <a href="/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/tags/pseudo-label/" style="font-size: 10px;">pseudo-label</a> <a href="/tags/regularization/" style="font-size: 10px;">regularization</a> <a href="/tags/resnet/" style="font-size: 11.43px;">resnet</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tensorflow/" style="font-size: 11.43px;">tensorflow</a> <a href="/tags/tensorflow-object-detection-api/" style="font-size: 14.29px;">tensorflow object detection api</a> <a href="/tags/tensorpack/" style="font-size: 10px;">tensorpack</a> <a href="/tags/transfer-learning/" style="font-size: 15.71px;">transfer learning</a> <a href="/tags/tutorial/" style="font-size: 17.14px;">tutorial</a> <a href="/tags/useful-info/" style="font-size: 15.71px;">useful-info</a> <a href="/tags/vgg/" style="font-size: 10px;">vgg</a>
-    </div>
-</div>
 
-    
-    
-    <br>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Natural -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4926107872672843" data-ad-slot="1904278923" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-    
-</div>
 
-            </div>
-        </div>
-    </section>
-    <footer class="footer">
-    <div class="container">
-        <div class="level">
-            <div class="level-start has-text-centered-mobile">
-                <a class="footer-logo is-block has-mb-6" href="/">
-                
-                    <img src="/images/dog.jpg" alt="Inception v1 - 2014" height="28">
-                
-                </a>
-                <p class="is-size-7">
-                &copy; 2020 Peter Cha&nbsp;
-                Powered by <a href="https://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="external nofollow noopener noreferrer">Icarus</a>
-                
-                </p>
-            </div>
-            <div class="level-end">
-            
-                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
-                
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-creative-commons"></i>
-                        
-                    </a>
-                </p>
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-creative-commons-by"></i>
-                        
-                    </a>
-                </p>
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-github"></i>
-                        
-                    </a>
-                </p>
-                
-                </div>
-            
-            </div>
-        </div>
-    </div>
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Peter Cha. All Rights Reserved.
+    </span>
 </footer>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("en");</script>
 
-
-    
-    
-    
-    <script src="/js/animation.js"></script>
-    
-
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
-    <script src="/js/gallery.js" defer></script>
-    
-
-    
-    
-
-<div id="outdated">
-    <h6>Your browser is out-of-date!</h6>
-    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" rel="external nofollow noopener noreferrer" target="_blank">Update
-            my browser now </a></p>
-    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/09/05/vgg/" data-tooltip="VGG - 2014" aria-label="PREVIOUS: VGG - 2014">
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/07/16/ZFNet/" data-tooltip="ZFNet - 2013" aria-label="NEXT: ZFNet - 2013">
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2020/07/30/googlenet/" title="Share on Facebook" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2020/07/30/googlenet/" title="Share on Twitter" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2020/07/30/googlenet/" title="Share on Google+" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="Leave a comment">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        outdatedBrowser({
-            bgColor: '#f25648',
-            color: '#ffffff',
-            lowerThan: 'flex'
-        });
-    });
-</script>
 
 
-    
-    
-<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    MathJax.Hub.Config({
-        'HTML-CSS': {
-            matchFontHeight: false
-        },
-        SVG: {
-            matchFontHeight: false
-        },
-        CommonHTML: {
-            matchFontHeight: false
-        },
-        tex2jax: {
-            inlineMath: [
-                ['$','$'],
-                ['\\(','\\)']
-            ]
-        }
-    });
-});
-</script>
-
-    
-    
-
-<a id="back-to-top" title="Back to Top" href="javascript:;">
-    <i class="fas fa-chevron-up"></i>
-</a>
-<script src="/js/back-to-top.js" defer></script>
-
-
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
-    <script src="/js/clipboard.js" defer></script>
-    
-
-    
-    
-    
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2020/07/30/googlenet/" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2020/07/30/googlenet/" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2020/07/30/googlenet/" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
 
 
-<script src="/js/main.js" defer></script>
-
-    
-    <div class="searchbox ins-search">
-    <div class="searchbox-container ins-search-container">
-        <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something...">
-            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+            
         </div>
-        <div class="searchbox-result-wrapper ins-section-wrapper">
-            <div class="ins-section-container"></div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
         </div>
+        
+            <h4 id="about-card-name">Peter Cha</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>author.job</p>
+
+            </div>
+        
+        
     </div>
 </div>
-<script>
-    (function (window) {
-        var INSIGHT_CONFIG = {
-            TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
-            },
-            CONTENT_URL: '/content.json',
-        };
-        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
-    })(window);
-</script>
-<script src="/js/insight.js" defer></script>
-<link rel="stylesheet" href="/css/search.css">
-<link rel="stylesheet" href="/css/insight.css">
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-rzzlf7xwh5hbhem4p6lp9lkt95wyxafyeomrlclykmqgqtpgasupbiy7nm53.min.js"></script>
+<!--SCRIPTS END-->
+
+
     
-<script type="text/x-mathjax-config">
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://www.stand-firm-peter.me/2020/07/30/googlenet/';
+              
+            this.page.identifier = '2020/07/30/googlenet/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'petercha90';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         tex2jax: {
             inlineMath: [ ["$","$"], ["\\(","\\)"] ],

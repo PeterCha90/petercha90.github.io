@@ -1,186 +1,258 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head><meta name="generator" content="Hexo 3.9.0">
-    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5d32dc3eba941200129ff9a8&product=sop" async="async"></script>
-    <meta charset="utf-8">
-<title>Basic Deep learning 01 - Stand firm Peter</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-<link rel="canonical" href="http://www.stand-firm-peter.me/2018/02/06/basic-deep learning-01/">
-
-
-<meta property="og:image" content="/gallery/deepimg10.jpg">
-
-
-
-<!-- <meta property="og:title" content=Basic Deep learning 01 - Stand firm Peter> -->
-<meta property="og:description" content="Peter's playground.">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({
-    google_ad_client: "ca-pub-4926107872672843",
-    enable_page_level_ads: true
-  });
-</script>
-
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "ca-pub-4926107872672843",
-          enable_page_level_ads: true
-     });
-</script>
-
-
-<link rel="alternative" href="/rss.xml" title="Basic Deep learning 01" type="application/atom+xml">
-
-
-
-<link rel="icon" href="/images/favicon.ico">
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
-
-
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Stand firm Peter">
+    <title>Basic Deep learning 01 - Stand firm Peter</title>
+    <meta name="author" content="Peter Cha">
+    
+        <meta name="keywords" content="AI,Machine Learning,">
     
     
     
-    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+        
+            <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+        
     
-
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\nDeep Learning 개념 및 용어들을 알아봅니다.\nOptimizer, Loss function, Back propagation  \n\n\n\n\nPeter ChaIntro\nDeep Learning을 사용해서 우리가 하고자 하는 일련의 과정은 결국, 우리가 만든 AI(model)가 특정 데이터를 얼마나 잘, 데이터를 구별(classification), 혹은 감지(detection)할 수 있게 할 것인가? 하는 것입니다. 물론, GAN과 같은 Unsupervised Learning에서는 말이 달라 질 수 있지만, 설명을 위해 편의상 그렇다고 생각해봅시다. \n\nAI를 학습시키고자 하는 데이터만 주면, model 스스로 ‘아, A는 이렇게 생겼구나, 이렇게 생기면 B라고 하구나’하고 그 데이터가 가지고 있는 특징(feature)을 스스로 깨우치기 원하는 거죠. 그렇게 잘 학습이 잘 되면, 한 번도 본 적은 없지만 여태껏 봐왔던 특징을 가지고 있는 새로운 이미지를 봤을 때, ‘아, 이건 A야.’혹은, ‘B야’하고 맞출 수 있게 되는 것이구요.\n\n더 쉽게 이야기 해보죠. 우리는 강아지와 고양이가 어떻게 생겼는지 우리 model에게 알려주고, 처음보는 강아지나 고양이를 봐도 그 것이 강아지인지, 고양이인지 잘 구별할 수 있었으면 좋겠습니다. 아래 그림처럼 강아지와, 고양이 그림을 엄청나게 많이 주고 우리는 우리가 만든 Model에게 ‘강아지는 이렇게 생긴거야’, ‘고양이는 이렇게 생겼단다.’하고 알려줍니다. 우리는 이 과정을 학습, 혹은 training - learning이라고 부릅니다. 그렇게 잘 학습된 모델은, 훈련할 때 본 적은 없지만, 처음 본 강아지 사진(test)을 봐도 ‘얘는 강아지네요. 고양이는 아니에요’라고 말할 수 있게 됩니다. \n\n\n\n\n(Image from KDnuggets)\n\nThe purpose of deep learning is all about the question, “How can we let our AI classify or detect the certain image or something?” Of course, there are exceptions like GAN, unspervised learning area, let’s simplify the concept for the explanation.\n\nWhat we want to do is to create the model knowing the characteristics or feature of a particular class of data, so it can answer which class the data in.\n\nLet’s talk more easily. We want to tell our model how puppies or cats look like and wish it can distinguish whether it is a puppy or a cat when it sees another puppy or another cat for the first time. As shown in the picture above, we give a lot of puppies and cats pictures to our model, and we teach the model, ‘puppy looks like this’, and ‘cat looks like this.’ This is called, learning or training. Then, as the process progresses, the model can distinguish the cat from the dog. That’s all what we are going to talk about.\n\n\nIn this post,\nDeep Learning을 이해하고, 직접 Deep Learning을 구현하고자 했을 때 필요한 기본 개념들을 정리해 보았습니다. 학습이란 무엇을 의미하는지, Optimizer는 어떤 역할을 하는 것인지, Loss function은 무엇인지, 그리고 마지막으로 Back propagation은 어떻게 진행되는지, 간단한 예시를 통해 알아보도록 하겠습니다. :) \n\nIn this post, I will talk about the basic concepts of deep learning. Let’s start to learn what Learning means, Optimizer does, Loss function is, and How the Back propagation works via a simple example. \n\n\n\n\nLearning\n특정한 값을 예측을 하고 싶다고 하면, 우리는 먼저 실제로 그러한 예측을 할 수 있는 Model이 필요합니다. 그리고, 그 모델이 예측한 값(prediction)과 실제 값(grounth truth or answer)과의 값의 차이를 loss라고 말합니다.\n\n예를 들어, 간단한 선형 모델인 y = wx을 우리가 모델로 가지고 있다고 합니다. y는 실제 정답이고 x는 input값 입니다. 이 때, w를 우리는 weight라고 부릅니다. 보통 맨 처음엔 이 w를 랜덤하게 고릅니다. w가 매우 적절하게 잘 정해져서 실제 정답인 y와 wx가 똑같은 값이 되었다면 $loss$는 0이 되겠죠!\n\n그래서 Input인 x를 주면 정답인 y를 잘 맞추려면, 당연히 우리는 이 w를 잘 맞출 필요가 있습니다. 근데 위에서 말한 것 처럼 w를 랜덤하게 시작해서는 곤란하죠. 한 번 만에 잘 맞춘다는 건 힘듭니다. \n\n그래서 우리는 학습을 진행을 함에 따라, 우리는 무엇이 됐을지 모르는 이 w값을 반복적으로 update를 시켜서, $loss$를 최소화 할 수 있게끔 만듭니다. \n\n그래서 학습이라는 것은 loss를 최소화 시키는 w 찾기! 라고 할 수 있습니다. \n\n\nWhen we predict some values, firstly we need a model that can actually do predict, and we call the difference with a prediction and an actual value, ground truch, loss.\n\nFor example, if we have a linear model y = wx, y is the answer, and x is input. Then, we call the w weight. If the weight is set very properly, then the loss will be 0!\n\nWe often choose the inital value of w randomly.\n\nAs the training proceeds, we repeatedly update this w so that we can find minimizes the loss.\n\nTherefore, Learning is finding w that minimizes the loss!\n\n\n\n\nOptimizer\n\nWeight update\n자,우리는 $loss$를 최소화시키는 $w$를 알고 싶습니다. 그럴 때, $w$가 값에따라, 그림과 같이 $loss$와 $w$의 값으로 그래프를 그렸다고 했을 때, U자로 형성됐다고 생각하고, $loss$를 최소화하는 $w$의 값으로 $w$를 update하고 싶습니다. 시작점은 편의상, 랜덤하게 정해졌다고 합시다.\n\nw값을 update시키기 위해서, 우리는 다음과 같은 공식을 씁니다. 여기서 $\\alpha$가 뜻하는 것은 learning rate라고 하는 것인데요, 보통 0.001같은 아주 작은 값이고, 그래서 다음 학습할 때 쓸 w는 지금 w와 얼마만큼 떨어져있는지정도를 의미합니다. \n$w = w - \\alpha  \\cdot \\frac {\\partial loss}{\\partial w}$\n이 w값은 미분을 하면 구할 수 있는데요, 미분의 의미는 결국 아주 작은 구간에서의 순간변화율이라고 우리가 알고 있는 만큼, 이는 미분은 곧, 기울기의 정도를 표현한다고 할 수 있죠. 이 $w$값을 구하기 위한 미분 방법은 아래에 나오는 Back Propagation을 소개하면서 다시 이야기 하도록 하겠습니다. \n\n작은 예시로, Back Propagation이 ‘내가 지금 알고 있는 지식을 가지고 대학교 졸업 후의 나로 돌아 갈 수 있다면, 훨씬 더 좋은 선택과 결정을 하면서 살 수 있을 것이다.’ 같은 겁니다. 여기서, 근데 이 learning rate을 너무 크게 설정해줘서, 필요이상으로 군 입대 하루 전으로 돌아간다면 끔찍하겠죠? 그 과거로 ‘적절히’ 돌아가야 지금 가지고 있는 정보를 십분 활용할 수 있기 때문에, 이 learning rate라는 수치가 중요합니다. \n\n\n\n\n\nLet me think we want to know the value of weigh which minimizes the loss. If we draw a graph consists of loss and w, let us consider it looks like a bowl like the image above. Then, we want to update the weight to the point which becomes the value minimizing the loss. Of course, the starting point is randomly selected.\n\nTo update the w value, we use follwing equation. alpha means learning rate which is usually very small number like 0.001, so it means that How far the next step w is from where now w is.  \n$w = w - \\alpha  \\cdot \\frac {\\partial loss}{\\partial w}$\nAs we know, the meaning of derivative is Instantaneous rate of change, inclination. Let me introduce the way how to calculate the derivative of w, later on the Back propagation part.\n\n\nSGD\n미분을 이용하여, 만약 미분 결과값이 -인 경우, w는 좀더 양수쪽으로 가게 되고, 반대로는 음수로 가는 방식으로 우리는 w를 update할 수 있습니다. 이런 update 방법을 Stochastic Gradient Descent 최적화 - 한국어로는 경사하강법 -, 또는 줄여서 SGD라고 부릅니다. \nSGD 이외에 최적화 기법으로 Adam, Adamx 등등 다양한 기법들이 있습니다만, 클래식한 이런 경사하강법의 방식의 다른 방식이라고 이해해도 크게 틀리지 않습니다.\n\n\n\n\nBy using derivative, We can update the w in this way: if the drivative value(=gradient) is minus, then w will be move toward the posivie side, and visa versa. This kind of update approach is called Stochastic Gradient Descent Optimization, or SGD for short.\nThere are other more various different Optimizers like Adam, Adamax and so on, but you might think that those are different to classical stochastic gradient descent.\n\n \n\nLoss function\n자, 그러면 위에서 설명한 loss라는 것을 계산하기 위해서는 어떤 방법을 사용할까요? \nLoss function을 설명하기 위해서, 쉬운 loss function 하나를 예시로 들어봅시다.\nMSE는 모델의 loss를 산출하는 방법 중 하나입니다. \nMSE는 Mean Squared Error의 준 말로, 문자 그대로 아래에 보이는 수식 - 예측한 값에서 실제 값을 빼고 그 차이를 제곱하여 평균을 내는 방식 - 으로 모델의 loss를 계산합니다.\n\n\n\n\nHere, what should we do to get the loss mentioned before?\n\nTo explain loss function, let’s take an easy loss function as an example.\n\nMSE is an one of ways to measure the loss of a model.\n\nThe Acronym for the Mean Square Error which is following equation. y hat is a prediction of our model, and y is a real value. So, it means simply the sum of differences between forecasts and actual values.\n\n\nBinary class에 대한 loss를 구해줘야 할 때는, MSE 보다는 BCEloss를 더 잘 씁니다. 이렇게 더 다양한 loss function들이 있습니다. \n\nThere are various other loss functions like BCEloss for binary loss, and so on.\n\n\n\n\nBack Propagation\n역전파라고도 하는, Back Progagation은 loss를 weight로 미분한 값을 계산하는 방법입니다.  \n\n예를 들어, 우리의 모델이 선형회기식인, Linear model이라고 하고, 우리의 loss function이 MSE라고 합시다. \n\n그러면 우리 모델이 loss를 구할 때 거쳐가게 될 공식은,  $loss = (\\hat y - y)^2$ 이기 때문에, 즉 $(x*w - y)^2$이 될테고,  이 식은 아래의 그림과 같이 도식화 할 수 있습니다. \n\n\nBack propagation is the way to calculate the derivate value of loss by w.\n\nFor example, our model is a linear model, and we use MSE as a loss function. Then, the gates of our model will look like following.\n\n\n\n\n\nx = 1, y = 2, 그리고 w = 1이라고 합시다. 그러면 loss를 구하는 forward path는 명백합니다.\nLet’s assume that x = 1, y = 2, and w = 1. Then, the forward path is obvious.\n\n\n\n\n\nDerivate Computation\nChain Rule에 의해서, 우리는 차근 차근 w의 미분값을 계산해 나갈 수 있습니다. \n$loss\\text{ } function$ 공식에서 사용하는 operator 하나를, 하나의 gate라고 생각할 때, 각 gate마다 input으로 들어오게 되는 그 값이 최종 $loss$ 가 산출되는데 얼마만큼이나 기여를 하나. 하는 정도가 곧 우리가 미분을 하는 이유입니다. \n그래서 결국은 그렇게 w가 $loss\\text{ } function$에서 input으로 들어가게 될 때의 미분값을 구하면, 그 것은 즉, w가 loss를 구하는데 얼마나 영향을 미치는가(= 기울기)라는 의미가 됩니다. :D\nBack Propagation은 가장 우측의 gate와 함께 loss로부터 시작합니다. \n\n\n\n\nBy using Chain Rule, we can calculate the derivative value of w, step by step. \nLet us consider the each operator in the loss function is a gate, then, we are going to calculate how much this input of each gate contributes to the loss. That’s the reason why we do the derivative calculation.\nSo, at last, we can get the derivative of w as an input of a gate, it means the amount of contribution of w to the final loss value. :D\nThe back propagation starts from the loss with rightmost local gate. \n\n\n\n$x^2$ gate\n$loss$인 1은 s인 -1을 제곱해서 나온 값이니까요, $loss = s^2$ 으로 생각할 수 있습니다. loss를 제곱 gate로 미분한 다는 의미의  $\\frac{\\partial loss} {\\partial s}$라는 식은 곧, $\\frac{\\partial s^2} {\\partial s}$라는 식과 같다고 생각할 수 있습니다. \n$\\frac{\\partial loss} {\\partial s}$ =  $\\frac{\\partial s^2} {\\partial s}$\n$s^2$을 $s$로 미분한거죠! 그러면 $\\frac{\\partial s^2} {\\partial s} = 2s$ 이기 때문에, 우리가 알고 있는 s = -1를 대입하면, $x^2$gate의 local gradient는 -2가 됩니다. \n\n\n\n\n\n$loss$ is 1, and s is -1, so, the local derative of square gate is -2.\n$\\frac{\\partial loss} {\\partial s}$ = $\\frac{\\partial s^2} {\\partial s} = 2s$  Again, s is -1. Therefore, the local gradient of - gate is -2.\n\n\n\n\n$-$ gate\n$x^2$gate에서 -2가 - gate에 $loss$로 들어왔습니다. 그리고 그 - gate의 계산결과는 s인, -1 이었구요. 자, 이제 Chain Rule을 사용해서 - gate의 local gradient를 구해볼까요? \n\n우리는, Chain Rule에 의해서, - gate의 local gradient를 아래와 같은 식으로 표현할 수 있습니다.\n$\\frac{\\partial loss} {\\partial \\hat y} = \\frac{\\partial loss}{\\partial s}\\frac {\\partial s}{ \\partial \\hat y} \\Rightarrow -2\\cdot\\frac {\\partial \\hat y - \\partial y}{\\partial \\hat y} = -2\\cdot1 = -2$\n$\\frac{\\partial loss}{\\partial s}$은 -2라는 것을 $x^2$ gate에서 이미 알고 있기때문에, 나머지, s를, $\\hat y$로 미분한 결과만 계산해서 곱하면 끝납니다. s는 $\\hat y - y$ 라는 식의 결과나 마찬가지었으니, 치환해서 생각하면 편하구요. \n\n그래서 결과는 -gate에서도 여전히 local gradient는 -2가 되군요!\n\n\n\n\n\n\n\n-2 is passed to the - gate as loss. In the - gate, $y$ is a constant value and $\\hat y$ is 1, so the derivative is -2.\nWe already know that $\\frac{\\partial loss}{\\partial s}$ = -2, so, the thing we need to do is to calculate the $\\frac {\\partial \\hat y - \\partial y}{\\partial \\hat y}$.$\\frac{\\partial loss} {\\partial \\hat y} = \\frac{\\partial loss}{\\partial s}\\frac {\\partial s}{ \\partial \\hat y} \\Rightarrow -2\\cdot\\frac {\\partial \\hat y - \\partial y}{\\partial \\hat y} = -2\\cdot1 = -2$\n\n\n\n$*$  gate\n자 이제 마지막으로, w가 input으로 들어간 * gate의 local gradient를 계산하고 w의 gradient를 계산하는 과정을 끝냅시다. \n\n-gate에서 -2가 $loss$로 넘어왔고, 또 다시, 우리는 위와 같은 방법으로 Chain Rule을 쓰면, \n$\\frac {\\partial loss}{\\partial w} = \\frac{\\partial loss}{\\partial \\hat y}\\frac{\\partial \\hat y}{\\partial w}$  로, 표현할 수 있고, 또 우린 이미 $\\frac{\\partial loss}{\\partial \\hat y}$ = -2 라는 것을 알고 있습니다. \n\n그래서 여기서 $\\hat y$를 의미하는 식인 $wx$를 $w$로 미분한 값만 알면되는데, 그 값은 $x$이므로 그냥 x였던, 1를 넣어주면, $loss$에 대한 w의 미분값이 -2라는 결과를 얻습니다. 이런 식으로 우리는 w의 미분값을 계산해 나가면서, $loss$가 최소가 되는 w를 찾습니다. \n\n\n\n\n\n\n\nLet’s finish this process with calculating the local gradient of the * gate.\nAs we know, -2 is given from the - gate, so, as the same way, using the Chain Rule again, we can write the equation like following.$\\frac {\\partial loss}{\\partial w} = \\frac{\\partial loss}{\\partial \\hat y}\\frac{\\partial \\hat y}{\\partial w}$\nWe already know the value of $\\frac{\\partial loss}{\\partial \\hat y}$ is -2, so, we just put the value of derivative of $wx$ with $w$, 1.\nThen, at last, we can know the derivative value of w is -2. In this way, we can find the weight point where the loss becomes minimum.\n\nUpdate weight\n그렇게 계산이 끝난 W의 loss를 어떻게 update해줄까요? 아래 보시는 것처럼 단순히 $w = w - learning{:} rate * w.loss$ 로 Update를 하게 됩니다. 아래 예시에서는 learning rate로 0.01을 줬네요.\n이것으로 Back Propagation에 대한 설명을 마치도록 하겠습니다. \n\n\n\n\n\n\n\n\nThen, how to update calculated weight’s loss? Simply we can calculate simply like this. $w = w - learning{:} rate * w.loss$ . In the example above, it used 0.01 as a learning rate.\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2018-02-06T23:31:02+09:00","dateModified":"2019-08-13T13:49:44+09:00","datePublished":"2018-02-06T23:31:02+09:00","description":"\nDeep Learning 개념 및 용어들을 알아봅니다.\nOptimizer, Loss function, Back propagation  \n","headline":"Basic Deep learning 01","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/","keywords":"ml, tutorial, deep_learning, basic, Optimizer, Loss function, Back propagation"}</script>
+    <meta name="description" content="Deep Learning 개념 및 용어들을 알아봅니다. Optimizer, Loss function, Back propagation">
+<meta name="keywords" content="ml,tutorial,deep_learning,basic,Optimizer,Loss function,Back propagation">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="Basic Deep learning 01">
+<meta property="og:url" content="http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/index.html">
+<meta property="og:site_name" content="Stand firm Peter">
+<meta property="og:description" content="Deep Learning 개념 및 용어들을 알아봅니다. Optimizer, Loss function, Back propagation">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/Model.jpg">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/gradient_descent_algorithm.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/mse.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/backprop1.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/forward.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/backward.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/backward.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/backprop.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/backprop_last.png">
+<meta property="og:updated_time" content="2019-08-13T04:49:44.859Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Basic Deep learning 01">
+<meta name="twitter:description" content="Deep Learning 개념 및 용어들을 알아봅니다. Optimizer, Loss function, Back propagation">
+<meta name="twitter:image" content="http://www.stand-firm-peter.me/gallery/Model.jpg">
     
     
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
-    
-
-    
-    
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
-
-
+        
     
     
     
     
-
-<link rel="stylesheet" href="/css/back-to-top.css">
-
-
     
-    
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-124184693-1');
-</script>
-
-
-    
-    
-    
-    
-<link rel="stylesheet" href="/css/progressbar.css">
-<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
-
-    
-    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
+    <!--STYLES END-->
     
 
     
-    
-    
 
-
-<link rel="stylesheet" href="/css/style.css">
+    
+        
+    
 </head>
-<body class="is-2-column">
-    <nav class="navbar navbar-main">
-    <div class="container">
-        <div class="navbar-brand is-flex-center">
-            <a class="navbar-item navbar-logo" href="/">
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/" aria-label>
+            Stand firm Peter
+        </a>
+    </div>
+    
+        
+            <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
             
-                <img src="/images/dog.jpg" alt="Basic Deep learning 01" height="28">
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/" rel="noopener" title="Home">
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
             
-            </a>
-        </div>
-        <div class="navbar-menu">
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" rel="noopener" title="Categories">
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
             
-            <div class="navbar-start">
-                
-                <a class="navbar-item" href="/">Home</a>
-                
-                <a class="navbar-item" href="/archives">Archives</a>
-                
-                <a class="navbar-item" href="/categories">Categories</a>
-                
-                <a class="navbar-item" href="/tags">Tags</a>
-                
-            </div>
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" rel="noopener" title="Tags">
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
             
-            <div class="navbar-end">
-                
-                
-                
-                <a class="navbar-item search" title="Search" href="javascript:;">
-                    <i class="fas fa-search"></i>
-                </a>
-                
-            </div>
-        </div>
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google +</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
     </div>
 </nav>
-    
-    <section class="section">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-8-tablet is-8-desktop is-8-widescreen has-order-2 column-main"><div class="card">
-    
-    <div class="card-image">
-        <span class="image is-7by1">
-            <img class="thumbnail" src="/gallery/deepimg10.jpg" alt="Basic Deep learning 01">
-        </span>
-    </div>
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2018-02-06T14:31:02.000Z">2018-02-06</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Machine-Learning/">Machine Learning</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    25 minutes read (About 3784 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+
             
-                Basic Deep learning 01
-            
+            <div id="main" data-behavior="4" class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            Basic Deep learning 01
         </h1>
-        <div class="content">
+    
+    
+        <div class="post-meta">
+    <time datetime="2018-02-06T23:31:02+09:00">
+	
+		    Feb 06, 2018
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Machine-Learning/">Machine Learning</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
             <ul>
 <li>Deep Learning 개념 및 용어들을 알아봅니다.</li>
 <li><code>Optimizer</code>, <code>Loss function</code>, <code>Back propagation</code>  </li>
@@ -424,449 +496,284 @@
             document.body.appendChild(img);
           });
       </script>
+            
+
+
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-        <center><p>이 글이 독자님께 도움이 되었다면,</p><p>광고 한 번 클릭해 주시면 감사하겠습니다. &#128521;</p></center>
-        <br>
-        <div id="bmc" align="center">
-            <style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#000000 !important;background-color:#FFDD00 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#000000 !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/petercha" rel="external nofollow noopener noreferrer"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px">Buy me a coffee</span></a>
-        </div>
-        
-        
-            <p><br></p>
-            <div class="level is-size-7 is-uppercase">
-                <div class="level-start">
-                    <div class="level-item">
-                        <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                        <a class="has-link-grey -link" href="/tags/Back-propagation/">Back propagation</a>, <a class="has-link-grey -link" href="/tags/Loss-function/">Loss function</a>, <a class="has-link-grey -link" href="/tags/Optimizer/">Optimizer</a>, <a class="has-link-grey -link" href="/tags/basic/">basic</a>, <a class="has-link-grey -link" href="/tags/deep-learning/">deep_learning</a>, <a class="has-link-grey -link" href="/tags/ml/">ml</a>, <a class="has-link-grey -link" href="/tags/tutorial/">tutorial</a>
-                    </div>
-                </div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/Back-propagation/">Back propagation</a> <a class="tag tag--primary tag--small t-link" href="/tags/Loss-function/">Loss function</a> <a class="tag tag--primary tag--small t-link" href="/tags/Optimizer/">Optimizer</a> <a class="tag tag--primary tag--small t-link" href="/tags/basic/">basic</a> <a class="tag tag--primary tag--small t-link" href="/tags/deep-learning/">deep_learning</a> <a class="tag tag--primary tag--small t-link" href="/tags/ml/">ml</a> <a class="tag tag--primary tag--small t-link" href="/tags/tutorial/">tutorial</a>
+
             </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/04/06/Basic-Deep-Learning-02/" data-tooltip="Basic Deep learning 02" aria-label="PREVIOUS: Basic Deep learning 02">
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/Start/" data-tooltip="How to create a Hexo Blog" aria-label="NEXT: How to create a Hexo Blog">
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" title="Share on Facebook" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" title="Share on Twitter" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" title="Share on Google+" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="Leave a comment">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
             
         
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Natural -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4926107872672843" data-ad-slot="1904278923" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-        <br>
-        
-<div class="sharethis-inline-share-buttons"></div>
-<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5d32dc3eba941200129ff9a8&amp;product=custom-share-buttons" async="async"></script>
-
-        
-        
-    </div>
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
 </div>
 
 
-
-
-
-
-
-<div class="card card-transparent">
-    <div class="level post-navigation is-flex-wrap is-mobile">
-        
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2018/04/06/Basic-Deep-Learning-02/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">Basic Deep learning 02</span>
-            </a>
-        </div>
         
         
-        <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2018/01/06/Start/">
-                <span class="level-item">How to create a Hexo Blog</span>
-                <i class="level-item fas fa-chevron-right"></i>
-            </a>
-        </div>
-        
-    </div>
-</div>
-
-
-
-<div class="card">
-    <div class="card-content">
-        <h3 class="title is-5 has-text-weight-normal">Comments</h3>
-        
-<script>
-    var disqus_config = function () {
-        this.page.url = 'http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/';
-        this.page.identifier = '2018/02/06/Basic-Deep learning-01/';
-    };
-    (function() {
-        var d = document, s = d.createElement('script');  
-        s.src = '//' + 'petercha90' + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-
-<div id="disqus_thread">
-    
+            
+                <div id="disqus_thread">
     <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-    </div>
-</div>
-</div>
-                
-                
-
-
-
-
-<div class="column is-4-tablet is-4-desktop is-4-widescreen  has-order-3 column-right ">
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <div class="menu">
-            <h3 class="menu-label">
-                Categories
-            </h3>
-            <ul class="menu-list">
-            <li>
-        <a class="level is-marginless" href="/categories/Deep-Learning-paper/">
-            <span class="level-start">
-                <span class="level-item">Deep Learning paper</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">9</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/">
-            <span class="level-start">
-                <span class="level-item">Machine Learning</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">8</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Tutorial/">
-            <span class="level-start">
-                <span class="level-item">Tutorial</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">11</span>
-            </span>
-        </a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            Recent
-        </h3>
-        
-        <article class="media">
             
-            <a href="/2020/09/30/resnet_2/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/resnet_inception_v4_1.jpg" alt="Resnet (2) - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-30T05:51:04.000Z">2020-09-30</time></div>
-                    <a href="/2020/09/30/resnet_2/" class="has-link-black-ter is-size-6">Resnet (2) - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/26/resnet/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/resnet_1.jpg" alt="Resnet (1) - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-26T05:51:04.000Z">2020-09-26</time></div>
-                    <a href="/2020/09/26/resnet/" class="has-link-black-ter is-size-6">Resnet (1) - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/06/inception_v2_v3/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/inception_2.jpg" alt="Inception v2, v3 - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T11:19:18.000Z">2020-09-06</time></div>
-                    <a href="/2020/09/06/inception_v2_v3/" class="has-link-black-ter is-size-6">Inception v2, v3 - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/05/vgg/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/vgg.jpg" alt="VGG - 2014">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-05T11:19:18.000Z">2020-09-05</time></div>
-                    <a href="/2020/09/05/vgg/" class="has-link-black-ter is-size-6">VGG - 2014</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/07/30/googlenet/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/inception.jpg" alt="Inception v1 - 2014">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-07-30T11:19:18.000Z">2020-07-30</time></div>
-                    <a href="/2020/07/30/googlenet/" class="has-link-black-ter is-size-6">Inception v1 - 2014</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
         
     </div>
-</div>
+</article>
 
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            Tag Cloud
-        </h3>
-        <a href="/tags/AlexNet/" style="font-size: 10px;">AlexNet</a> <a href="/tags/Back-propagation/" style="font-size: 10px;">Back propagation</a> <a href="/tags/Batch/" style="font-size: 10px;">Batch</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Colab/" style="font-size: 10px;">Colab</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/Epoch/" style="font-size: 10px;">Epoch</a> <a href="/tags/FLOPs/" style="font-size: 10px;">FLOPs</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/GCP/" style="font-size: 10px;">GCP</a> <a href="/tags/Google-Cloud-Platform/" style="font-size: 10px;">Google Cloud Platform</a> <a href="/tags/GoogleNet/" style="font-size: 10px;">GoogleNet</a> <a href="/tags/Inception/" style="font-size: 10px;">Inception</a> <a href="/tags/Kernel/" style="font-size: 10px;">Kernel</a> <a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2/" style="font-size: 10px;">L2</a> <a href="/tags/Label-Smoothing/" style="font-size: 10px;">Label Smoothing</a> <a href="/tags/Lasso/" style="font-size: 10px;">Lasso</a> <a href="/tags/LeNet/" style="font-size: 10px;">LeNet</a> <a href="/tags/Loss-function/" style="font-size: 10px;">Loss function</a> <a href="/tags/Network-in-Network/" style="font-size: 10px;">Network in Network</a> <a href="/tags/Optimizer/" style="font-size: 10px;">Optimizer</a> <a href="/tags/Padding/" style="font-size: 10px;">Padding</a> <a href="/tags/Pooling/" style="font-size: 10px;">Pooling</a> <a href="/tags/Ridge/" style="font-size: 10px;">Ridge</a> <a href="/tags/TPU/" style="font-size: 15.71px;">TPU</a> <a href="/tags/VGG/" style="font-size: 10px;">VGG</a> <a href="/tags/ZFNet/" style="font-size: 10px;">ZFNet</a> <a href="/tags/basic/" style="font-size: 11.43px;">basic</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/bottleneck/" style="font-size: 10px;">bottleneck</a> <a href="/tags/container-ssh/" style="font-size: 10px;">container ssh</a> <a href="/tags/convex-optimisation/" style="font-size: 10px;">convex_optimisation</a> <a href="/tags/dataframe/" style="font-size: 10px;">dataframe</a> <a href="/tags/deep-learning/" style="font-size: 20px;">deep_learning</a> <a href="/tags/docker/" style="font-size: 12.86px;">docker</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/highway-network/" style="font-size: 10px;">highway network</a> <a href="/tags/inception-v2/" style="font-size: 10px;">inception v2</a> <a href="/tags/inception-v3/" style="font-size: 10px;">inception v3</a> <a href="/tags/keras/" style="font-size: 10px;">keras</a> <a href="/tags/log/" style="font-size: 10px;">log</a> <a href="/tags/logarithm/" style="font-size: 10px;">logarithm</a> <a href="/tags/loss/" style="font-size: 10px;">loss</a> <a href="/tags/machine-learning/" style="font-size: 12.86px;">machine-learning</a> <a href="/tags/machine-learning/" style="font-size: 10px;">machine_learning</a> <a href="/tags/ml/" style="font-size: 18.57px;">ml</a> <a href="/tags/mobilenet/" style="font-size: 10px;">mobilenet</a> <a href="/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/tags/pseudo-label/" style="font-size: 10px;">pseudo-label</a> <a href="/tags/regularization/" style="font-size: 10px;">regularization</a> <a href="/tags/resnet/" style="font-size: 11.43px;">resnet</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tensorflow/" style="font-size: 11.43px;">tensorflow</a> <a href="/tags/tensorflow-object-detection-api/" style="font-size: 14.29px;">tensorflow object detection api</a> <a href="/tags/tensorpack/" style="font-size: 10px;">tensorpack</a> <a href="/tags/transfer-learning/" style="font-size: 15.71px;">transfer learning</a> <a href="/tags/tutorial/" style="font-size: 17.14px;">tutorial</a> <a href="/tags/useful-info/" style="font-size: 15.71px;">useful-info</a> <a href="/tags/vgg/" style="font-size: 10px;">vgg</a>
-    </div>
-</div>
 
-    
-    
-    <br>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Natural -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4926107872672843" data-ad-slot="1904278923" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-    
-</div>
 
-            </div>
-        </div>
-    </section>
-    <footer class="footer">
-    <div class="container">
-        <div class="level">
-            <div class="level-start has-text-centered-mobile">
-                <a class="footer-logo is-block has-mb-6" href="/">
-                
-                    <img src="/images/dog.jpg" alt="Basic Deep learning 01" height="28">
-                
-                </a>
-                <p class="is-size-7">
-                &copy; 2020 Peter Cha&nbsp;
-                Powered by <a href="https://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="external nofollow noopener noreferrer">Icarus</a>
-                
-                </p>
-            </div>
-            <div class="level-end">
-            
-                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
-                
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-creative-commons"></i>
-                        
-                    </a>
-                </p>
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-creative-commons-by"></i>
-                        
-                    </a>
-                </p>
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-github"></i>
-                        
-                    </a>
-                </p>
-                
-                </div>
-            
-            </div>
-        </div>
-    </div>
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Peter Cha. All Rights Reserved.
+    </span>
 </footer>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("en");</script>
 
-
-    
-    
-    
-    <script src="/js/animation.js"></script>
-    
-
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
-    <script src="/js/gallery.js" defer></script>
-    
-
-    
-    
-
-<div id="outdated">
-    <h6>Your browser is out-of-date!</h6>
-    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" rel="external nofollow noopener noreferrer" target="_blank">Update
-            my browser now </a></p>
-    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/04/06/Basic-Deep-Learning-02/" data-tooltip="Basic Deep learning 02" aria-label="PREVIOUS: Basic Deep learning 02">
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2018/01/06/Start/" data-tooltip="How to create a Hexo Blog" aria-label="NEXT: How to create a Hexo Blog">
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" title="Share on Facebook" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" title="Share on Twitter" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" title="Share on Google+" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="Leave a comment">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        outdatedBrowser({
-            bgColor: '#f25648',
-            color: '#ffffff',
-            lowerThan: 'flex'
-        });
-    });
-</script>
 
 
-    
-    
-<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    MathJax.Hub.Config({
-        'HTML-CSS': {
-            matchFontHeight: false
-        },
-        SVG: {
-            matchFontHeight: false
-        },
-        CommonHTML: {
-            matchFontHeight: false
-        },
-        tex2jax: {
-            inlineMath: [
-                ['$','$'],
-                ['\\(','\\)']
-            ]
-        }
-    });
-});
-</script>
-
-    
-    
-
-<a id="back-to-top" title="Back to Top" href="javascript:;">
-    <i class="fas fa-chevron-up"></i>
-</a>
-<script src="/js/back-to-top.js" defer></script>
-
-
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
-    <script src="/js/clipboard.js" defer></script>
-    
-
-    
-    
-    
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
 
 
-<script src="/js/main.js" defer></script>
-
-    
-    <div class="searchbox ins-search">
-    <div class="searchbox-container ins-search-container">
-        <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something...">
-            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+            
         </div>
-        <div class="searchbox-result-wrapper ins-section-wrapper">
-            <div class="ins-section-container"></div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
         </div>
+        
+            <h4 id="about-card-name">Peter Cha</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>author.job</p>
+
+            </div>
+        
+        
     </div>
 </div>
-<script>
-    (function (window) {
-        var INSIGHT_CONFIG = {
-            TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
-            },
-            CONTENT_URL: '/content.json',
-        };
-        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
-    })(window);
-</script>
-<script src="/js/insight.js" defer></script>
-<link rel="stylesheet" href="/css/search.css">
-<link rel="stylesheet" href="/css/insight.css">
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-rzzlf7xwh5hbhem4p6lp9lkt95wyxafyeomrlclykmqgqtpgasupbiy7nm53.min.js"></script>
+<!--SCRIPTS END-->
+
+
     
-<script type="text/x-mathjax-config">
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://www.stand-firm-peter.me/2018/02/06/Basic-Deep learning-01/';
+              
+            this.page.identifier = '2018/02/06/Basic-Deep learning-01/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'petercha90';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         tex2jax: {
             inlineMath: [ ["$","$"], ["\\(","\\)"] ],

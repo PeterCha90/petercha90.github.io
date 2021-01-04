@@ -8,16 +8,72 @@
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/2020/09/30/resnet_2/</loc>
-        <lastmod>2020-10-02T14:19:18.409Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/2020/09/26/resnet/</loc>
+        <lastmod>2021-01-04T16:24:08.525Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/2020/09/26/resnet/</loc>
-        <lastmod>2020-10-02T07:40:17.236Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/2018/09/24/l1l2/</loc>
+        <lastmod>2021-01-04T16:22:26.124Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2019/02/16/pandas-101/</loc>
+        <lastmod>2021-01-04T16:21:56.144Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/</loc>
+        <lastmod>2021-01-04T16:21:34.846Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2019/08/11/mobilenet/</loc>
+        <lastmod>2021-01-04T16:18:51.938Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2020/07/30/googlenet/</loc>
+        <lastmod>2021-01-04T16:18:29.426Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2020/07/09/AlexNet/</loc>
+        <lastmod>2021-01-04T16:18:28.105Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2020/09/30/resnet_2/</loc>
+        <lastmod>2021-01-04T16:02:18.730Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2020/09/06/inception_v2_v3/</loc>
+        <lastmod>2020-10-02T15:22:42.622Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -32,32 +88,8 @@
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/2020/09/06/inception_v2_v3/</loc>
-        <lastmod>2020-09-11T08:37:01.592Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/07/30/googlenet/</loc>
-        <lastmod>2020-09-05T06:44:41.005Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://www.stand-firm-peter.me/2020/01/19/HowtoUse_Google_CloudTPU_1/</loc>
         <lastmod>2020-08-14T01:58:05.826Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/07/09/AlexNet/</loc>
-        <lastmod>2020-07-19T14:42:52.120Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -120,14 +152,6 @@
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/</loc>
-        <lastmod>2020-01-14T01:46:00.320Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://www.stand-firm-peter.me/2019/06/12/keras_101/</loc>
         <lastmod>2019-08-25T08:05:55.906Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -152,24 +176,8 @@
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/2019/08/11/mobilenet/</loc>
-        <lastmod>2019-08-14T11:25:55.684Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://www.stand-firm-peter.me/2018/08/22/pseudo-label/</loc>
         <lastmod>2019-08-13T04:50:15.057Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2018/09/24/l1l2/</loc>
-        <lastmod>2019-08-13T04:50:06.483Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -218,14 +226,6 @@
     <url>
         <loc>http://www.stand-firm-peter.me/2018/01/06/Start/</loc>
         <lastmod>2019-07-20T12:41:33.316Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2019/02/16/pandas-101/</loc>
-        <lastmod>2019-07-20T12:41:20.131Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 

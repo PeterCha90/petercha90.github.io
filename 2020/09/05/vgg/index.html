@@ -1,186 +1,253 @@
+
 <!DOCTYPE html>
 <html lang="en">
-<head><meta name="generator" content="Hexo 3.9.0">
-    <script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5d32dc3eba941200129ff9a8&product=sop" async="async"></script>
-    <meta charset="utf-8">
-<title>VGG - 2014 - Stand firm Peter</title>
-<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-
-<link rel="canonical" href="http://www.stand-firm-peter.me/2020/09/05/vgg/">
-
-
-<meta property="og:image" content="/gallery/vgg.jpg">
-
-
-
-<!-- <meta property="og:title" content=VGG - 2014 - Stand firm Peter> -->
-<meta property="og:description" content="Peter's playground.">
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.2/MathJax.js?config=TeX-MML-AM_CHTML"></script>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-  (adsbygoogle = window.adsbygoogle || []).push({
-    google_ad_client: "ca-pub-4926107872672843",
-    enable_page_level_ads: true
-  });
-</script>
-
-
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({
-          google_ad_client: "ca-pub-4926107872672843",
-          enable_page_level_ads: true
-     });
-</script>
-
-
-<link rel="alternative" href="/rss.xml" title="VGG - 2014" type="application/atom+xml">
-
-
-
-<link rel="icon" href="/images/favicon.ico">
-
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.7.2/css/bulma.css">
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.4.1/css/all.css">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:400,600|Source+Code+Pro">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-light.css">
-
-
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Stand firm Peter">
+    <title>VGG - 2014 - Stand firm Peter</title>
+    <meta name="author" content="Peter Cha">
+    
+        <meta name="keywords" content="AI,Machine Learning,">
     
     
     
-    <style>body>.footer,body>.navbar,body>.section{opacity:0}</style>
+        
+            <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
+        
     
-
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"articleBody":"\n뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을..\n심플한 구조로 많은 사랑을 받은 VGG 리뷰!\n\n\n\n\n심플한 구조로 많은 사랑을 받은 VGG 리뷰 입니다. :) VGG라는 이름의 뜻은 저자인 Karen Simonyan과 Andrew Zisserman이 속한 Oxford 그룹의 이름이 Visual Geometry Group이어서 그 앞글자를 딴 것이라고 하네요!\n바로 이전에 리뷰했던 GoogleNet v1과 같이 ImageNet 2014 Challange에서 활약을 해서 유명해 졌는데, 이 때, VGG는 localisation에서는 1위, Classification은 GoogleNet v1에 밀려 2위를 하게 됩니다. \nGoogleNet v1은 이후 Inception v2, v3, v4으로 발전이 되는데요, 그 이유 중에 하나가 ImageNet 2014에서 VGG를 제치고 1위를 했음에도 불구하고, 그 복잡한 구조 때문에 많은 연구자들이 비교적 빠르게 실험을 할 수 있는 VGG를 더 많이 사랑하면서 생긴 이유도 어느 정도는 있다고 하는 풍문..🌝\n\n\n\n1. Introduction\nVGG는 논문에서 태초의 AlexNet에서 Receptive Field를 작게 가져가고 Stride를 줄여 성능을 올린 ZFNet. \nMax pooling으로 정보손실이 너무 많으니까, Max pooling을 하긴 하는데 Stride를 더 작게 가져가서 정보를 더 많이 담은 FeatureMap을 생성하자!(는게 제가 느낀 핵심..)인 Sermanet et al.의 OverFeat이라는 논문. \n그리고 마지막로 다양한 위치의 이미지 정보를 활용하는 것이 성능을 올릴 수 있다는 것을 증명한 Howard씨가 쓴 Some-Improvements-on-Deep-Convolutional-Neural을 언급하면서, 딥러닝의 발전을 언급합니다. \n위의 언급한 발전들에 영감을 받았는지, 3x3이라는 작은 Conv filter만! 사용하면서, 정보는 최대한 많이 담아가는. 그리고 동시에 더 ‘깊은’ 구조를 가지고 있는 VGG가 탄생합니다. \n\n\n\n\n2. Convnet Configurations2.1. Architecture 🏗\nConvNet의 Depth를 늘리는 것이 어떤 발전을 가져다 주는지를 확실히 비교하기 위해서 모든 ConvNet의 구성을 ConvNet Layer의 수를 제외하고는 모두 똑같이 맞춥니다!\n모든 VGG 모델들은 layer의 수만 다르고 다 아래와 같은 공통점을 가지고 있습니다. \n\n\nVGG Architecture\n\nInput size: 224 x 224 RGB\nPreprocessing으로 mean RGB 값은 빼 줌.\nConv filter Size: 3 x 3 (좌우, 위아래, 중앙의 정보를 구별할 수 있는 가장 작은 형태)\n기본적으로 3x3 Conv는 1 padding으로 사이즈를 줄지 않게.\nReLU for nonlinearity.\n5번의 Max-pooling 2x2 with stride 2로 이미지 줄이기.\nConv Layer stack이 끝나면 3개의 FC layers + Softmax.\n\n\n2.2. Configurations ✨\n8 Conv + 3 FC layers 구성의 A type부터, 16 conv layers + 3 fc layers 구성의 E까지, 그 깊이를 다르게 해서 다양한 구성을 합니다. \nA-LRN에서 LRN은, Local Response Normalisation이라는 것으로, 이전 AlexNet 포스팅에서 다룬 개념인데요, 근접한 커널들을 정규화 해주면서 좀 더 뉴런들이 튈 수 있는(?) 특징을 만들어 내게 경쟁을 시키려는 의도를 가지고 있습니다. 하지만 논문에서는 메모리와 계산시간만 많이 잡아 먹을뿐, 별 효과는 없었다고 하네요. \n또한 C type에서는 linear transforamtion을 의미하는 1x1 conv를 써보기도 합니다. \n\n\n  \n    \n      VGG ConvNet configurations\n  \n\n\n\n\n2.3. Discussion 💬\n아무래도 이 부분이 제일 저는 재밌었습니다. 총 3가지 화두가 있습니다.\n\n2.3.1. 3x3 filter의 효과\nAlexNet의 11x11 + stride 4의 무지막지한 첫 번째 Conv Layer와, 그 다음에 크기를 줄여서 성능향상을 도모하긴 했지만, 그래도 크게 느껴지는 7x7 + stride 2의 레이어를 언급하면서 3x3 필터를 사용한 이유에 대해서 설명합니다. 3x3 Conv layer 두개를 겹치면 5x5 Conv layer 효과를 내고, 3개를 겹치면 7x7의 효과를 낼 수 있다는 것이지요. \n아래 그림과 같이 5x5 이미지가 있다고 했을 때, 3x3 filter를 먼저 적용하면 (stride 1) 그 결과 3x3 feature map이 생성이 되고, 그 3x3을 3x3 kernel을 또 한 번 통과하면 처음 이미지에서 5x5 filter를 한 번 통과시킨 것과 같은 결과를 마주 할 수 있게 됩니다😏 7x7은 같은 방식으로 3x3을 세 번 통과한 것일테구요! \n\n\n  \n    \n      Two 3x3 Convs have a 5x5 filter effect.\n  \n\n\n\n7x7 filter를 사용했다면 필요한 학습해야 하는 parameter는 channel을 $C$만큼 가지고 있다고하면, $7^2C^2 = 49C^2$개이지만, 3x3 filter를 사용한다면, $3(3^2C^2) = 27C^2$일 뿐이므로 45% 정도나 절약할 수 있습니다! 이는 큰 차이죠. \n\n단순히 계산량만 줄인 것이 아니라, 결과적으로 3x3 filter를 여러번 쓰는만큼, ReLU와 같은 non-linearity가 더 추가되는 결과로 이어지기 때문에, 모델의 표현력 또한 좋아집니다! 이는 마치 7x7짜리 필터의 설명력은 3x3로 더 많이 분해해서 설명하는 것과 같습니다.👍 \n\n\n2.3.2. Why 1x1 Conv?\nC type에서 1x1는 왜 들어가 있지?하는 질문을 할 수 있습니다. 차원을 굳이 1x1으로 맞춰준 이유는, input으로 들어오는 정보는 최대한 건드리지 않으면서 Network in Network에서 말했듯이, non-linearity만 더 추가해보는 실험이었다고 이해할 수 있습니다. \n\n2.3.3. 깊게 가져가는 것이 좋은 것이여\n2014년 당시, Goodfellow의 deep ConvNets (11개 레이어)와 GoogleNet을 언급하면서 더 깊은 레이어들이 더 좋은 성능을 입증하고 있다는 것을 말하고 있습니다. \n다만, 구글넷의 구조는 너무 복잡하다고 말하면서, 아무래도 모델이 너무 필요이상으로 복잡하면 오버피팅에 상대적으로 약하기 때문인지 자신들이 Single Network 성능으로만 본다면 Classification에서도 성능이 훨씬 더 좋다고 말합니다. 😏 \n\n3. Training 🏃\nVGG 모델 자체에 대한 정보라기 보다는, Preprocessing 및 Post Processing에 관한 이야기라고 판단이 되어서, VGG를 어떻게 학습하고 평가했는지에 대한 세부적인 내용은 본 블로그에서는 다루지 않겠습니다. :) 논문에서 아주 자세하게 설명해주고 있으니 관심 있는 분들은 직접 논문을 살펴 보시는 것도 좋을 것 같습니다.\n간단히 말하자면 도입부에서 언급한 Some-Improvements-on-Deep-Convolutional-Neural이라는 논문의 영향으로, 다양한 스케일의 이미지와 다양한 위치의 Cropped 이미지를 사용해서 성능을 높이는 Augmentation에 관한 영역이라고 소개할 수 있겠습니다. \n\n4. Results 🙌\nILSVRC-2012 dataset에 대한 실험결과, 다양한 type의 VGG들의 성능은 확실히 19 layers를 가지고 있는 E type으로 갈수록 좋아집니다. \n\n\n  \n    \n      \n  \n\n\n\n그리고, 2.3.3.에서 말했던 것처럼, Ensemble을 사용하지 않은 단일 모델의 성능으로만 보면, VGG가 더 좋다는 것을 말미에서 꼭 넣어서 증명해주고 있습니다. \n\n\n  \n    \n      \n  \n\n\n\n\n\n\n여기까지, VGG 리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 VGG를 타산지석 삼아 레벨업을 도모한 inception v2, v3를 동시에 살펴보도록 하겠습니다. 😎\n이 글은 DataCrew에서도 보실 수 있습니다.\n\nReferences\nVGG paper\nWhy can a 5x5 convolution kernel be replaced with two 3x3 kernels? Quara\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-09-05T20:19:18+09:00","dateModified":"2020-09-11T17:38:11+09:00","datePublished":"2020-09-05T20:19:18+09:00","description":"\n뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을..\n심플한 구조로 많은 사랑을 받은 VGG 리뷰!\n","headline":"VGG - 2014","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/09/05/vgg/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/","http://stackoverflow.com/users","https://twitter.com/","https://facebook.com/","https://plus.google.com/","https://www.linkedin.com/profile/","mailto"]},"url":"http://www.stand-firm-peter.me/2020/09/05/vgg/","keywords":"ml, deep_learning, VGG, vgg"}</script>
+    <meta name="description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을.. 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
+<meta name="keywords" content="ml,deep_learning,VGG,vgg">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="VGG - 2014">
+<meta property="og:url" content="http://www.stand-firm-peter.me/2020/09/05/vgg/index.html">
+<meta property="og:site_name" content="Stand firm Peter">
+<meta property="og:description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을.. 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
+<meta property="og:locale" content="en">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/vgg_1.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/vgg_2.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/vgg_3.png">
+<meta property="og:image" content="http://www.stand-firm-peter.me/gallery/vgg_4.png">
+<meta property="og:updated_time" content="2020-09-11T08:38:11.195Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="VGG - 2014">
+<meta name="twitter:description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을.. 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
+<meta name="twitter:image" content="http://www.stand-firm-peter.me/gallery/vgg_1.png">
     
     
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/css/lightgallery.min.css">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/css/justifiedGallery.min.css">
-    
-
-    
-    
-
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.css">
-
-
+        
     
     
     
     
-
-<link rel="stylesheet" href="/css/back-to-top.css">
-
-
     
-    
-<script async src="https://www.googletagmanager.com/gtag/js?id=UA-124184693-1"></script>
-<script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'UA-124184693-1');
-</script>
-
-
-    
-    
-    
-    
-<link rel="stylesheet" href="/css/progressbar.css">
-<script src="https://cdn.jsdelivr.net/npm/pace-js@1.0.2/pace.min.js"></script>
-
-    
-    
+    <!--STYLES-->
+    <link rel="stylesheet" href="/assets/css/style-cyr0tjjhieyucizphrorvx7tawfulzqp7uix8hujz6swjfudxcvyotbu9b4t.min.css">
+    <!--STYLES END-->
     
 
     
-    
-    
 
-
-<link rel="stylesheet" href="/css/style.css">
+    
+        
+    
 </head>
-<body class="is-2-column">
-    <nav class="navbar navbar-main">
-    <div class="container">
-        <div class="navbar-brand is-flex-center">
-            <a class="navbar-item navbar-logo" href="/">
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a class="header-title-link" href="/" aria-label>
+            Stand firm Peter
+        </a>
+    </div>
+    
+        
+            <a class="header-right-picture " href="#about" aria-label="Open the link: /#about">
+        
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+        
+            <ul class="sidebar-buttons">
             
-                <img src="/images/dog.jpg" alt="VGG - 2014" height="28">
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/" rel="noopener" title="Home">
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
             
-            </a>
-        </div>
-        <div class="navbar-menu">
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-categories" rel="noopener" title="Categories">
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
             
-            <div class="navbar-start">
-                
-                <a class="navbar-item" href="/">Home</a>
-                
-                <a class="navbar-item" href="/archives">Archives</a>
-                
-                <a class="navbar-item" href="/categories">Categories</a>
-                
-                <a class="navbar-item" href="/tags">Tags</a>
-                
-            </div>
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-tags" rel="noopener" title="Tags">
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Tags</span>
+                    </a>
+            </li>
             
-            <div class="navbar-end">
-                
-                
-                
-                <a class="navbar-item search" title="Search" href="javascript:;">
-                    <i class="fas fa-search"></i>
-                </a>
-                
-            </div>
-        </div>
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/all-archives" rel="noopener" title="Archives">
+                        <i class="sidebar-button-icon fa fa-archive" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Archives</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link open-algolia-search" href="#search" rel="noopener" title="Search">
+                        <i class="sidebar-button-icon fa fa-search" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="#about" rel="noopener" title="About">
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://github.com/" target="_blank" rel="external nofollow noopener noreferrer" title="GitHub">
+                        <i class="sidebar-button-icon fab fa-github" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">GitHub</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="http://stackoverflow.com/users" target="_blank" rel="external nofollow noopener noreferrer" title="Stack Overflow">
+                        <i class="sidebar-button-icon fab fa-stack-overflow" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Stack Overflow</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://twitter.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Twitter">
+                        <i class="sidebar-button-icon fab fa-twitter" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Twitter</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://facebook.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Facebook">
+                        <i class="sidebar-button-icon fab fa-facebook" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Facebook</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://plus.google.com/" target="_blank" rel="external nofollow noopener noreferrer" title="Google +">
+                        <i class="sidebar-button-icon fab fa-google-plus" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Google +</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="https://www.linkedin.com/profile/" target="_blank" rel="external nofollow noopener noreferrer" title="LinkedIn">
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/mailto" rel="noopener" title="Mail">
+                        <i class="sidebar-button-icon fa fa-envelope" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Mail</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a class="sidebar-button-link " href="/atom.xml" rel="noopener" title="RSS">
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
     </div>
 </nav>
-    
-    <section class="section">
-        <div class="container">
-            <div class="columns">
-                <div class="column is-8-tablet is-8-desktop is-8-widescreen has-order-2 column-main"><div class="card">
-    
-    <div class="card-image">
-        <span class="image is-7by1">
-            <img class="thumbnail" src="/gallery/vgg.jpg" alt="VGG - 2014">
-        </span>
-    </div>
-    
-    <div class="card-content article ">
-        
-        <div class="level article-meta is-size-7 is-uppercase is-mobile is-overflow-x-auto">
-            <div class="level-left">
-                <time class="level-item has-text-grey" datetime="2020-09-05T11:19:18.000Z">2020-09-05</time>
-                
-                <div class="level-item">
-                <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                </div>
-                
-                
-                <span class="level-item has-text-grey">
-                    
-                    
-                    13 minutes read (About 1965 words)
-                </span>
-                
-                
-            </div>
-        </div>
-        
-        
-        <h1 class="title is-size-3 is-size-4-mobile has-text-weight-normal">
+
             
-                VGG - 2014
-            
+            <div id="main" data-behavior="4" class="
+                        hasCoverMetaIn
+                        ">
+                
+<article class="post">
+    
+    
+        <div class="post-header main-content-wrap text-left">
+    
+        <h1 class="post-title">
+            VGG - 2014
         </h1>
-        <div class="content">
+    
+    
+        <div class="post-meta">
+    <time datetime="2020-09-05T20:19:18+09:00">
+	
+		    Sep 05, 2020
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
             <ul>
 <li>뭐가 그리 복잡해? <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f626.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f626.png?v8">😦</span> 3x3 하나면 되는 것을..</li>
 <li>심플한 구조로 많은 사랑을 받은 VGG 리뷰!</li>
@@ -314,449 +381,284 @@
             document.body.appendChild(img);
           });
       </script>
+            
+
+
         </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
         
-        <center><p>이 글이 독자님께 도움이 되었다면,</p><p>광고 한 번 클릭해 주시면 감사하겠습니다. &#128521;</p></center>
-        <br>
-        <div id="bmc" align="center">
-            <style>.bmc-button img{width: 27px !important;margin-bottom: 1px !important;box-shadow: none !important;border: none !important;vertical-align: middle !important;}.bmc-button{line-height: 36px !important;height:37px !important;text-decoration: none !important;display:inline-flex !important;color:#000000 !important;background-color:#FFDD00 !important;border-radius: 3px !important;border: 1px solid transparent !important;padding: 1px 9px !important;font-size: 22px !important;letter-spacing: 0.6px !important;box-shadow: 0px 1px 2px rgba(190, 190, 190, 0.5) !important;-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;margin: 0 auto !important;font-family:'Cookie', cursive !important;-webkit-box-sizing: border-box !important;box-sizing: border-box !important;-o-transition: 0.3s all linear !important;-webkit-transition: 0.3s all linear !important;-moz-transition: 0.3s all linear !important;-ms-transition: 0.3s all linear !important;transition: 0.3s all linear !important;}.bmc-button:hover, .bmc-button:active, .bmc-button:focus {-webkit-box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;text-decoration: none !important;box-shadow: 0px 1px 2px 2px rgba(190, 190, 190, 0.5) !important;opacity: 0.85 !important;color:#000000 !important;}</style><link href="https://fonts.googleapis.com/css?family=Cookie" rel="stylesheet"><a class="bmc-button" target="_blank" href="https://www.buymeacoffee.com/petercha" rel="external nofollow noopener noreferrer"><img src="https://www.buymeacoffee.com/assets/img/BMC-btn-logo.svg" alt="Buy me a coffee"><span style="margin-left:5px">Buy me a coffee</span></a>
-        </div>
-        
-        
-            <p><br></p>
-            <div class="level is-size-7 is-uppercase">
-                <div class="level-start">
-                    <div class="level-item">
-                        <span class="is-size-6 has-text-grey has-mr-7">#</span>
-                        <a class="has-link-grey -link" href="/tags/VGG/">VGG</a>, <a class="has-link-grey -link" href="/tags/deep-learning/">deep_learning</a>, <a class="has-link-grey -link" href="/tags/ml/">ml</a>, <a class="has-link-grey -link" href="/tags/vgg/">vgg</a>
-                    </div>
-                </div>
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br>
+                
+    <a class="tag tag--primary tag--small t-link" href="/tags/VGG/">VGG</a> <a class="tag tag--primary tag--small t-link" href="/tags/deep-learning/">deep_learning</a> <a class="tag tag--primary tag--small t-link" href="/tags/ml/">ml</a> <a class="tag tag--primary tag--small t-link" href="/tags/vgg/">vgg</a>
+
             </div>
+        
+        
+            <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/09/06/inception_v2_v3/" data-tooltip="Inception v2, v3 - 2015" aria-label="PREVIOUS: Inception v2, v3 - 2015">
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/07/30/googlenet/" data-tooltip="Inception v1 - 2014" aria-label="NEXT: Inception v1 - 2014">
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2020/09/05/vgg/" title="Share on Facebook" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2020/09/05/vgg/" title="Share on Twitter" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2020/09/05/vgg/" title="Share on Google+" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="Leave a comment">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
             
         
-        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Natural -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4926107872672843" data-ad-slot="1904278923" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-        <br>
-        
-<div class="sharethis-inline-share-buttons"></div>
-<script type="text/javascript" src="//platform-api.sharethis.com/js/sharethis.js#property=5d32dc3eba941200129ff9a8&amp;product=custom-share-buttons" async="async"></script>
-
-        
-        
-    </div>
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
 </div>
 
 
-
-
-
-
-
-<div class="card card-transparent">
-    <div class="level post-navigation is-flex-wrap is-mobile">
-        
-        <div class="level-start">
-            <a class="level level-item has-link-grey  article-nav-prev" href="/2020/09/06/inception_v2_v3/">
-                <i class="level-item fas fa-chevron-left"></i>
-                <span class="level-item">Inception v2, v3 - 2015</span>
-            </a>
-        </div>
         
         
-        <div class="level-end">
-            <a class="level level-item has-link-grey  article-nav-next" href="/2020/07/30/googlenet/">
-                <span class="level-item">Inception v1 - 2014</span>
-                <i class="level-item fas fa-chevron-right"></i>
-            </a>
-        </div>
-        
-    </div>
-</div>
-
-
-
-<div class="card">
-    <div class="card-content">
-        <h3 class="title is-5 has-text-weight-normal">Comments</h3>
-        
-<script>
-    var disqus_config = function () {
-        this.page.url = 'http://www.stand-firm-peter.me/2020/09/05/vgg/';
-        this.page.identifier = '2020/09/05/vgg/';
-    };
-    (function() {
-        var d = document, s = d.createElement('script');  
-        s.src = '//' + 'petercha90' + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-
-<div id="disqus_thread">
-    
+            
+                <div id="disqus_thread">
     <noscript>Please enable JavaScript to view the <a href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
 </div>
-    </div>
-</div>
-</div>
-                
-                
-
-
-
-
-<div class="column is-4-tablet is-4-desktop is-4-widescreen  has-order-3 column-right ">
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <div class="menu">
-            <h3 class="menu-label">
-                Categories
-            </h3>
-            <ul class="menu-list">
-            <li>
-        <a class="level is-marginless" href="/categories/Deep-Learning-paper/">
-            <span class="level-start">
-                <span class="level-item">Deep Learning paper</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">9</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Machine-Learning/">
-            <span class="level-start">
-                <span class="level-item">Machine Learning</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">8</span>
-            </span>
-        </a></li><li>
-        <a class="level is-marginless" href="/categories/Tutorial/">
-            <span class="level-start">
-                <span class="level-item">Tutorial</span>
-            </span>
-            <span class="level-end">
-                <span class="level-item tag">11</span>
-            </span>
-        </a></li>
-            </ul>
-        </div>
-    </div>
-</div>
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            Recent
-        </h3>
-        
-        <article class="media">
             
-            <a href="/2020/09/30/resnet_2/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/resnet_inception_v4_1.jpg" alt="Resnet (2) - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-30T05:51:04.000Z">2020-09-30</time></div>
-                    <a href="/2020/09/30/resnet_2/" class="has-link-black-ter is-size-6">Resnet (2) - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/26/resnet/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/resnet_1.jpg" alt="Resnet (1) - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-26T05:51:04.000Z">2020-09-26</time></div>
-                    <a href="/2020/09/26/resnet/" class="has-link-black-ter is-size-6">Resnet (1) - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/06/inception_v2_v3/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/inception_2.jpg" alt="Inception v2, v3 - 2015">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-06T11:19:18.000Z">2020-09-06</time></div>
-                    <a href="/2020/09/06/inception_v2_v3/" class="has-link-black-ter is-size-6">Inception v2, v3 - 2015</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/09/05/vgg/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/vgg.jpg" alt="VGG - 2014">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-09-05T11:19:18.000Z">2020-09-05</time></div>
-                    <a href="/2020/09/05/vgg/" class="has-link-black-ter is-size-6">VGG - 2014</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
-        
-        <article class="media">
-            
-            <a href="/2020/07/30/googlenet/" class="media-left">
-                <p class="image is-64x64">
-                    <img class="thumbnail" src="/gallery/inception.jpg" alt="Inception v1 - 2014">
-                </p>
-            </a>
-            
-            <div class="media-content">
-                <div class="content">
-                    <div><time class="has-text-grey is-size-7 is-uppercase" datetime="2020-07-30T11:19:18.000Z">2020-07-30</time></div>
-                    <a href="/2020/07/30/googlenet/" class="has-link-black-ter is-size-6">Inception v1 - 2014</a>
-                    <p class="is-size-7 is-uppercase">
-                        <a class="has-link-grey -link" href="/categories/Deep-Learning-paper/">Deep Learning paper</a>
-                    </p>
-                </div>
-            </div>
-        </article>
         
     </div>
-</div>
+</article>
 
-    
-        
-<div class="card widget">
-    <div class="card-content">
-        <h3 class="menu-label">
-            Tag Cloud
-        </h3>
-        <a href="/tags/AlexNet/" style="font-size: 10px;">AlexNet</a> <a href="/tags/Back-propagation/" style="font-size: 10px;">Back propagation</a> <a href="/tags/Batch/" style="font-size: 10px;">Batch</a> <a href="/tags/CNN/" style="font-size: 10px;">CNN</a> <a href="/tags/Colab/" style="font-size: 10px;">Colab</a> <a href="/tags/Docker/" style="font-size: 12.86px;">Docker</a> <a href="/tags/Epoch/" style="font-size: 10px;">Epoch</a> <a href="/tags/FLOPs/" style="font-size: 10px;">FLOPs</a> <a href="/tags/Filter/" style="font-size: 10px;">Filter</a> <a href="/tags/GCP/" style="font-size: 10px;">GCP</a> <a href="/tags/Google-Cloud-Platform/" style="font-size: 10px;">Google Cloud Platform</a> <a href="/tags/GoogleNet/" style="font-size: 10px;">GoogleNet</a> <a href="/tags/Inception/" style="font-size: 10px;">Inception</a> <a href="/tags/Kernel/" style="font-size: 10px;">Kernel</a> <a href="/tags/L1/" style="font-size: 10px;">L1</a> <a href="/tags/L2/" style="font-size: 10px;">L2</a> <a href="/tags/Label-Smoothing/" style="font-size: 10px;">Label Smoothing</a> <a href="/tags/Lasso/" style="font-size: 10px;">Lasso</a> <a href="/tags/LeNet/" style="font-size: 10px;">LeNet</a> <a href="/tags/Loss-function/" style="font-size: 10px;">Loss function</a> <a href="/tags/Network-in-Network/" style="font-size: 10px;">Network in Network</a> <a href="/tags/Optimizer/" style="font-size: 10px;">Optimizer</a> <a href="/tags/Padding/" style="font-size: 10px;">Padding</a> <a href="/tags/Pooling/" style="font-size: 10px;">Pooling</a> <a href="/tags/Ridge/" style="font-size: 10px;">Ridge</a> <a href="/tags/TPU/" style="font-size: 15.71px;">TPU</a> <a href="/tags/VGG/" style="font-size: 10px;">VGG</a> <a href="/tags/ZFNet/" style="font-size: 10px;">ZFNet</a> <a href="/tags/basic/" style="font-size: 11.43px;">basic</a> <a href="/tags/blog/" style="font-size: 10px;">blog</a> <a href="/tags/bottleneck/" style="font-size: 10px;">bottleneck</a> <a href="/tags/container-ssh/" style="font-size: 10px;">container ssh</a> <a href="/tags/convex-optimisation/" style="font-size: 10px;">convex_optimisation</a> <a href="/tags/dataframe/" style="font-size: 10px;">dataframe</a> <a href="/tags/deep-learning/" style="font-size: 20px;">deep_learning</a> <a href="/tags/docker/" style="font-size: 12.86px;">docker</a> <a href="/tags/hexo/" style="font-size: 10px;">hexo</a> <a href="/tags/highway-network/" style="font-size: 10px;">highway network</a> <a href="/tags/inception-v2/" style="font-size: 10px;">inception v2</a> <a href="/tags/inception-v3/" style="font-size: 10px;">inception v3</a> <a href="/tags/keras/" style="font-size: 10px;">keras</a> <a href="/tags/log/" style="font-size: 10px;">log</a> <a href="/tags/logarithm/" style="font-size: 10px;">logarithm</a> <a href="/tags/loss/" style="font-size: 10px;">loss</a> <a href="/tags/machine-learning/" style="font-size: 12.86px;">machine-learning</a> <a href="/tags/machine-learning/" style="font-size: 10px;">machine_learning</a> <a href="/tags/ml/" style="font-size: 18.57px;">ml</a> <a href="/tags/mobilenet/" style="font-size: 10px;">mobilenet</a> <a href="/tags/pandas/" style="font-size: 10px;">pandas</a> <a href="/tags/pseudo-label/" style="font-size: 10px;">pseudo-label</a> <a href="/tags/regularization/" style="font-size: 10px;">regularization</a> <a href="/tags/resnet/" style="font-size: 11.43px;">resnet</a> <a href="/tags/ssh/" style="font-size: 10px;">ssh</a> <a href="/tags/tensorflow/" style="font-size: 11.43px;">tensorflow</a> <a href="/tags/tensorflow-object-detection-api/" style="font-size: 14.29px;">tensorflow object detection api</a> <a href="/tags/tensorpack/" style="font-size: 10px;">tensorpack</a> <a href="/tags/transfer-learning/" style="font-size: 15.71px;">transfer learning</a> <a href="/tags/tutorial/" style="font-size: 17.14px;">tutorial</a> <a href="/tags/useful-info/" style="font-size: 15.71px;">useful-info</a> <a href="/tags/vgg/" style="font-size: 10px;">vgg</a>
-    </div>
-</div>
 
-    
-    
-    <br>
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-<!-- Natural -->
-<ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-4926107872672843" data-ad-slot="1904278923" data-ad-format="auto" data-full-width-responsive="true"></ins>
-<script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
-    
-</div>
 
-            </div>
-        </div>
-    </section>
-    <footer class="footer">
-    <div class="container">
-        <div class="level">
-            <div class="level-start has-text-centered-mobile">
-                <a class="footer-logo is-block has-mb-6" href="/">
-                
-                    <img src="/images/dog.jpg" alt="VGG - 2014" height="28">
-                
-                </a>
-                <p class="is-size-7">
-                &copy; 2020 Peter Cha&nbsp;
-                Powered by <a href="https://hexo.io/" target="_blank" rel="external nofollow noopener noreferrer">Hexo</a> & <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="external nofollow noopener noreferrer">Icarus</a>
-                
-                </p>
-            </div>
-            <div class="level-end">
-            
-                <div class="field has-addons is-flex-center-mobile has-mt-5-mobile is-flex-wrap is-flex-middle">
-                
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Creative Commons" href="https://creativecommons.org/" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-creative-commons"></i>
-                        
-                    </a>
-                </p>
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-creative-commons-by"></i>
-                        
-                    </a>
-                </p>
-                
-                <p class="control">
-                    <a class="button is-white is-large" target="_blank" title="Download on GitHub" href="https://github.com/ppoffice/hexo-theme-icarus" rel="external nofollow noopener noreferrer">
-                        
-                        <i class="fab fa-github"></i>
-                        
-                    </a>
-                </p>
-                
-                </div>
-            
-            </div>
-        </div>
-    </div>
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2021 Peter Cha. All Rights Reserved.
+    </span>
 </footer>
-    <script src="https://cdn.jsdelivr.net/npm/jquery@3.3.1/dist/jquery.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/moment@2.22.2/min/moment-with-locales.min.js"></script>
-<script>moment.locale("en");</script>
 
-
-    
-    
-    
-    <script src="/js/animation.js"></script>
-    
-
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/lightgallery@1.6.8/dist/js/lightgallery.min.js" defer></script>
-    <script src="https://cdn.jsdelivr.net/npm/justifiedGallery@3.7.0/dist/js/jquery.justifiedGallery.min.js" defer></script>
-    <script src="/js/gallery.js" defer></script>
-    
-
-    
-    
-
-<div id="outdated">
-    <h6>Your browser is out-of-date!</h6>
-    <p>Update your browser to view this website correctly. <a id="btnUpdateBrowser" href="http://outdatedbrowser.com/" rel="external nofollow noopener noreferrer" target="_blank">Update
-            my browser now </a></p>
-    <p class="last"><a href="#" id="btnCloseUpdateBrowser" title="Close">&times;</a></p>
+            </div>
+            
+                <div id="bottom-bar" class="post-bottom-bar" data-behavior="4">
+                    <div class="post-actions-wrap">
+    <nav>
+        <ul class="post-actions post-action-nav">
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/09/06/inception_v2_v3/" data-tooltip="Inception v2, v3 - 2015" aria-label="PREVIOUS: Inception v2, v3 - 2015">
+                    
+                        <i class="fa fa-angle-left" aria-hidden="true"></i>
+                        <span class="hide-xs hide-sm text-small icon-ml">PREVIOUS</span>
+                    </a>
+            </li>
+            <li class="post-action">
+                
+                    
+                <a class="post-action-btn btn btn--default tooltip--top" href="/2020/07/30/googlenet/" data-tooltip="Inception v1 - 2014" aria-label="NEXT: Inception v1 - 2014">
+                    
+                        <span class="hide-xs hide-sm text-small icon-mr">NEXT</span>
+                        <i class="fa fa-angle-right" aria-hidden="true"></i>
+                    </a>
+            </li>
+        </ul>
+    </nav>
+    <ul class="post-actions post-action-share">
+        <li class="post-action hide-lg hide-md hide-sm">
+            <a class="post-action-btn btn btn--default btn-open-shareoptions" href="#btn-open-shareoptions" aria-label="Share this post">
+                <i class="fa fa-share-alt" aria-hidden="true"></i>
+            </a>
+        </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2020/09/05/vgg/" title="Share on Facebook" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-facebook" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2020/09/05/vgg/" title="Share on Twitter" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-twitter" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+            
+            
+            <li class="post-action hide-xs">
+                <a class="post-action-btn btn btn--default" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2020/09/05/vgg/" title="Share on Google+" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                    <i class="fab fa-google-plus" aria-hidden="true"></i>
+                </a>
+            </li>
+        
+        
+            
+                <li class="post-action">
+                    <a class="post-action-btn btn btn--default" href="#disqus_thread" aria-label="Leave a comment">
+                        <i class="fa fa-comment"></i>
+                    </a>
+                </li>
+            
+        
+        <li class="post-action">
+            
+                <a class="post-action-btn btn btn--default" href="#" aria-label="Back to top">
+            
+                <i class="fa fa-list" aria-hidden="true"></i>
+            </a>
+        </li>
+    </ul>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/outdatedbrowser@1.1.5/outdatedbrowser/outdatedbrowser.min.js" defer></script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-        outdatedBrowser({
-            bgColor: '#f25648',
-            color: '#ffffff',
-            lowerThan: 'flex'
-        });
-    });
-</script>
 
 
-    
-    
-<script src="https://cdn.jsdelivr.net/npm/mathjax@2.7.5/unpacked/MathJax.js?config=TeX-MML-AM_CHTML" defer></script>
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    MathJax.Hub.Config({
-        'HTML-CSS': {
-            matchFontHeight: false
-        },
-        SVG: {
-            matchFontHeight: false
-        },
-        CommonHTML: {
-            matchFontHeight: false
-        },
-        tex2jax: {
-            inlineMath: [
-                ['$','$'],
-                ['\\(','\\)']
-            ]
-        }
-    });
-});
-</script>
-
-    
-    
-
-<a id="back-to-top" title="Back to Top" href="javascript:;">
-    <i class="fas fa-chevron-up"></i>
-</a>
-<script src="/js/back-to-top.js" defer></script>
-
-
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
-    <script src="https://cdn.jsdelivr.net/npm/clipboard@2.0.4/dist/clipboard.min.js" defer></script>
-    <script src="/js/clipboard.js" defer></script>
-    
-
-    
-    
-    
+                </div>
+                
+    <div id="share-options-bar" class="share-options-bar" data-behavior="4">
+        <i id="btn-close-shareoptions" class="fa fa-times"></i>
+        <ul class="share-options">
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://www.facebook.com/sharer/sharer.php?u=http://www.stand-firm-peter.me/2020/09/05/vgg/" aria-label="Share on Facebook" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-facebook" aria-hidden="true"></i><span>Share on Facebook</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://twitter.com/intent/tweet?text=http://www.stand-firm-peter.me/2020/09/05/vgg/" aria-label="Share on Twitter" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-twitter" aria-hidden="true"></i><span>Share on Twitter</span>
+                    </a>
+                </li>
+            
+                
+                
+                <li class="share-option">
+                    <a class="share-option-btn" target="_blank" href="https://plus.google.com/share?url=http://www.stand-firm-peter.me/2020/09/05/vgg/" aria-label="Share on Google+" rel="external nofollow noopener noreferrer">
+                        <i class="fab fa-google-plus" aria-hidden="true"></i><span>Share on Google+</span>
+                    </a>
+                </li>
+            
+        </ul>
+    </div>
 
 
-<script src="/js/main.js" defer></script>
-
-    
-    <div class="searchbox ins-search">
-    <div class="searchbox-container ins-search-container">
-        <div class="searchbox-input-wrapper">
-            <input type="text" class="searchbox-input ins-search-input" placeholder="Type something...">
-            <span class="searchbox-close ins-close ins-selectable"><i class="fa fa-times-circle"></i></span>
+            
         </div>
-        <div class="searchbox-result-wrapper ins-section-wrapper">
-            <div class="ins-section-container"></div>
+        
+
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
         </div>
+        
+            <h4 id="about-card-name">Peter Cha</h4>
+        
+            <div id="about-card-bio"><p>author.bio</p>
+</div>
+        
+        
+            <div id="about-card-job">
+                <i class="fa fa-briefcase"></i>
+                <br>
+                <p>author.job</p>
+
+            </div>
+        
+        
     </div>
 </div>
-<script>
-    (function (window) {
-        var INSIGHT_CONFIG = {
-            TRANSLATION: {
-                POSTS: 'Posts',
-                PAGES: 'Pages',
-                CATEGORIES: 'Categories',
-                TAGS: 'Tags',
-                UNTITLED: '(Untitled)',
-            },
-            CONTENT_URL: '/content.json',
-        };
-        window.INSIGHT_CONFIG = INSIGHT_CONFIG;
-    })(window);
-</script>
-<script src="/js/insight.js" defer></script>
-<link rel="stylesheet" href="/css/search.css">
-<link rel="stylesheet" href="/css/insight.css">
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.jpg');"></div>
+        <!--SCRIPTS-->
+<script src="/assets/js/script-rzzlf7xwh5hbhem4p6lp9lkt95wyxafyeomrlclykmqgqtpgasupbiy7nm53.min.js"></script>
+<!--SCRIPTS END-->
+
+
     
-<script type="text/x-mathjax-config">
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'http://www.stand-firm-peter.me/2020/09/05/vgg/';
+              
+            this.page.identifier = '2020/09/05/vgg/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'petercha90';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    <script type="text/x-mathjax-config">
     MathJax.Hub.Config({
         tex2jax: {
             inlineMath: [ ["$","$"], ["\\(","\\)"] ],
