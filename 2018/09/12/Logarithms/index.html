@@ -19,7 +19,7 @@
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg"},"articleBody":"\nDeep Learning 논문에서 자주 등장하는 Log.\nMachine learning 및 통계에서 자주 쓰는 이유!\n\n\n\n\nLog를 왜 쓰는 걸까\n많은 딥러닝 논문들을 읽다보면, 하나같이 수식으로 설명하기 시작하는데, 그 때 꼭 나오는 친구가 이 Log다. 이미 아시는 분들에겐 시시한 이야기였겠지만, 대충 어렴풋이 필자와 같이 ‘숫자 크기 작게 해주려고 하는 거겠지..’정도로만 생각하고 있었다면(맞긴 맞다만…), 정확한 의미를 알아보자. \n\n아래는 상용로그인 $\\text{log}x$와, $\\text{ln}x$로 많이 쓰는 자연상수 $e$를 밑으로 하는 $\\text{log}_ex$의 그래프다. \n  \n\n이 그래프를 보면서 할 수 있는 생각은,\n\n‘$x$값이 엄청나게 커진다고 해도, $y$ 증가율은 격하게 변하지 않구나.’\n\n\n$\\to$ ‘$x$수치가 낮을 때는 민감하게 반응하고, 높을 때는 둔감하구나.’\n\n\n$\\to$ ‘그럼 수치가 대부분 낮을 때는 비교하기 좋을 거 같고, 이상치와 같은 비정상적인 예외 케이스들도 같이 고려할 수 있겠다.’\n\n  정도가 될 것이다. 그럼 이걸 활용하면 아래와 같은 상황에 유용하게 쓸 수 있다.\n\n\n\n\n$log$는 어디에 사용되나요\n대표적으로 두 가지의 경우에 많이 사용되는 것 같다. \n\n데이터들 간의 수치적인 간극이 너무 커, 주어진 수치를 그대로 사용하면 회기분석시에 결과가 왜곡될 수도 있어서.\n비선형적인 데이터의 분포를 선형적으로 쉽게 보기 위해서\n\n\n\n\n1.\n아래의 사진은 동물들의 체중별 뇌의 크기를 나타낸 scatter plot이다. \n  \n\n파충류같은 작은 동물들 부터, 코끼리, 고래, 공룡까지 다 들어 있다고 생각해보면 그 비교대상들이 서로 가지는 수치적인 차이는 실제로 왼쪽 그림과 같다.\n\n오른쪽은 같은 데이터에 상용로그를 취한 것이고 실제로 그 경향성을 더 파악하기 쉬운 형태가 되었다. \n\n아래 사진도 그런 방식으로 $\\text{log}$를 취해서 파충류부터 고래와 코끼리, 공룡까지 비교한 plot인데, x축과 y축의 수치를 자세히 보면 $\\text{log}$를 취한 그래프임을 알 수 있다.\n  \n\n\n\n\n2.\n아래는 $y=2^x$ 그래프와, 이 그래프에 자연로그를 취한 $\\text{ln}2^x$의 그래프다. 비선형 그래프인 $y=2^x$를 선형으로 만들어 주고 있다. \n\n\n이처럼, 로그는 복잡한 비선형인 수식들을 간소화 시켜주는 역할을 한다. 곱셈과 나눗셈이 log연산이 되면서 +, -로 바뀌기 때문에 아무래도, Model에서 computation을 많이 해야하는 부담도 좀더 줄어 들지 않을까?! 이런 이점 때문에도 많이 쓰는 것 같다.\n\n\n\n\n\n이상, $\\text{log}$를 왜 쓰는지 한 번 알아 보았다.\n\nReference\nblog1, blog2\nDesmos(그래프 그려주는 사이트) \n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2018-09-12T16:38:26+09:00","dateModified":"2019-08-13T13:49:59+09:00","datePublished":"2018-09-12T16:38:26+09:00","description":"\nDeep Learning 논문에서 자주 등장하는 Log.\nMachine learning 및 통계에서 자주 쓰는 이유!\n","headline":"Logarithms","image":[],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2018/09/12/Logarithms/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2018/09/12/Logarithms/","keywords":"machine-learning, ml, logarithm, log"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg"},"articleBody":"\nDeep Learning 논문에서 자주 등장하는 Log.\nMachine learning 및 통계에서 자주 쓰는 이유!\n\n\n\n\nLog를 왜 쓰는 걸까\n많은 딥러닝 논문들을 읽다보면, 하나같이 수식으로 설명하기 시작하는데, 그 때 꼭 나오는 친구가 이 Log다. 이미 아시는 분들에겐 시시한 이야기였겠지만, 대충 어렴풋이 필자와 같이 ‘숫자 크기 작게 해주려고 하는 거겠지..’정도로만 생각하고 있었다면(맞긴 맞다만…), 정확한 의미를 알아보자. \n\n아래는 상용로그인 $\\text{log}x$와, $\\text{ln}x$로 많이 쓰는 자연상수 $e$를 밑으로 하는 $\\text{log}_ex$의 그래프다. \n  \n\n이 그래프를 보면서 할 수 있는 생각은,\n\n‘$x$값이 엄청나게 커진다고 해도, $y$ 증가율은 격하게 변하지 않구나.’\n\n\n$\\to$ ‘$x$수치가 낮을 때는 민감하게 반응하고, 높을 때는 둔감하구나.’\n\n\n$\\to$ ‘그럼 수치가 대부분 낮을 때는 비교하기 좋을 거 같고, 이상치와 같은 비정상적인 예외 케이스들도 같이 고려할 수 있겠다.’\n\n  정도가 될 것이다. 그럼 이걸 활용하면 아래와 같은 상황에 유용하게 쓸 수 있다.\n\n\n\n\n$log$는 어디에 사용되나요\n대표적으로 두 가지의 경우에 많이 사용되는 것 같다. \n\n데이터들 간의 수치적인 간극이 너무 커, 주어진 수치를 그대로 사용하면 회기분석시에 결과가 왜곡될 수도 있어서.\n비선형적인 데이터의 분포를 선형적으로 쉽게 보기 위해서\n\n\n\n\n1.\n아래의 사진은 동물들의 체중별 뇌의 크기를 나타낸 scatter plot이다. \n  \n\n파충류같은 작은 동물들 부터, 코끼리, 고래, 공룡까지 다 들어 있다고 생각해보면 그 비교대상들이 서로 가지는 수치적인 차이는 실제로 왼쪽 그림과 같다.\n\n오른쪽은 같은 데이터에 상용로그를 취한 것이고 실제로 그 경향성을 더 파악하기 쉬운 형태가 되었다. \n\n아래 사진도 그런 방식으로 $\\text{log}$를 취해서 파충류부터 고래와 코끼리, 공룡까지 비교한 plot인데, x축과 y축의 수치를 자세히 보면 $\\text{log}$를 취한 그래프임을 알 수 있다.\n  \n\n\n\n\n2.\n아래는 $y=2^x$ 그래프와, 이 그래프에 자연로그를 취한 $\\text{ln}2^x$의 그래프다. 비선형 그래프인 $y=2^x$를 선형으로 만들어 주고 있다. \n\n\n이처럼, 로그는 복잡한 비선형인 수식들을 간소화 시켜주는 역할을 한다. 곱셈과 나눗셈이 log연산이 되면서 +, -로 바뀌기 때문에 아무래도, Model에서 computation을 많이 해야하는 부담도 좀더 줄어 들지 않을까?! 이런 이점 때문에도 많이 쓰는 것 같다.\n\n\n\n\n\n이상, $\\text{log}$를 왜 쓰는지 한 번 알아 보았다.\n\nReference\nblog1, blog2\nDesmos(그래프 그려주는 사이트) \n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2018-09-12T16:38:26+09:00","dateModified":"2021-01-05T17:28:45+09:00","datePublished":"2018-09-12T16:38:26+09:00","description":"\nDeep Learning 논문에서 자주 등장하는 Log.\nMachine learning 및 통계에서 자주 쓰는 이유!\n","headline":"Logarithms","image":["log_bg.jpg","log_bg.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2018/09/12/Logarithms/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2018/09/12/Logarithms/","keywords":"machine-learning, ml, logarithm, log","thumbnailUrl":"log_bg.jpg"}</script>
     <meta name="description" content="Deep Learning 논문에서 자주 등장하는 Log. Machine learning 및 통계에서 자주 쓰는 이유!">
 <meta name="keywords" content="machine-learning,ml,logarithm,log">
 <meta property="og:type" content="blog">
@@ -32,7 +32,7 @@
 <meta property="og:image" content="http://www.stand-firm-peter.me/gallery/log3.png">
 <meta property="og:image" content="http://www.stand-firm-peter.me/gallery/brain.png">
 <meta property="og:image" content="http://www.stand-firm-peter.me/gallery/log2.png">
-<meta property="og:updated_time" content="2019-08-13T04:49:59.194Z">
+<meta property="og:updated_time" content="2021-01-05T08:28:45.686Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Logarithms">
 <meta name="twitter:description" content="Deep Learning 논문에서 자주 등장하는 Log. Machine learning 및 통계에서 자주 쓰는 이유!">
@@ -45,6 +45,12 @@
         <meta property="og:image" content="http://www.stand-firm-peter.me/assets/images/avatar.jpeg">
     
     
+        <meta property="og:image" content="http://www.stand-firm-peter.me/2018/09/12/Logarithms/log_bg.jpg">
+        <meta class="swiftype" name="image" data-type="enum" content="http://www.stand-firm-peter.me/2018/09/12/Logarithms/log_bg.jpg">
+    
+    
+        <meta property="og:image" content="http://www.stand-firm-peter.me/2018/09/12/Logarithms/log_bg.jpg">
+        <meta class="swiftype" name="image" data-type="enum" content="http://www.stand-firm-peter.me/2018/09/12/Logarithms/log_bg.jpg">
     
     
     <!--STYLES-->
@@ -179,8 +185,14 @@
 </nav>
 
             
-            <div id="main" data-behavior="4" class="
-                        hasCoverMetaIn
+        <div class="post-header-cover
+                    text-left
+                    post-header-cover--partial" style="background-image:url('/2018/09/12/Logarithms/log_bg.jpg');" data-behavior="4">
+            
+        </div>
+
+            <div id="main" data-behavior="4" class="hasCover
+                        hasCoverMetaOut
                         ">
                 
 <article class="post">
@@ -603,6 +615,6 @@
             all[i].SourceElement().parentNode.className += ' has-jax';
     });
 </script>
-<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>

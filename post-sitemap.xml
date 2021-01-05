@@ -8,6 +8,126 @@
     </url>
 
     <url>
+        <loc>http://www.stand-firm-peter.me/2020/07/16/ZFNet/</loc>
+        <lastmod>2021-01-05T08:39:20.371Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2020/09/05/vgg/</loc>
+        <lastmod>2021-01-05T08:38:50.899Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2018/09/07/tf-identity/</loc>
+        <lastmod>2021-01-05T08:38:27.859Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2018/01/06/Start/</loc>
+        <lastmod>2021-01-05T08:38:01.139Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2018/08/22/pseudo-label/</loc>
+        <lastmod>2021-01-05T08:36:57.010Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2018/09/12/Logarithms/</loc>
+        <lastmod>2021-01-05T08:28:45.686Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2020/07/06/LeNet/</loc>
+        <lastmod>2021-01-05T08:28:15.729Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2019/06/12/keras_101/</loc>
+        <lastmod>2021-01-05T08:27:39.702Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2020/09/06/inception_v2_v3/</loc>
+        <lastmod>2021-01-05T08:26:51.603Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2019/04/24/docker-intro/</loc>
+        <lastmod>2021-01-05T08:25:18.305Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2019/05/25/docker-103/</loc>
+        <lastmod>2021-01-05T08:24:10.737Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2019/05/09/docker-102/</loc>
+        <lastmod>2021-01-05T08:23:37.518Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/</loc>
+        <lastmod>2021-01-05T08:22:40.954Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2018/04/06/Basic-Deep-Learning-02/</loc>
+        <lastmod>2021-01-05T08:22:02.824Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2018/02/06/Basic-Deep%20learning-01/</loc>
+        <lastmod>2021-01-05T08:20:33.149Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
         <loc>http://www.stand-firm-peter.me/2020/07/09/AlexNet/</loc>
         <lastmod>2021-01-05T08:08:48.403Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -48,14 +168,6 @@
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/2019/06/12/Colab_tutorial/</loc>
-        <lastmod>2021-01-04T16:21:34.846Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
         <loc>http://www.stand-firm-peter.me/2019/08/11/mobilenet/</loc>
         <lastmod>2021-01-04T16:18:51.938Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -66,166 +178,6 @@
     <url>
         <loc>http://www.stand-firm-peter.me/2020/07/30/googlenet/</loc>
         <lastmod>2021-01-04T16:18:29.426Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/09/06/inception_v2_v3/</loc>
-        <lastmod>2020-10-02T15:22:42.622Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/09/05/vgg/</loc>
-        <lastmod>2020-09-11T08:38:11.195Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/01/19/HowtoUse_Google_CloudTPU_1/</loc>
-        <lastmod>2020-08-14T01:58:05.826Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/07/16/ZFNet/</loc>
-        <lastmod>2020-07-16T14:07:57.656Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/07/06/LeNet/</loc>
-        <lastmod>2020-07-16T14:03:43.058Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/01/31/tensorflow_object_detection_with_tpu_2/</loc>
-        <lastmod>2020-07-03T11:55:19.274Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/06/28/tensorflow_object_detection_with_tpu_5/</loc>
-        <lastmod>2020-06-29T00:54:51.605Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/06/21/tensorflow_object_detection_with_tpu_4/</loc>
-        <lastmod>2020-06-22T03:56:26.730Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2020/06/09/tensorflow_object_detection_with_tpu_3/</loc>
-        <lastmod>2020-06-21T08:29:35.563Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2019/05/25/docker-103/</loc>
-        <lastmod>2020-06-13T06:24:33.103Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2019/06/12/keras_101/</loc>
-        <lastmod>2019-08-25T08:05:55.906Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2019/05/09/docker-102/</loc>
-        <lastmod>2019-08-25T08:05:42.829Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2019/04/24/docker-intro/</loc>
-        <lastmod>2019-08-25T08:05:33.798Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2018/08/22/pseudo-label/</loc>
-        <lastmod>2019-08-13T04:50:15.057Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2018/09/12/Logarithms/</loc>
-        <lastmod>2019-08-13T04:49:59.194Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2018/04/06/Basic-Deep-Learning-02/</loc>
-        <lastmod>2019-08-13T04:49:52.022Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2018/02/06/Basic-Deep%20learning-01/</loc>
-        <lastmod>2019-08-13T04:49:44.859Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2018/09/07/tf-identity/</loc>
-        <lastmod>2019-07-20T12:41:43.938Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2018/08/18/Tensorpack-tutorial/</loc>
-        <lastmod>2019-07-20T12:41:38.782Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2018/01/06/Start/</loc>
-        <lastmod>2019-07-20T12:41:33.316Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
