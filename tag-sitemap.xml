@@ -3,36 +3,92 @@
 
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
-        <lastmod>2021-01-06T08:22:44.715Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/convex-optimisation/</loc>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
-        <lastmod>2021-01-06T08:22:44.715Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/Ridge/</loc>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
-        <lastmod>2021-01-06T08:22:44.715Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/Lasso/</loc>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
-        <lastmod>2021-01-06T08:22:44.715Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/L2/</loc>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/L1/</loc>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/loss/</loc>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/regularization/</loc>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
-        <lastmod>2021-01-06T08:22:44.715Z</lastmod>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/machine-learning/</loc>
+        <lastmod>2021-01-06T08:34:04.753Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
+        <lastmod>2021-01-06T08:25:42.032Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
+        <lastmod>2021-01-06T08:25:42.032Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
+        <lastmod>2021-01-06T08:25:42.032Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
+        <lastmod>2021-01-06T08:25:42.032Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -47,62 +103,6 @@
     <url>
         <loc>http://www.stand-firm-peter.me/tags/mobilenet/</loc>
         <lastmod>2021-01-05T08:53:41.708Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/convex-optimisation/</loc>
-        <lastmod>2021-01-05T08:52:05.657Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/Ridge/</loc>
-        <lastmod>2021-01-05T08:52:05.657Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/Lasso/</loc>
-        <lastmod>2021-01-05T08:52:05.657Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/L2/</loc>
-        <lastmod>2021-01-05T08:52:05.657Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/L1/</loc>
-        <lastmod>2021-01-05T08:52:05.657Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/loss/</loc>
-        <lastmod>2021-01-05T08:52:05.657Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/regularization/</loc>
-        <lastmod>2021-01-05T08:52:05.657Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/machine-learning/</loc>
-        <lastmod>2021-01-05T08:52:05.657Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
