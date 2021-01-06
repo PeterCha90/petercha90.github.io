@@ -3,21 +3,42 @@
 
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/mobilenet/</loc>
-        <lastmod>2021-01-05T08:53:41.708Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
+        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
+        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
+        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
-        <lastmod>2021-01-05T08:53:41.708Z</lastmod>
+        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
+        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/mobilenet/</loc>
         <lastmod>2021-01-05T08:53:41.708Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -115,6 +136,13 @@
     </url>
 
     <url>
+        <loc>http://www.stand-firm-peter.me/tags/tutorial/</loc>
+        <lastmod>2021-01-05T08:38:01.139Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://www.stand-firm-peter.me/tags/hexo/</loc>
         <lastmod>2021-01-05T08:38:01.139Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -123,13 +151,6 @@
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/blog/</loc>
-        <lastmod>2021-01-05T08:38:01.139Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/tutorial/</loc>
         <lastmod>2021-01-05T08:38:01.139Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -313,27 +334,6 @@
     <url>
         <loc>http://www.stand-firm-peter.me/tags/highway-network/</loc>
         <lastmod>2021-01-05T07:36:48.476Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
-        <lastmod>2021-01-05T07:36:48.476Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
-        <lastmod>2021-01-05T07:36:01.730Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
-        <lastmod>2021-01-05T07:36:01.730Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
