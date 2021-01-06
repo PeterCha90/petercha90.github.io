@@ -3,36 +3,43 @@
 
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
-        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
-        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/highway-network/</loc>
+        <lastmod>2021-01-06T02:44:31.682Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
-        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
+        <lastmod>2021-01-06T02:44:31.682Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
-        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
+        <lastmod>2021-01-06T02:44:31.682Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
-        <lastmod>2021-01-06T01:16:43.926Z</lastmod>
+        <lastmod>2021-01-06T02:44:31.682Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
+        <lastmod>2021-01-06T02:44:11.084Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
+        <lastmod>2021-01-06T02:44:11.084Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
@@ -327,13 +334,6 @@
     <url>
         <loc>http://www.stand-firm-peter.me/tags/AlexNet/</loc>
         <lastmod>2021-01-05T08:08:48.403Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/highway-network/</loc>
-        <lastmod>2021-01-05T07:36:48.476Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
