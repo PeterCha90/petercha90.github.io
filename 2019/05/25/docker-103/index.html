@@ -19,7 +19,7 @@
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg"},"articleBody":"\nDocker Container에 SSH 접속\n현재 내 컨테이너를 이미지로 저장하기\n\n\n\n\n\n\nDocker Tutorial, 세 번째⭐입니다! \n\n\n\n\n이번 포스팅에서는 이전 글에서 노출시킨 22 port 를 사용, 컨테이너 환경으로 외부에서 SSH 접속을 하는 방법에 대해 다루고, SSH Setting이 끝난 컨테이너 자체를 이미지로 만드는 방법을 알아보도록 하겠습니다. \n\n최근들어 많은 회사나 단체, 개인들이 AWS나 Google Cloud Platform 등을 사용하면서 GPU 및 TPU Server를 사용하고 있죠. 그래서 당연히 AWS나 Google Cloud에서도 Docker를 사용할 수 있게 됐고, 자연스럽게 언제 어디서든 무거운 계산이나 학습은 Cloud나 원격 서버에서 처리하고 실제 사용자는 자유롭게 접속하고 해당 머신을 사용할 수 있게 되었습니다. Digital Nomad🐑가 가까워지고 있습니다. 혹은 Digital Slave..\n\n이런 현실에 맞춰, SSH로 내 Deocker Container에 접속하는 법 정도는 아는 것이 좋겠죠?  물론 키와 패스워드 관리 및 보안상의 이유로 일각에서는 SSH로 컨테이너에 접속할 수 있게 하는 것을 우려하지만, 개인적인 학습이나 가벼운 실험 용도로만 사용한다고 했을 때는 효율적이라고 생각해 포스팅을 하기로 했습니다. \n\n\n\n\nSSH Server in Container1. Container 생성 (--cap-add)\n먼저 SSH을 사용할 수 있게 이미지로 부터 컨테이너를 생성할 때, 아래와 같은 옵션을 함께 줍니다. 이미지는 Hi, Docker! :) (2)에서 생성한 docker101이미지를 사용합니다. \n1$ docker run -d --name ssh_container --cap-add=NET_ADMIN --cap-add=NET_RAW -p 8888:8888 -p 22022:22 docker101\n\n--cap-add=NET_ADMIN에서 --cap-add 옵션은, 컨테이너에게 특정한 cgroups 을 사용하게 해주는 것으로, 여기서는 admin의 network를 사용하겠다는 의미로 NET_ADMIN 을, admin의 iptables를 그대로 사용하겠다는 의미 NET_RAW 를 변수로 줍니다. \n\ncgroups: control groups의 약자 - 프로세스들의 자원의 사용(CPU, 메모리, 디스크 입출력, 네트워크 등)을 제한하고 격리시키는 리눅스 커널 기능 (feat. wikipedia) \n\n\n\n\n\n\n저는 -p 22022:22 로, 컨테이너가 SSH 접속을 허용할 22번 포트를 Host의 22022와 연결시켜 주겠습니다. \n\n2. SSH, ufw 설치\n이렇게 생성한 컨테이너에 이제 SSH 접속을 할 수 있도록 하려면, 손봐줄 것이 많기때문에…👊 백그라운드에서 돌아가고 있는 ssh_container에 exec로 접속합니다. \n  1$ docker exec -it ssh_container /bin/bash\n\n그리고 SSH와, 리눅스에서 방화벽을 관리해주는 ufw를 설치합니다. \n  1$ apt-get install ssh ufw -y\n\n  아래와 같이 sshd의 위치가 잘 나온다면 설치가 잘 된 것입니다!\n  12[work] # which sshd/usr/sbin/sshd\n\n\n\n3. 비밀번호 설정 (sshd_config, passwd root)\nSSH 접속을 할 때 물어볼 비밀번호를 설정하려면, 먼저 /etc/ssh/ 아래에 있는 sshd_config파일을 좀 수정해야합니다. \n  1$ vim /etc/ssh/sshd_config\n\n  를 보시면, \n  123456789#       $OpenBSD: sshd_config,v 1.101 2017/03/14 07:19:07 djm Exp $# This is the sshd server system-wide configuration file.  See# sshd_config(5) for more information.# 어쩌구저쩌구......#LoginGraceTime 2m#PermitRootLogin prohibit-password#StrictModes yes...\n\n  라고 뜰 텐데요, 여기서 아래와 같이 #PermitRootLogin prohibit-password 부분의 주석을 해제하고, prohibit-password를 yes로 바꿔줍니다. \n  12345...#LoginGraceTime 2mPermitRootLogin yes#StrictModes yes...\n\n그렇게 저장을 하신 뒤에, 다시 bash로 돌아와 passwd root 을 입력해서 비밀번호를 설정해주면 끝입니다!\n1234[work] # passwd rootEnter new UNIX password:Retype new UNIX password: passwd: password updated successfully\n\n\n\n\n4. ufw 세팅\netc/ufw/아래에 있는 ufw.conf파일에서 ENABLED=no를,\n1$ vim /etc/ufw/ufw.conf\n\n1234# /etc/ufw/ufw.conf...ENABLED=no...\n\nENABLED=yes로 👇 바꿔줍니다.\n123...ENABLED=yes...\n\n그 뒤에, bash로 돌아와서 ufw enable 로 활성화를 해주고,\n12[work] # ufw enableFirewall is active and enabled on system startup\n\n이제 실제로 22번 port를 방화벽에서 허락할 수 있게 ufw allow 를 사용합니다. \n123[work] # ufw allow 22/tcpRule addedRule added (v6)\n\n\n\n\n5. SSH server 시작\n수고하셨습니다. 이제 귀찮은 일은 다 끝났습니다.service ssh start로 ssh를 시작하고, \n12[work] # service ssh start * Starting OpenBSD Secure Shell server sshd              [ OK ]\n\nservice ssh status로 동작을 확인하면 끝!\n12[work] # service ssh status * sshd is running\n\n\n\n\n\nSSH Client\n자, 그럼 열심히 세팅한 컨테이너로 이제 접속을 해봐야겠죠?😎 당연하지만 기본 개념은 Port forwarding입니다. Host의 22022번 port가 ssh_container의 22번 port와 연결되어있기 때문에, 기본적으로 외부에서 Docker 컨테이너로 접속을 하려면 Docker가 실행되고 있는 Host 머신을 통해서 연결을 해야합니다. \n\n먼저 도커가 실행되고 있는 제 PC는 맥북인 관계로 ifconfig를 사용해서 제 컴퓨터의 IP가 172.16.8.236라는 것을 알아냈습니다. (linux: ifconfig - window: ipconfig) 따라서, ssh 명령어도 아래와 같습니다. \n  1$ ssh -p 22022 root@172.16.8.236\n\n  그렇다면 이 명령을 내리는 의미는 아래의 그림과 같습니다. \n  \n\n\n\n\n\n아래와 같이 접속을 허용하겠냐는 물음에 답하면 비밀번호를 물어보고, \n  12345The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.ECDSA key fingerprint is SHA256:iMDl7X79mKNZEA5oadtMr2zQdJhJ4n2toAeJ58o9Tsg.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.root@172.16.8.236's password:\n\n 비밀번호를 입력하면 드디어 ssh_container 안으로 입성(?)하게 됩니다!\n 123456789101112131415161718Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64) * Documentation:  https://help.ubuntu.com * Management:     https://landscape.canonical.com * Support:        https://ubuntu.com/advantageThis system has been minimized by removing packages and content that arenot required on a system that users do not log into.To restore this content, you can run the 'unminimize' command.The programs included with the Ubuntu system are free software;the exact distribution terms for each program are described in theindividual files in /usr/share/doc/*/copyright.Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted byapplicable law.\t[~] #\n\n\n\n\n\nssh를 사용해서 컨테이너 안으로 들어왔습니다! work directory안에 반가운 Data폴더도 그대로 잘 있네요. 이제 곧 Digital Nomad🐑가 될 것같은 기분 은 희망사항 입니다. \n  1234[~] # cd work[work] # ls -a.  ..  .empty  Data[work] #\n\n이번 포스팅에서 예시로 들었던 IP 172.16.8.236은 내부망(같은 공유기를 쓰는, 혹은 같은 사내망)입니다. 따라서, 때로는 192.xx.xxx.xx가 될 수도 있죠. 같은 내부망뿐만 아니라, 진정으로 인터넷을 통해 어디서나 접근을 가능하게 하고 싶다면 저 IP는 Host가 부여받은 Public IP인 external IP이어야 합니다. \n\nAWS나 GCP에서 Docker 컨테이너를 사용하고 계신다면, 사용하고 계신 Cloud Machine에 접근할 수 있는 IP를 알면 되는 것이고, 자체 사설 서버를 운영하신다고 해도 마찬가지 입니다. 해당 Host 머신이 가지고 있는 Static IP, 고정IP가 되겠죠.\n\n다만 각각의 환경에 따라 ssh 접속을 허용하기 위한 SSH Server측의 방화벽 및 구체적인 세팅을 다 설명하기에는 이번 포스팅의 논지를 흐릴 것 같아 사실 제가 힘들어서😞, 내부망 접속이라는 예시를 통해 ssh container 접속의 개념만 살펴보았습니다. 외부망을 통해 Docker Container에 접속을 하시려면, 필요에 따라 가지고 계신 환경에 따른 더 많은 정보가 필요합니다.\n\n\n\n\nSave My Container as an Image.(commit)\n더 게으르고 싶은 개발자가 좋은 개발자기 때문에, 우리는 이 귀찮은 작업들을, 매번 컨테이너를 생성할 때마다 해줄 수는 없습니다! 이렇게 힘들게(?) 세팅한, SSH 접속이 되는 ssh_container를 image로 만들어서 Docker Hub에도 올리고, 편하게 사용하고 싶습니다. \n\n이것을 가능하게 해주는 명령어가 commit 입니다. 말이 나온 김에 지금 당장 사용하도록 하겠습니다. ssh_container로 ssh_machine_learning이라는 이름으로 Image를 만듭니다. \n  12$ docker commit ssh_container ssh_machine_learningsha256:2e134384b1c846ee76a069db2aad0b2664610c195b9d8c1b03d79b9e3de74a0e\n\n  이미지가 잘 생성이 됐는지 확인을 해보니, 잘 생성이 되었네요! 참 쉽죠?😇🤘\n  1234$ docker imagesREPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZEssh_machine_learning                          latest              4d9c11b16e4c        4 seconds ago       4.75GBdocker101                                     latest              71522855bd07        4 days ago          4.72GB\n\n\n\n\n\nTest\n그럼 정말로 의도대로 잘 생성된 이미지인지 확인하기 위해, 기존의 ssh_container와, docker101 이미지를 삭제합니다. \n  123456$ docker stop ssh_containerssh_container$ docker rm ssh_containerssh_container$ docker rmi docker101Untagged: docker101:latest\n\n  그리고 생성한 ssh_machine_learning 이미지로 컨테이너를 생성하고 확인합니다. happy_cori라는 이름의 컨테이너로 생성이 되어있습니다. \n  12345$ docker run -d --cap-add=NET_ADMIN --cap-add=NET_RAW -p 8888:8888 -p 22022:22 ssh_machine_learninge3f1a95dc804632ed1802c17c90b44046f13301a261d06ebd48dcd7cb8f57447$ docker ps CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                           NAMES292970ce1cff        ssh_machine_learning   \"/tini -- /bin/sh -c…\"   3 seconds ago       Up 2 seconds        0.0.0.0:8888->8888/tcp, 0.0.0.0:22022->22/tcp   happy_cori\n\n  happy_cori로 exec 접속을 해서 SSH Server를 시작시킵니다.\n  123$ docker exec -it happy_cori /bin/bash[work] # service ssh start * Starting OpenBSD Secure Shell server sshd                  [ OK ]\n\n위에 나왔던 같은 방식으로, SSH 접속을 해봅니다.팝콘준비🍟\n\n\nDealing with an Error\n아, 지금 저처럼 같은 PC로 접속을 하신다면 아마도..\n  123456789 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!   @ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!어쩌구저쵸구.....Add correct host key in /Users/chayesol/.ssh/known_hosts to get rid of this message....\n\n  이런 멋진 친구를 먼저 만나게 될 것입니다. 그도 그럴만한 것이, 접속을 하려는 PC 입장에서는 똑같은 IP로 접속을 하려고 하는데, 전혀 다른 Server인데??라고 하면서 '뭐냐이거'라고 정색을 하는 것이죠.  이럴 경우, PC가 가지고 있떤 ssh-key를 아예 초기화시켜주는, \n  1$ ssh-keygen -R YOUR.IP.ADDR.ESS\n\n  를 실행한 뒤에 다시 하면 된다는 분들이 계시고, 저같은 경우 이 방법이 안먹혀서 에러 메세지 하단쯤에 친절히 적혀 있는 /Users/chayesol/.ssh/known_hosts을 파일을 열고 해당 IP를 지워버렸습니다. \n  \n\n  \n\n  그리고나서 다시, 도즈언🏊 하니 잘 되네요!\n  123456789101112131415161718192021222324$ ssh -p 22022 root@172.16.8.236The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.ECDSA key fingerprint is SHA256:XFFyjB4g0y4cJzd08AV2nDfxGxzcm8qBoS5n7VRc9fo.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.root@172.16.8.236's password: Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64) * Documentation:  https://help.ubuntu.com * Management:     https://landscape.canonical.com * Support:        https://ubuntu.com/advantageThis system has been minimized by removing packages and content that arenot required on a system that users do not log into.To restore this content, you can run the 'unminimize' command.The programs included with the Ubuntu system are free software;the exact distribution terms for each program are described in theindividual files in /usr/share/doc/*/copyright.Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted byapplicable law.[~] #\n\n\n\n\n\n\n읽어주셔서 감사합니다. 🙇\n\n\n\nReferences\nruo91 - GitHub Gist\ndocker의 ubuntu container에 ssh로 접속하기\nHOW TO CREATE A DOCKER IMAGE FROM A CONTAINER\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2019-05-25T15:26:56+09:00","dateModified":"2021-01-05T17:24:10+09:00","datePublished":"2019-05-25T15:26:56+09:00","description":"\nDocker Container에 SSH 접속\n현재 내 컨테이너를 이미지로 저장하기\n","headline":"Docker tutorial (3)","image":["docker1_5.jpg","docker1_5.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2019/05/25/docker-103/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2019/05/25/docker-103/","keywords":"useful-info, Docker, docker, ssh, container ssh","thumbnailUrl":"docker1_5.jpg"}</script>
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg"},"articleBody":"\nDocker Container에 SSH 접속\n현재 내 컨테이너를 이미지로 저장하기\n\n\n\n\nDocker Tutorial, 세 번째⭐️입니다!\n\n\n\n\n이번 포스팅에서는 이전 글에서 노출시킨 22 port 를 사용, 컨테이너 환경으로 외부에서 SSH 접속을 하는 방법에 대해 다루고, SSH Setting이 끝난 컨테이너 자체를 이미지로 만드는 방법을 알아보도록 하겠습니다.\n\n\n최근들어 많은 회사나 단체, 개인들이 AWS나 Google Cloud Platform 등을 사용하면서 GPU 및 TPU Server를 사용하고 있죠. 그래서 당연히 AWS나 Google Cloud에서도 Docker를 사용할 수 있게 됐고, 자연스럽게 언제 어디서든 무거운 계산이나 학습은 Cloud나 원격 서버에서 처리하고 실제 사용자는 자유롭게 접속하고 해당 머신을 사용할 수 있게 되었습니다. Digital Nomad🐑가 가까워지고 있습니다. 혹은 Digital Slave…\n\n\n이런 현실에 맞춰, SSH로 내 Deocker Container에 접속하는 법 정도는 아는 것이 좋겠죠?  물론 키와 패스워드 관리 및 보안상의 이유로 일각에서는 SSH로 컨테이너에 접속할 수 있게 하는 것을 우려하지만, 개인적인 학습이나 가벼운 실험 용도로만 사용한다고 했을 때는 효율적이라고 생각해 포스팅을 하기로 했습니다.\n\n\n\n SSH Server in Container\n 1. Container 생성 (--cap-add)\n\n\n먼저 SSH을 사용할 수 있게 이미지로 부터 컨테이너를 생성할 때, 아래와 같은 옵션을 함께 줍니다. 이미지는 Hi, Docker! 😃 (2)에서 생성한 docker101이미지를 사용합니다.\n1$ docker run -d --name ssh_container --cap-add=NET_ADMIN --cap-add=NET_RAW -p 8888:8888 -p 22022:22 docker101\n--cap-add=NET_ADMIN에서 --cap-add 옵션은, 컨테이너에게 특정한 cgroups 을 사용하게 해주는 것으로, 여기서는 admin의 network를 사용하겠다는 의미로 NET_ADMIN 을, admin의 iptables를 그대로 사용하겠다는 의미 NET_RAW 를 변수로 줍니다.\n\ncgroups: control groups의 약자 - 프로세스들의 자원의 사용(CPU, 메모리, 디스크 입출력, 네트워크 등)을 제한하고 격리시키는 리눅스 커널 기능 (feat. wikipedia)\n\n\n\n\n\n저는 -p 22022:22 로, 컨테이너가 SSH 접속을 허용할 22번 포트를 Host의 22022와 연결시켜 주겠습니다.\n\n 2. SSH, ufw 설치\n\n\n이렇게 생성한 컨테이너에 이제 SSH 접속을 할 수 있도록 하려면, 손봐줄 것이 많기때문에…👊 백그라운드에서 돌아가고 있는 ssh_container에 exec로 접속합니다.\n  1$ docker exec -it ssh_container /bin/bash\n\n\n그리고 SSH와, 리눅스에서 방화벽을 관리해주는 ufw를 설치합니다.\n  1$ apt-get install ssh ufw -y\n아래와 같이 sshd의 위치가 잘 나온다면 설치가 잘 된 것입니다!\n  12[work] # which sshd/usr/sbin/sshd\n\n\n 3. 비밀번호 설정 (sshd_config, passwd root)\n\n\nSSH 접속을 할 때 물어볼 비밀번호를 설정하려면, 먼저 /etc/ssh/ 아래에 있는 sshd_config파일을 좀 수정해야합니다.\n  1$ vim /etc/ssh/sshd_config\n를 보시면,\n  123456789#       $OpenBSD: sshd_config,v 1.101 2017/03/14 07:19:07 djm Exp $# This is the sshd server system-wide configuration file.  See# sshd_config(5) for more information.# 어쩌구저쩌구......#LoginGraceTime 2m#PermitRootLogin prohibit-password#StrictModes yes...\n라고 뜰 텐데요, 여기서 아래와 같이 #PermitRootLogin prohibit-password 부분의 주석을 해제하고, prohibit-password를 yes로 바꿔줍니다.\n  12345...#LoginGraceTime 2mPermitRootLogin yes#StrictModes yes...\n\n\n그렇게 저장을 하신 뒤에, 다시 bash로 돌아와 passwd root 을 입력해서 비밀번호를 설정해주면 끝입니다!\n1234[work] # passwd rootEnter new UNIX password:Retype new UNIX password: passwd: password updated successfully\n\n\n 4. ufw 세팅\n\n\netc/ufw/아래에 있는 ufw.conf파일에서 ENABLED=no를,\n1$ vim /etc/ufw/ufw.conf\n1234# /etc/ufw/ufw.conf...ENABLED=no...\nENABLED=yes로 👇 바꿔줍니다.\n123...ENABLED=yes...\n\n\n그 뒤에, bash로 돌아와서 ufw enable 로 활성화를 해주고,\n12[work] # ufw enableFirewall is active and enabled on system startup\n\n\n이제 실제로 22번 port를 방화벽에서 허락할 수 있게 ufw allow 를 사용합니다.\n123[work] # ufw allow 22/tcpRule addedRule added (v6)\n\n\n 5. SSH server 시작\n\n\n수고하셨습니다. 이제 귀찮은 일은 다 끝났습니다.\nservice ssh start로 ssh를 시작하고,\n12[work] # service ssh start * Starting OpenBSD Secure Shell server sshd              [ OK ]\nservice ssh status로 동작을 확인하면 끝!\n12[work] # service ssh status * sshd is running\n\n\n\n SSH Client\n\n\n자, 그럼 열심히 세팅한 컨테이너로 이제 접속을 해봐야겠죠?😎 당연하지만 기본 개념은 Port forwarding입니다. Host의 22022번 port가 ssh_container의 22번 port와 연결되어있기 때문에, 기본적으로 외부에서 Docker 컨테이너로 접속을 하려면 Docker가 실행되고 있는 Host 머신을 통해서 연결을 해야합니다.\n\n\n먼저 도커가 실행되고 있는 제 PC는 맥북인 관계로 ifconfig를 사용해서 제 컴퓨터의 IP가 172.16.8.236라는 것을 알아냈습니다. (linux: ifconfig - window: ipconfig) 따라서, ssh 명령어도 아래와 같습니다.\n  1$ ssh -p 22022 root@172.16.8.236\n그렇다면 이 명령을 내리는 의미는 아래의 그림과 같습니다.\n  \n\n\n아래와 같이 접속을 허용하겠냐는 물음에 답하면 비밀번호를 물어보고,\n  12345The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.ECDSA key fingerprint is SHA256:iMDl7X79mKNZEA5oadtMr2zQdJhJ4n2toAeJ58o9Tsg.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.root@172.16.8.236's password:\n비밀번호를 입력하면 드디어 ssh_container 안으로 입성(?)하게 됩니다!\n 123456789101112131415161718Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64) * Documentation:  https://help.ubuntu.com * Management:     https://landscape.canonical.com * Support:        https://ubuntu.com/advantageThis system has been minimized by removing packages and content that arenot required on a system that users do not log into.To restore this content, you can run the 'unminimize' command.The programs included with the Ubuntu system are free software;the exact distribution terms for each program are described in theindividual files in /usr/share/doc/*/copyright.Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted byapplicable law.\t[~] #\n\n\nssh를 사용해서 컨테이너 안으로 들어왔습니다! work directory안에 반가운 Data폴더도 그대로 잘 있네요. 이제 곧 Digital Nomad🐑가 될 것같은 기분 은 희망사항 입니다.\n  1234[~] # cd work[work] # ls -a.  ..  .empty  Data[work] #\n\n\n이번 포스팅에서 예시로 들었던 IP 172.16.8.236은 내부망(같은 공유기를 쓰는, 혹은 같은 사내망)입니다. 따라서, 때로는 192.xx.xxx.xx가 될 수도 있죠. 같은 내부망뿐만 아니라, 진정으로 인터넷을 통해 어디서나 접근을 가능하게 하고 싶다면 저 IP는 Host가 부여받은 Public IP인 external IP이어야 합니다.\n\n\nAWS나 GCP에서 Docker 컨테이너를 사용하고 계신다면, 사용하고 계신 Cloud Machine에 접근할 수 있는 IP를 알면 되는 것이고, 자체 사설 서버를 운영하신다고 해도 마찬가지 입니다. 해당 Host 머신이 가지고 있는 Static IP, 고정IP가 되겠죠.\n\n\n다만 각각의 환경에 따라 ssh 접속을 허용하기 위한 SSH Server측의 방화벽 및 구체적인 세팅을 다 설명하기에는 이번 포스팅의 논지를 흐릴 것 같아 사실 제가 힘들어서😞, 내부망 접속이라는 예시를 통해 ssh container 접속의 개념만 살펴보았습니다. 외부망을 통해 Docker Container에 접속을 하시려면, 필요에 따라 가지고 계신 환경에 따른 더 많은 정보가 필요합니다.\n\n\n\n Save My Container as an Image.(commit)\n\n\n더 게으르고 싶은 개발자가 좋은 개발자기 때문에, 우리는 이 귀찮은 작업들을, 매번 컨테이너를 생성할 때마다 해줄 수는 없습니다! 이렇게 힘들게(?) 세팅한, SSH 접속이 되는 ssh_container를 image로 만들어서 Docker Hub에도 올리고, 편하게 사용하고 싶습니다.\n\n\n이것을 가능하게 해주는 명령어가 commit 입니다. 말이 나온 김에 지금 당장 사용하도록 하겠습니다. ssh_container로 ssh_machine_learning이라는 이름으로 Image를 만듭니다.\n  12$ docker commit ssh_container ssh_machine_learningsha256:2e134384b1c846ee76a069db2aad0b2664610c195b9d8c1b03d79b9e3de74a0e\n이미지가 잘 생성이 됐는지 확인을 해보니, 잘 생성이 되었네요! 참 쉽죠?😇🤘\n  1234$ docker imagesREPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZEssh_machine_learning                          latest              4d9c11b16e4c        4 seconds ago       4.75GBdocker101                                     latest              71522855bd07        4 days ago          4.72GB\n\n\n\n Test\n\n\n그럼 정말로 의도대로 잘 생성된 이미지인지 확인하기 위해, 기존의 ssh_container와, docker101 이미지를 삭제합니다.\n  123456$ docker stop ssh_containerssh_container$ docker rm ssh_containerssh_container$ docker rmi docker101Untagged: docker101:latest\n그리고 생성한 ssh_machine_learning 이미지로 컨테이너를 생성하고 확인합니다. happy_cori라는 이름의 컨테이너로 생성이 되어있습니다.\n  12345$ docker run -d --cap-add=NET_ADMIN --cap-add=NET_RAW -p 8888:8888 -p 22022:22 ssh_machine_learninge3f1a95dc804632ed1802c17c90b44046f13301a261d06ebd48dcd7cb8f57447$ docker ps CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                           NAMES292970ce1cff        ssh_machine_learning   \"/tini -- /bin/sh -c…\"   3 seconds ago       Up 2 seconds        0.0.0.0:8888->8888/tcp, 0.0.0.0:22022->22/tcp   happy_cori\nhappy_cori로 exec 접속을 해서 SSH Server를 시작시킵니다.\n  123$ docker exec -it happy_cori /bin/bash[work] # service ssh start * Starting OpenBSD Secure Shell server sshd                  [ OK ]\n\n\n위에 나왔던 같은 방식으로, SSH 접속을 해봅니다.팝콘준비🍟\n\n\n Dealing with an Error\n\n\n아, 지금 저처럼 같은 PC로 접속을 하신다면 아마도…\n  123456789 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!   @ @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!어쩌구저쵸구.....Add correct host key in /Users/chayesol/.ssh/known_hosts to get rid of this message....\n이런 멋진 친구를 먼저 만나게 될 것입니다. 그도 그럴만한 것이, 접속을 하려는 PC 입장에서는 똑같은 IP로 접속을 하려고 하는데, 전혀 다른 Server인데??라고 하면서 '뭐냐이거'라고 정색을 하는 것이죠.  이럴 경우, PC가 가지고 있떤 ssh-key를 아예 초기화시켜주는,\n  1$ ssh-keygen -R YOUR.IP.ADDR.ESS\n를 실행한 뒤에 다시 하면 된다는 분들이 계시고, 저같은 경우 이 방법이 안먹혀서 에러 메세지 하단쯤에 친절히 적혀 있는 /Users/chayesol/.ssh/known_hosts을 파일을 열고 해당 IP를 지워버렸습니다.\n  \n  \n그리고나서 다시, 도즈언🏊 하니 잘 되네요!\n  123456789101112131415161718192021222324$ ssh -p 22022 root@172.16.8.236The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.ECDSA key fingerprint is SHA256:XFFyjB4g0y4cJzd08AV2nDfxGxzcm8qBoS5n7VRc9fo.Are you sure you want to continue connecting (yes/no)? yesWarning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.root@172.16.8.236's password: Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64) * Documentation:  https://help.ubuntu.com * Management:     https://landscape.canonical.com * Support:        https://ubuntu.com/advantageThis system has been minimized by removing packages and content that arenot required on a system that users do not log into.To restore this content, you can run the 'unminimize' command.The programs included with the Ubuntu system are free software;the exact distribution terms for each program are described in theindividual files in /usr/share/doc/*/copyright.Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted byapplicable law.[~] #\n\n\n\n\n읽어주셔서 감사합니다. 🙇\n\n\n References\n\nruo91 - GitHub Gist\ndocker의 ubuntu container에 ssh로 접속하기\nHOW TO CREATE A DOCKER IMAGE FROM A CONTAINER\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2019-05-25T15:26:56+09:00","dateModified":"2021-01-05T17:24:10+09:00","datePublished":"2019-05-25T15:26:56+09:00","description":"\nDocker Container에 SSH 접속\n현재 내 컨테이너를 이미지로 저장하기\n","headline":"Docker tutorial (3)","image":["docker1_5.jpg","docker1_5.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2019/05/25/docker-103/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2019/05/25/docker-103/","keywords":"useful-info, Docker, docker, ssh, container ssh","thumbnailUrl":"docker1_5.jpg"}</script>
     <meta name="description" content="Docker Container에 SSH 접속 현재 내 컨테이너를 이미지로 저장하기">
 <meta name="keywords" content="useful-info,Docker,docker,ssh,container ssh">
 <meta property="og:type" content="blog">
@@ -115,9 +115,9 @@
                 <a href="/#about" aria-label="Read more about the author">
                     <img class="sidebar-profile-picture" src="/assets/images/avatar.jpeg" alt="Author&#39;s picture">
                 </a>
-                <h4 style="color: #504e4e;" class="sidebar-profile-name">Peter Cha</h4>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
                 
-                    <h5 style="color: #504e4e;" class="sidebar-profile-bio"><p>AI Developer</p>
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
 </h5>
                 
             </div>
@@ -189,7 +189,7 @@
             
         </div>
 
-            <div id="main" style="background: rgba(200,200,200,0.6);" data-behavior="4" class="hasCover
+            <div id="main" data-behavior="4" class="hasCover
                         hasCoverMetaOut
                         ">
                 
@@ -229,182 +229,176 @@
 <li>현재 내 컨테이너를 이미지로 저장하기</li>
 </ul>
 <a id="more"></a>
-
 <br>
-
 <ul>
-<li>Docker Tutorial, 세 번째<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/2b50.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/2b50.png?v8">⭐</span>입니다! </li>
+<li>Docker Tutorial, 세 번째⭐️입니다!</li>
 </ul>
 <hr>
-
 <ul>
-<li><p>이번 포스팅에서는 <a href="https://www.stand-firm-peter.me/2019/05/09/docker-102/">이전 글</a>에서 노출시킨 <strong><code>22 port</code></strong> 를 사용, 컨테이너 환경으로 외부에서 <strong><code>SSH</code> 접속</strong>을 하는 방법에 대해 다루고, SSH Setting이 끝난 <strong>컨테이너 자체를 이미지로 만드는 방법</strong>을 알아보도록 하겠습니다. </p>
+<li>
+<p>이번 포스팅에서는 <a href="https://www.stand-firm-peter.me/2019/05/09/docker-102/">이전 글</a>에서 노출시킨 <strong><code>22 port</code></strong> 를 사용, 컨테이너 환경으로 외부에서 <strong><code>SSH</code> 접속</strong>을 하는 방법에 대해 다루고, SSH Setting이 끝난 <strong>컨테이너 자체를 이미지로 만드는 방법</strong>을 알아보도록 하겠습니다.</p>
 </li>
-<li><p>최근들어 많은 회사나 단체, 개인들이 AWS나 Google Cloud Platform 등을 사용하면서 GPU 및 TPU Server를 사용하고 있죠. 그래서 당연히 <u>AWS나 Google Cloud에서도 Docker를 사용</u>할 수 있게 됐고, 자연스럽게 언제 어디서든 무거운 계산이나 학습은 Cloud나 원격 서버에서 처리하고 실제 사용자는 자유롭게 접속하고 해당 머신을 사용할 수 있게 되었습니다. Digital Nomad<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f411.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f411.png?v8">🐑</span>가 가까워지고 있습니다. <del>혹은 Digital Slave..</del></p>
+<li>
+<p>최근들어 많은 회사나 단체, 개인들이 AWS나 Google Cloud Platform 등을 사용하면서 GPU 및 TPU Server를 사용하고 있죠. 그래서 당연히 <u>AWS나 Google Cloud에서도 Docker를 사용</u>할 수 있게 됐고, 자연스럽게 언제 어디서든 무거운 계산이나 학습은 Cloud나 원격 서버에서 처리하고 실제 사용자는 자유롭게 접속하고 해당 머신을 사용할 수 있게 되었습니다. Digital Nomad🐑가 가까워지고 있습니다. <s>혹은 Digital Slave…</s></p>
 </li>
-<li><p>이런 현실에 맞춰, SSH로 내 Deocker Container에 접속하는 법 정도는 아는 것이 좋겠죠?  물론 키와 패스워드 관리 및 보안상의 이유로 <a href="http://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/" rel="external nofollow noopener noreferrer" target="_blank">일각</a>에서는 SSH로 컨테이너에 접속할 수 있게 하는 것을 우려하지만, 개인적인 학습이나 가벼운 실험 용도로만 사용한다고 했을 때는 효율적이라고 생각해 포스팅을 하기로 했습니다. </p>
+<li>
+<p>이런 현실에 맞춰, SSH로 내 Deocker Container에 접속하는 법 정도는 아는 것이 좋겠죠?  물론 키와 패스워드 관리 및 보안상의 이유로 <a href="http://jpetazzo.github.io/2014/06/23/docker-ssh-considered-evil/" rel="external nofollow noopener noreferrer" target="_blank">일각</a>에서는 SSH로 컨테이너에 접속할 수 있게 하는 것을 우려하지만, 개인적인 학습이나 가벼운 실험 용도로만 사용한다고 했을 때는 효율적이라고 생각해 포스팅을 하기로 했습니다.</p>
 </li>
 </ul>
 <br>
-
-<h2 id="SSH-Server-in-Container"><a href="#SSH-Server-in-Container" class="headerlink" title="SSH Server in Container"></a>SSH Server in Container</h2><h3 id="1-Container-생성-cap-add"><a href="#1-Container-생성-cap-add" class="headerlink" title="1. Container 생성 (--cap-add)"></a>1. Container 생성 (<code>--cap-add</code>)</h3><ul>
-<li><p>먼저 SSH을 사용할 수 있게 이미지로 부터 컨테이너를 생성할 때, 아래와 같은 옵션을 함께 줍니다. 이미지는 <a href="https://www.stand-firm-peter.me/2019/05/09/docker-102/">Hi, Docker! :) (2)</a>에서 생성한 <code>docker101</code>이미지를 사용합니다. </p>
+<h2 id="ssh-server-in-container"><a class="markdownIt-Anchor" href="#ssh-server-in-container"></a> SSH Server in Container</h2>
+<h3 id="1-container-생성-cap-add"><a class="markdownIt-Anchor" href="#1-container-생성-cap-add"></a> 1. Container 생성 (<code>--cap-add</code>)</h3>
+<ul>
+<li>
+<p>먼저 SSH을 사용할 수 있게 이미지로 부터 컨테이너를 생성할 때, 아래와 같은 옵션을 함께 줍니다. 이미지는 <a href="https://www.stand-firm-peter.me/2019/05/09/docker-102/">Hi, Docker! 😃 (2)</a>에서 생성한 <code>docker101</code>이미지를 사용합니다.</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ docker run -d --name ssh_container --<span class="built_in">cap</span>-add=NET_ADMIN --<span class="built_in">cap</span>-add=NET_RAW -p 8888:8888 -p 22022:22 docker101</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>--cap-add=NET_ADMIN</code>에서 <strong><code>--cap-add</code></strong> 옵션은, 컨테이너에게 특정한 <strong>cgroups</strong> 을 사용하게 해주는 것으로, 여기서는 <strong>admin의 network를 사용</strong>하겠다는 의미로 <strong><code>NET_ADMIN</code></strong> 을, <strong>admin의 iptables를 그대로 사용</strong>하겠다는 의미 <strong><code>NET_RAW</code></strong> 를 변수로 줍니다. </p>
+<p><code>--cap-add=NET_ADMIN</code>에서 <strong><code>--cap-add</code></strong> 옵션은, 컨테이너에게 특정한 <strong>cgroups</strong> 을 사용하게 해주는 것으로, 여기서는 <strong>admin의 network를 사용</strong>하겠다는 의미로 <strong><code>NET_ADMIN</code></strong> 을, <strong>admin의 iptables를 그대로 사용</strong>하겠다는 의미 <strong><code>NET_RAW</code></strong> 를 변수로 줍니다.</p>
 <blockquote>
-<p><strong>cgroups</strong>: control groups의 약자 - 프로세스들의 자원의 사용(CPU, 메모리, 디스크 입출력, 네트워크 등)을 제한하고 격리시키는 리눅스 커널 기능 (feat. wikipedia) </p>
+<p><strong>cgroups</strong>: control groups의 약자 - 프로세스들의 자원의 사용(CPU, 메모리, 디스크 입출력, 네트워크 등)을 제한하고 격리시키는 리눅스 커널 기능 (feat. wikipedia)</p>
 </blockquote>
 </li>
 </ul>
 <br>
-
 <ul>
-<li>저는 <strong><code>-p 22022:22</code></strong> 로, 컨테이너가 SSH 접속을 허용할 22번 포트를 Host의 22022와 연결시켜 주겠습니다. </li>
+<li>저는 <strong><code>-p 22022:22</code></strong> 로, 컨테이너가 SSH 접속을 허용할 22번 포트를 Host의 22022와 연결시켜 주겠습니다.</li>
 </ul>
-<h3 id="2-SSH-ufw-설치"><a href="#2-SSH-ufw-설치" class="headerlink" title="2. SSH, ufw 설치"></a>2. SSH, ufw 설치</h3><ul>
-<li><p>이렇게 생성한 컨테이너에 이제 SSH 접속을 할 수 있도록 하려면, 손봐줄 것이 많기때문에…<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f44a.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f44a.png?v8">👊</span> 백그라운드에서 돌아가고 있는 <code>ssh_container</code>에 <code>exec</code>로 접속합니다. </p>
+<h3 id="2-ssh-ufw-설치"><a class="markdownIt-Anchor" href="#2-ssh-ufw-설치"></a> 2. SSH, ufw 설치</h3>
+<ul>
+<li>
+<p>이렇게 생성한 컨테이너에 이제 SSH 접속을 할 수 있도록 하려면, 손봐줄 것이 많기때문에…👊 백그라운드에서 돌아가고 있는 <code>ssh_container</code>에 <code>exec</code>로 접속합니다.</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it ssh_container /bin/bash</span></span><br></pre></td></tr></tbody></table></figure>
 </li>
-<li><p>그리고 SSH와, 리눅스에서 방화벽을 관리해주는 ufw를 설치합니다. </p>
+<li>
+<p>그리고 SSH와, 리눅스에서 방화벽을 관리해주는 ufw를 설치합니다.</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> apt-get install ssh ufw -y</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>  아래와 같이 sshd의 위치가 잘 나온다면 설치가 잘 된 것입니다!</p>
+<p>아래와 같이 sshd의 위치가 잘 나온다면 설치가 잘 된 것입니다!</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[work] # which sshd</span><br><span class="line">/usr/sbin/sshd</span><br></pre></td></tr></tbody></table></figure>
-
 </li>
 </ul>
-<h3 id="3-비밀번호-설정-sshd-config-passwd-root"><a href="#3-비밀번호-설정-sshd-config-passwd-root" class="headerlink" title="3. 비밀번호 설정 (sshd_config, passwd root)"></a>3. 비밀번호 설정 (sshd_config, passwd root)</h3><ul>
-<li><p>SSH 접속을 할 때 물어볼 비밀번호를 설정하려면, 먼저 <code>/etc/ssh/</code> 아래에 있는 <code>sshd_config</code>파일을 좀 수정해야합니다. </p>
+<h3 id="3-비밀번호-설정-sshd_config-passwd-root"><a class="markdownIt-Anchor" href="#3-비밀번호-설정-sshd_config-passwd-root"></a> 3. 비밀번호 설정 (sshd_config, passwd root)</h3>
+<ul>
+<li>
+<p>SSH 접속을 할 때 물어볼 비밀번호를 설정하려면, 먼저 <code>/etc/ssh/</code> 아래에 있는 <code>sshd_config</code>파일을 좀 수정해야합니다.</p>
   <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/ssh/sshd_config</span><br></pre></td></tr></tbody></table></figure>
-
-<p>  를 보시면, </p>
+<p>를 보시면,</p>
   <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">#       $OpenBSD: sshd_config,v 1.101 2017/03/14 07:19:07 djm Exp $</span></span><br><span class="line"><span class="comment"># This is the sshd server system-wide configuration file.  See</span></span><br><span class="line"><span class="comment"># sshd_config(5) for more information.</span></span><br><span class="line"><span class="comment"># 어쩌구저쩌구...</span></span><br><span class="line">...</span><br><span class="line"><span class="comment">#LoginGraceTime 2m</span></span><br><span class="line"><span class="comment">#PermitRootLogin prohibit-password</span></span><br><span class="line"><span class="comment">#StrictModes yes</span></span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
-
-<p>  라고 뜰 텐데요, 여기서 아래와 같이 <strong><code>#PermitRootLogin prohibit-password</code></strong> 부분의 주석을 해제하고, <code>prohibit-password</code>를 <code>yes</code>로 바꿔줍니다. </p>
+<p>라고 뜰 텐데요, 여기서 아래와 같이 <strong><code>#PermitRootLogin prohibit-password</code></strong> 부분의 주석을 해제하고, <code>prohibit-password</code>를 <code>yes</code>로 바꿔줍니다.</p>
   <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line"><span class="comment">#LoginGraceTime 2m</span></span><br><span class="line">PermitRootLogin yes</span><br><span class="line"><span class="comment">#StrictModes yes</span></span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
 </li>
-<li><p>그렇게 저장을 하신 뒤에, 다시 bash로 돌아와 <strong><code>passwd root</code></strong> 을 입력해서 비밀번호를 설정해주면 끝입니다!</p>
+<li>
+<p>그렇게 저장을 하신 뒤에, 다시 bash로 돌아와 <strong><code>passwd root</code></strong> 을 입력해서 비밀번호를 설정해주면 끝입니다!</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[work] <span class="comment"># passwd root</span></span><br><span class="line">Enter new UNIX password:</span><br><span class="line">Retype new UNIX password: </span><br><span class="line">passwd: password updated successfully</span><br></pre></td></tr></tbody></table></figure>
-
-
 </li>
 </ul>
-<h3 id="4-ufw-세팅"><a href="#4-ufw-세팅" class="headerlink" title="4. ufw 세팅"></a>4. ufw 세팅</h3><ul>
-<li><p><code>etc/ufw/</code>아래에 있는 <code>ufw.conf</code>파일에서 <code>ENABLED=no</code>를,</p>
+<h3 id="4-ufw-세팅"><a class="markdownIt-Anchor" href="#4-ufw-세팅"></a> 4. ufw 세팅</h3>
+<ul>
+<li>
+<p><code>etc/ufw/</code>아래에 있는 <code>ufw.conf</code>파일에서 <code>ENABLED=no</code>를,</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ vim /etc/ufw/ufw.conf</span><br></pre></td></tr></tbody></table></figure>
-
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># /etc/ufw/ufw.conf</span></span><br><span class="line">...</span><br><span class="line">ENABLED=no</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
-
-<p><code>ENABLED=yes</code>로 <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f447.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f447.png?v8">👇</span> 바꿔줍니다.</p>
+<p><code>ENABLED=yes</code>로 👇 바꿔줍니다.</p>
 <figure class="highlight bash"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">ENABLED=yes</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
 </li>
-<li><p>그 뒤에, bash로 돌아와서 <strong><code>ufw enable</code></strong> 로 활성화를 해주고,</p>
+<li>
+<p>그 뒤에, bash로 돌아와서 <strong><code>ufw enable</code></strong> 로 활성화를 해주고,</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[work] # ufw enable</span><br><span class="line">Firewall is active and enabled on system startup</span><br></pre></td></tr></tbody></table></figure>
 </li>
-<li><p>이제 실제로 22번 port를 방화벽에서 허락할 수 있게 <strong><code>ufw allow</code></strong> 를 사용합니다. </p>
+<li>
+<p>이제 실제로 22번 port를 방화벽에서 허락할 수 있게 <strong><code>ufw allow</code></strong> 를 사용합니다.</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">[work] # ufw allow 22/tcp</span><br><span class="line">Rule added</span><br><span class="line">Rule added (v6)</span><br></pre></td></tr></tbody></table></figure>
-
-
 </li>
 </ul>
-<h3 id="5-SSH-server-시작"><a href="#5-SSH-server-시작" class="headerlink" title="5. SSH server 시작"></a>5. SSH server 시작</h3><ul>
-<li><p>수고하셨습니다. 이제 귀찮은 일은 다 끝났습니다.<br><code>service ssh start</code>로 ssh를 시작하고, </p>
+<h3 id="5-ssh-server-시작"><a class="markdownIt-Anchor" href="#5-ssh-server-시작"></a> 5. SSH server 시작</h3>
+<ul>
+<li>
+<p>수고하셨습니다. 이제 귀찮은 일은 다 끝났습니다.<br>
+<code>service ssh start</code>로 ssh를 시작하고,</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[work] # service ssh start</span><br><span class="line"> * Starting OpenBSD Secure Shell server sshd              [ OK ]</span><br></pre></td></tr></tbody></table></figure>
-
 <p><code>service ssh status</code>로 동작을 확인하면 끝!</p>
 <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">[work] # service ssh status</span><br><span class="line"> * sshd is running</span><br></pre></td></tr></tbody></table></figure>
-
 </li>
 </ul>
 <br>
-
-<h2 id="SSH-Client"><a href="#SSH-Client" class="headerlink" title="SSH Client"></a>SSH Client</h2><ul>
-<li><p>자, 그럼 열심히 세팅한 컨테이너로 이제 접속을 해봐야겠죠?<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span> 당연하지만 기본 개념은 <strong>Port forwarding</strong>입니다. Host의 22022번 port가 ssh_container의 22번 port와 연결되어있기 때문에, 기본적으로 외부에서 Docker 컨테이너로 접속을 하려면 Docker가 실행되고 있는 Host 머신을 통해서 연결을 해야합니다. </p>
+<h2 id="ssh-client"><a class="markdownIt-Anchor" href="#ssh-client"></a> SSH Client</h2>
+<ul>
+<li>
+<p>자, 그럼 열심히 세팅한 컨테이너로 이제 접속을 해봐야겠죠?😎 당연하지만 기본 개념은 <strong>Port forwarding</strong>입니다. Host의 22022번 port가 ssh_container의 22번 port와 연결되어있기 때문에, 기본적으로 외부에서 Docker 컨테이너로 접속을 하려면 Docker가 실행되고 있는 Host 머신을 통해서 연결을 해야합니다.</p>
 </li>
-<li><p>먼저 도커가 실행되고 있는 제 PC는 맥북인 관계로 <code>ifconfig</code>를 사용해서 제 컴퓨터의 IP가 <code>172.16.8.236</code>라는 것을 알아냈습니다. (linux: <code>ifconfig</code> - window: <code>ipconfig</code>) 따라서, ssh 명령어도 아래와 같습니다. </p>
+<li>
+<p>먼저 도커가 실행되고 있는 제 PC는 맥북인 관계로 <code>ifconfig</code>를 사용해서 제 컴퓨터의 IP가 <code>172.16.8.236</code>라는 것을 알아냈습니다. (linux: <code>ifconfig</code> - window: <code>ipconfig</code>) 따라서, ssh 명령어도 아래와 같습니다.</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh -p 22022 root@172.16.8.236</span></span><br></pre></td></tr></tbody></table></figure>
-
-<p>  그렇다면 이 명령을 내리는 의미는 아래의 그림과 같습니다. </p>
+<p>그렇다면 이 명령을 내리는 의미는 아래의 그림과 같습니다.</p>
   <center><img src="/gallery/docker22.png"></center>
-
-
 </li>
-</ul>
-<ul>
-<li><p>아래와 같이 접속을 허용하겠냐는 물음에 답하면 비밀번호를 물어보고, </p>
+<li>
+<p>아래와 같이 접속을 허용하겠냐는 물음에 답하면 비밀번호를 물어보고,</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:iMDl7X79mKNZEA5oadtMr2zQdJhJ4n2toAeJ58o9Tsg.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.</span><br><span class="line">root@172.16.8.236's password:</span><br></pre></td></tr></tbody></table></figure>
-
-<p> 비밀번호를 입력하면 드디어 ssh_container 안으로 입성(?)하게 됩니다!</p>
+<p>비밀번호를 입력하면 드디어 ssh_container 안으로 입성(?)하게 됩니다!</p>
  <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com</span><br><span class="line"> * Management:     https://landscape.canonical.com</span><br><span class="line"> * Support:        https://ubuntu.com/advantage</span><br><span class="line">This system has been minimized by removing packages and content that are</span><br><span class="line">not required on a system that users do not log into.</span><br><span class="line"></span><br><span class="line">To restore this content, you can run the 'unminimize' command.</span><br><span class="line"></span><br><span class="line">The programs included with the Ubuntu system are free software;</span><br><span class="line">the exact distribution terms for each program are described in the</span><br><span class="line">individual files in /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span><br><span class="line">applicable law.</span><br><span class="line">	</span><br><span class="line">[~] #</span><br></pre></td></tr></tbody></table></figure>
-
-
 </li>
-</ul>
-<ul>
-<li><p>ssh를 사용해서 컨테이너 안으로 들어왔습니다! <code>work</code> directory안에 반가운 <code>Data</code>폴더도 그대로 잘 있네요. 이제 곧 Digital Nomad<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f411.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f411.png?v8">🐑</span>가 될 것같은 기분 <del>은 희망사항</del> 입니다. </p>
+<li>
+<p>ssh를 사용해서 컨테이너 안으로 들어왔습니다! <code>work</code> directory안에 반가운 <code>Data</code>폴더도 그대로 잘 있네요. 이제 곧 Digital Nomad🐑가 될 것같은 기분 <s>은 희망사항</s> 입니다.</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">[~] # cd work</span><br><span class="line">[work] # ls -a</span><br><span class="line">.  ..  .empty  Data</span><br><span class="line">[work] #</span><br></pre></td></tr></tbody></table></figure>
 </li>
-<li><p>이번 포스팅에서 예시로 들었던 IP <code>172.16.8.236</code>은 내부망(같은 공유기를 쓰는, 혹은 같은 사내망)입니다. 따라서, 때로는 <code>192.xx.xxx.xx</code>가 될 수도 있죠. 같은 내부망뿐만 아니라, 진정으로 인터넷을 통해 어디서나 접근을 가능하게 하고 싶다면 저 IP는 Host가 부여받은 <strong>Public IP인 external IP</strong>이어야 합니다. </p>
+<li>
+<p>이번 포스팅에서 예시로 들었던 IP <code>172.16.8.236</code>은 내부망(같은 공유기를 쓰는, 혹은 같은 사내망)입니다. 따라서, 때로는 <code>192.xx.xxx.xx</code>가 될 수도 있죠. 같은 내부망뿐만 아니라, 진정으로 인터넷을 통해 어디서나 접근을 가능하게 하고 싶다면 저 IP는 Host가 부여받은 <strong>Public IP인 external IP</strong>이어야 합니다.</p>
 </li>
-<li><p>AWS나 GCP에서 Docker 컨테이너를 사용하고 계신다면, 사용하고 계신 Cloud Machine에 접근할 수 있는 IP를 알면 되는 것이고, 자체 사설 서버를 운영하신다고 해도 마찬가지 입니다. 해당 Host 머신이 가지고 있는 Static IP, 고정IP가 되겠죠.</p>
+<li>
+<p>AWS나 GCP에서 Docker 컨테이너를 사용하고 계신다면, 사용하고 계신 Cloud Machine에 접근할 수 있는 IP를 알면 되는 것이고, 자체 사설 서버를 운영하신다고 해도 마찬가지 입니다. 해당 Host 머신이 가지고 있는 Static IP, 고정IP가 되겠죠.</p>
 </li>
-<li><p>다만 각각의 환경에 따라 ssh 접속을 허용하기 위한 SSH Server측의 방화벽 및 구체적인 세팅을 다 설명하기에는 이번 포스팅의 논지를 흐릴 것 같아 <del>사실 제가 힘들어서<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f61e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f61e.png?v8">😞</span></del>, 내부망 접속이라는 예시를 통해 ssh container 접속의 개념만 살펴보았습니다. 외부망을 통해 Docker Container에 접속을 하시려면, 필요에 따라 가지고 계신 환경에 따른 더 많은 정보가 필요합니다.</p>
+<li>
+<p>다만 각각의 환경에 따라 ssh 접속을 허용하기 위한 SSH Server측의 방화벽 및 구체적인 세팅을 다 설명하기에는 이번 포스팅의 논지를 흐릴 것 같아 <s>사실 제가 힘들어서😞</s>, 내부망 접속이라는 예시를 통해 ssh container 접속의 개념만 살펴보았습니다. 외부망을 통해 Docker Container에 접속을 하시려면, 필요에 따라 가지고 계신 환경에 따른 더 많은 정보가 필요합니다.</p>
 </li>
 </ul>
 <br>
-
-<h2 id="Save-My-Container-as-an-Image-commit"><a href="#Save-My-Container-as-an-Image-commit" class="headerlink" title="Save My Container as an Image.(commit)"></a>Save My Container as an Image.(<code>commit</code>)</h2><ul>
-<li><p><del>더 게으르고 싶은 개발자가 좋은 개발자기 때문에,</del> 우리는 이 귀찮은 작업들을, 매번 컨테이너를 생성할 때마다 해줄 수는 없습니다! 이렇게 힘들게(?) 세팅한, SSH 접속이 되는 <code>ssh_container</code>를 image로 만들어서 Docker Hub에도 올리고, 편하게 사용하고 싶습니다. </p>
+<h2 id="save-my-container-as-an-imagecommit"><a class="markdownIt-Anchor" href="#save-my-container-as-an-imagecommit"></a> Save My Container as an Image.(<code>commit</code>)</h2>
+<ul>
+<li>
+<p><s>더 게으르고 싶은 개발자가 좋은 개발자기 때문에,</s> 우리는 이 귀찮은 작업들을, 매번 컨테이너를 생성할 때마다 해줄 수는 없습니다! 이렇게 힘들게(?) 세팅한, SSH 접속이 되는 <code>ssh_container</code>를 image로 만들어서 Docker Hub에도 올리고, 편하게 사용하고 싶습니다.</p>
 </li>
-<li><p>이것을 가능하게 해주는 명령어가 <strong><code>commit</code></strong> 입니다. 말이 나온 김에 지금 당장 사용하도록 하겠습니다. <code>ssh_container</code>로 <code>ssh_machine_learning</code>이라는 이름으로 Image를 만듭니다. </p>
+<li>
+<p>이것을 가능하게 해주는 명령어가 <strong><code>commit</code></strong> 입니다. 말이 나온 김에 지금 당장 사용하도록 하겠습니다. <code>ssh_container</code>로 <code>ssh_machine_learning</code>이라는 이름으로 Image를 만듭니다.</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker commit ssh_container ssh_machine_learning</span></span><br><span class="line">sha256:2e134384b1c846ee76a069db2aad0b2664610c195b9d8c1b03d79b9e3de74a0e</span><br></pre></td></tr></tbody></table></figure>
-
-<p>  이미지가 잘 생성이 됐는지 확인을 해보니, 잘 생성이 되었네요! 참 쉽죠?<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f607.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f607.png?v8">😇</span><span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f918.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f918.png?v8">🤘</span></p>
+<p>이미지가 잘 생성이 됐는지 확인을 해보니, 잘 생성이 되었네요! 참 쉽죠?😇🤘</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker images</span></span><br><span class="line">REPOSITORY                                    TAG                 IMAGE ID            CREATED             SIZE</span><br><span class="line">ssh_machine_learning                          latest              4d9c11b16e4c        4 seconds ago       4.75GB</span><br><span class="line">docker101                                     latest              71522855bd07        4 days ago          4.72GB</span><br></pre></td></tr></tbody></table></figure>
-
 </li>
 </ul>
 <br>
-
-<h3 id="Test"><a href="#Test" class="headerlink" title="Test"></a>Test</h3><ul>
-<li><p>그럼 정말로 의도대로 잘 생성된 이미지인지 확인하기 위해, 기존의 ssh_container와, docker101 이미지를 삭제합니다. </p>
+<h3 id="test"><a class="markdownIt-Anchor" href="#test"></a> Test</h3>
+<ul>
+<li>
+<p>그럼 정말로 의도대로 잘 생성된 이미지인지 확인하기 위해, 기존의 ssh_container와, docker101 이미지를 삭제합니다.</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker stop ssh_container</span></span><br><span class="line">ssh_container</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker rm ssh_container</span></span><br><span class="line">ssh_container</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker rmi docker101</span></span><br><span class="line">Untagged: docker101:latest</span><br></pre></td></tr></tbody></table></figure>
-
-<p>  그리고 생성한 <code>ssh_machine_learning</code> 이미지로 컨테이너를 생성하고 확인합니다. <code>happy_cori</code>라는 이름의 컨테이너로 생성이 되어있습니다. </p>
+<p>그리고 생성한 <code>ssh_machine_learning</code> 이미지로 컨테이너를 생성하고 확인합니다. <code>happy_cori</code>라는 이름의 컨테이너로 생성이 되어있습니다.</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker run -d --<span class="built_in">cap</span>-add=NET_ADMIN --<span class="built_in">cap</span>-add=NET_RAW -p 8888:8888 -p 22022:22 ssh_machine_learning</span></span><br><span class="line">e3f1a95dc804632ed1802c17c90b44046f13301a261d06ebd48dcd7cb8f57447</span><br><span class="line"><span class="meta">$</span><span class="bash"> docker ps </span></span><br><span class="line">CONTAINER ID        IMAGE                  COMMAND                  CREATED             STATUS              PORTS                                           NAMES</span><br><span class="line">292970ce1cff        ssh_machine_learning   "/tini -- /bin/sh -c…"   3 seconds ago       Up 2 seconds        0.0.0.0:8888->8888/tcp, 0.0.0.0:22022->22/tcp   happy_cori</span><br></pre></td></tr></tbody></table></figure>
-
-<p>  <code>happy_cori</code>로 exec 접속을 해서 SSH Server를 시작시킵니다.</p>
+<p><code>happy_cori</code>로 exec 접속을 해서 SSH Server를 시작시킵니다.</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> docker <span class="built_in">exec</span> -it happy_cori /bin/bash</span></span><br><span class="line">[work] # service ssh start</span><br><span class="line"> * Starting OpenBSD Secure Shell server sshd                  [ OK ]</span><br></pre></td></tr></tbody></table></figure>
 </li>
-<li><p>위에 나왔던 같은 방식으로, SSH 접속을 해봅니다.<del>팝콘준비<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f35f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f35f.png?v8">🍟</span></del></p>
+<li>
+<p>위에 나왔던 같은 방식으로, SSH 접속을 해봅니다.<s>팝콘준비🍟</s></p>
 </li>
 </ul>
-<h4 id="Dealing-with-an-Error"><a href="#Dealing-with-an-Error" class="headerlink" title="Dealing with an Error"></a>Dealing with an Error</h4><ul>
-<li><p>아, 지금 저처럼 같은 PC로 접속을 하신다면 아마도..</p>
+<h4 id="dealing-with-an-error"><a class="markdownIt-Anchor" href="#dealing-with-an-error"></a> Dealing with an Error</h4>
+<ul>
+<li>
+<p>아, 지금 저처럼 같은 PC로 접속을 하신다면 아마도…</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><br><span class="line"> @    WARNING: REMOTE HOST IDENTIFICATION HAS CHANGED!   @</span><br><span class="line"> @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@</span><br><span class="line"> IT IS POSSIBLE THAT SOMEONE IS DOING SOMETHING NASTY!</span><br><span class="line"></span><br><span class="line">어쩌구저쵸구..</span><br><span class="line">...</span><br><span class="line">Add correct host key in /Users/chayesol/.ssh/known_hosts to get rid of this message.</span><br><span class="line">...</span><br></pre></td></tr></tbody></table></figure>
-
-<p>  이런 멋진 친구를 먼저 만나게 될 것입니다. 그도 그럴만한 것이, 접속을 하려는 PC 입장에서는 <code>똑같은 IP로 접속을 하려고 하는데, 전혀 다른 Server인데??</code>라고 하면서 <code>'뭐냐이거'</code>라고 정색을 하는 것이죠.  이럴 경우, PC가 가지고 있떤 ssh-key를 아예 초기화시켜주는, </p>
+<p>이런 멋진 친구를 먼저 만나게 될 것입니다. 그도 그럴만한 것이, 접속을 하려는 PC 입장에서는 <code>똑같은 IP로 접속을 하려고 하는데, 전혀 다른 Server인데??</code>라고 하면서 <code>'뭐냐이거'</code>라고 정색을 하는 것이죠.  이럴 경우, PC가 가지고 있떤 ssh-key를 아예 초기화시켜주는,</p>
   <figure class="highlight plain"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ ssh-keygen -R YOUR.IP.ADDR.ESS</span><br></pre></td></tr></tbody></table></figure>
-
-<p>  를 실행한 뒤에 다시 하면 된다는 분들이 계시고, 저같은 경우 이 방법이 안먹혀서 에러 메세지 하단쯤에 친절히 적혀 있는 <code>/Users/chayesol/.ssh/known_hosts</code>을 파일을 열고 해당 IP를 지워버렸습니다. </p>
+<p>를 실행한 뒤에 다시 하면 된다는 분들이 계시고, 저같은 경우 이 방법이 안먹혀서 에러 메세지 하단쯤에 친절히 적혀 있는 <code>/Users/chayesol/.ssh/known_hosts</code>을 파일을 열고 해당 IP를 지워버렸습니다.</p>
   <center><img src="/gallery/docker33.png"></center>
-
   <br>
-
-<p>  그리고나서 다시, 도즈언<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f3ca.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f3ca.png?v8">🏊</span> 하니 잘 되네요!</p>
+<p>그리고나서 다시, 도즈언🏊 하니 잘 되네요!</p>
   <figure class="highlight shell"><table><tbody><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">$</span><span class="bash"> ssh -p 22022 root@172.16.8.236</span></span><br><span class="line">The authenticity of host '[172.16.8.236]:22022 ([172.16.8.236]:22022)' can't be established.</span><br><span class="line">ECDSA key fingerprint is SHA256:XFFyjB4g0y4cJzd08AV2nDfxGxzcm8qBoS5n7VRc9fo.</span><br><span class="line">Are you sure you want to continue connecting (yes/no)? yes</span><br><span class="line">Warning: Permanently added '[172.16.8.236]:22022' (ECDSA) to the list of known hosts.</span><br><span class="line">root@172.16.8.236's password: </span><br><span class="line">Welcome to Ubuntu 18.04.2 LTS (GNU/Linux 4.9.125-linuxkit x86_64)</span><br><span class="line"></span><br><span class="line"> * Documentation:  https://help.ubuntu.com</span><br><span class="line"> * Management:     https://landscape.canonical.com</span><br><span class="line"> * Support:        https://ubuntu.com/advantage</span><br><span class="line">This system has been minimized by removing packages and content that are</span><br><span class="line">not required on a system that users do not log into.</span><br><span class="line"></span><br><span class="line">To restore this content, you can run the 'unminimize' command.</span><br><span class="line"></span><br><span class="line">The programs included with the Ubuntu system are free software;</span><br><span class="line">the exact distribution terms for each program are described in the</span><br><span class="line">individual files in /usr/share/doc/*/copyright.</span><br><span class="line"></span><br><span class="line">Ubuntu comes with ABSOLUTELY NO WARRANTY, to the extent permitted by</span><br><span class="line">applicable law.</span><br><span class="line"></span><br><span class="line">[~] #</span><br></pre></td></tr></tbody></table></figure>
-
 </li>
 </ul>
 <br>
-
 <ul>
-<li>읽어주셔서 감사합니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f647.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f647.png?v8">🙇</span></li>
+<li>읽어주셔서 감사합니다. 🙇</li>
 </ul>
 <hr>
-
-<h3 id="References"><a href="#References" class="headerlink" title="References"></a>References</h3><ul>
+<h3 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h3>
+<ul>
 <li><strong><a href="https://gist.github.com/ruo91/11394722" rel="external nofollow noopener noreferrer" target="_blank">ruo91 - GitHub Gist</a></strong></li>
 <li><strong>docker의 ubuntu <a href="https://chanhy63.tistory.com/11" rel="external nofollow noopener noreferrer" target="_blank">container에 ssh로 접속하기</a></strong></li>
 <li><strong>HOW TO CREATE A <a href="https://www.scalyr.com/blog/create-docker-image/" rel="external nofollow noopener noreferrer" target="_blank">DOCKER IMAGE FROM A CONTAINER</a></strong></li>

@@ -6198,7 +6198,7 @@ a.gitment-editor-logout-link:hover {
 }
 
 .gitment-editor-body textarea:focus {
-  background-color: #000;
+  background-color: #fff;
 }
 
 .gitment-editor-preview {
@@ -8563,7 +8563,7 @@ blockquote {
 #main {
   display: block;
   min-height: 100%;
-  background: rgba(200,200,200,0.5);
+  background: #fff;
   transition: transform .25s ease-in-out;
   -webkit-transition: -webkit-transform .25s ease-in-out; }
   #main.hasCover.hasCoverCaption, #main.hasCover.hasCoverMetaOut {
@@ -8686,7 +8686,7 @@ blockquote {
   #sidebar .sidebar-container {
     overflow: auto; }
   #sidebar .sidebar-profile {
-    color: #000;
+    color: #ebebeb;
     text-align: center;
     padding-top: 18px;
     margin-bottom: 15px; }
@@ -8695,7 +8695,7 @@ blockquote {
       margin: 0 auto; }
     #sidebar .sidebar-profile .sidebar-profile-name {
       font-size: 1.1em;
-      color: #000; }
+      color: #ebebeb; }
   #sidebar ul.sidebar-buttons {
     padding: 0;
     margin: 0 0 20px 0; }
@@ -8705,12 +8705,12 @@ blockquote {
       height: 45px;
       line-height: 45px; }
       #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link {
-        color: #000;
+        color: #ebebeb;
         display: block;
         height: 100%; }
         #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:hover, #sidebar ul.sidebar-buttons li.sidebar-button .sidebar-button-link:active {
           text-decoration: none;
-          color: black; }
+          color: white; }
     #sidebar ul.sidebar-buttons:first-child {
       margin-top: 5px; }
 
@@ -9070,7 +9070,7 @@ blockquote {
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-location {
         font-weight: 400;
         font-size: 1.6rem;
-        color: #000; }
+        color: #ebebeb; }
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-job,
       #sidebar[data-behavior="1"] .sidebar-profile .sidebar-profile-location {
         margin-top: 0;
@@ -9213,7 +9213,7 @@ blockquote {
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-location {
         font-weight: 400;
         font-size: 1.6rem;
-        color: #000; }
+        color: #ebebeb; }
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-job,
       #sidebar[data-behavior="4"] .sidebar-profile .sidebar-profile-location {
         margin-top: 0;
