@@ -3,6 +3,48 @@
 
 
     <url>
+        <loc>http://www.stand-firm-peter.me/tags/inception-resnet/</loc>
+        <lastmod>2021-01-22T09:11:23.372Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/inception-v4/</loc>
+        <lastmod>2021-01-22T09:11:23.372Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/inception/</loc>
+        <lastmod>2021-01-22T09:11:23.372Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
+        <lastmod>2021-01-22T09:11:23.372Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
+        <lastmod>2021-01-22T09:11:23.372Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
+        <lastmod>2021-01-22T09:11:23.372Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
         <lastmod>2021-01-21T23:43:14.905Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -11,27 +53,6 @@
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
-        <lastmod>2021-01-21T23:43:14.905Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
-        <lastmod>2021-01-21T23:43:14.905Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
-        <lastmod>2021-01-21T23:43:14.905Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
         <lastmod>2021-01-21T23:43:14.905Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
@@ -54,20 +75,6 @@
     <url>
         <loc>http://www.stand-firm-peter.me/tags/inception-v2/</loc>
         <lastmod>2021-01-21T23:40:52.275Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/inception-resnet/</loc>
-        <lastmod>2021-01-21T14:42:00.000Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/inception-v4/</loc>
-        <lastmod>2021-01-21T14:42:00.000Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
