@@ -3,6 +3,34 @@
 
 
     <url>
+        <loc>http://www.stand-firm-peter.me/tags/resnext/</loc>
+        <lastmod>2021-01-26T14:39:10.780Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
+        <lastmod>2021-01-26T14:39:10.780Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
+        <lastmod>2021-01-26T14:39:10.780Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
+        <lastmod>2021-01-26T14:39:10.780Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
         <loc>http://www.stand-firm-peter.me/tags/FLOPs/</loc>
         <lastmod>2021-01-26T14:31:56.937Z</lastmod>
         <changefreq>weekly</changefreq>
@@ -12,34 +40,6 @@
     <url>
         <loc>http://www.stand-firm-peter.me/tags/bottleneck/</loc>
         <lastmod>2021-01-26T14:31:56.937Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
-        <lastmod>2021-01-26T14:31:56.937Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
-        <lastmod>2021-01-26T14:31:56.937Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
-        <lastmod>2021-01-26T14:31:56.937Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/resnext/</loc>
-        <lastmod>2021-01-26T14:31:19.692Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
