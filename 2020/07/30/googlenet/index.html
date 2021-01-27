@@ -19,14 +19,14 @@
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg"},"articleBody":"\n니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! \nfeat. Network in Network\n\n\n\n\n너무 오랜만에 딥러닝 논문 정주행 리뷰네요. 올 해가 가기 전에는 2020년에 도착하고 싶은게 목표인데.. 아직 2014년이라니..😢 더 분발해야겠습니다! 이번에 알아 볼 논문은 2014년 ILVRC에서 1위에 빛나는 GoogleNet입니다! 또 다른 이름으로, Inception이라고 불립니다. \n논문의 풀네임은 ‘Going deeper with convolutions’ 입니다. 저자는 Christian Szegedy et al.이고, 구글에서 발표한 논문이면서 동시에 CNN의 시초인 LeNet을 오마주하는 의미에서 이름을 GoogLeNet으로 부른다고 하네요!\n논문의 제목은 명작인.. 2010년 레오나르도 디카프리오 주연의 영화 Inception의 ‘We need to go deeper’라는 명대사로 유명했던 인터넷 Meme을 딴 것이라고 하네요 😆 ZFNet까지의 구조들은 끽해야 Conv layer 몇 개와 Fully Conneted 2, 3개를 붙이는 구조에서 더욱 깊어진 CNN 모델 구조가 가능하게 된 점을 자랑스럽게 소개합니다. 😎\n\n\n\nIntroduction\n2012 AlexNet을 시작으로 딥러닝 기술의 발전속도가 가속도가 한창 붙던 2014년. 🏃 이런 흐름은 단순히 하드웨어의 발전과 큰 데이터셋, 그리고 더 큰 모델구조 뿐만이 아니라, 새로운 아이디어들과 알고리즘, 그리고 발전된 Network Architecture 덕분이라고 설명합니다. \n\nGoogleNet은 AlexNet보다 12배 학습할 파라미터가 작지만 훨씬 더 정확도는 높은데요, 이것을 가능하게 한 코드네임 Inception. 그 모델 구조는 그 유명한 Network In Network에서 받은 영감으로부터 나오게 됐다고 합니다. 그럼, 이쯤에서 Network in Network에 대해 잠시 살펴보도록 할까요?\n\n\n\n\nRelated WorkNetwork in Network\nNetwork in Network는 2013년 12월에 소개된 논문으로, 또 한 번의 CNN의 급격한 발전을 이루도록 토태를 마련했다고나 할까요. 1x1 Conv layer의 유용성을 소개한 논문입니다.✨ \nNetwork in Network(이하 NIN)의 핵심 개념은 Conv-Activation-Conv와 같이 단순하게 이어지는 Linear convolution layer 구조로는, 더 상위 수준의 Nonlinearity를 충분히 표현 할 수 없기 때문에 이를 보완하여 뉴럴넷의 표현력을 증가시키기 위함입니다. \n그 결과, 아래와 같이 좀 더 비선형적인 요소를 더 추가하여 모델의 추상화 수준을 올려주는 MLP를 Conv layer 사이에 더 넣어줘서 mlpconv layer를 탄생시켰습니다. 👏👏 그 결과 conv연산으로 생성되는 feacture map들이 MLP를 거치면서 서로 상호작용을 하고 정보를 더 주고 받게 되겠죠. \n\n\n\n\n이런 mlpconv를 반복하는 구조를 Cascaded cross channel(혹은 cross feature map) parametric pooling structure이라고 말합니다. 이렇게 mlpconv layer가 하는 일이 1x1 conv가 하는 일과 상응한다고 논문에서 말하고 있습니다. 1x1 conv가 하는 일이, input으로 들어오는 이미지의 channel들을 재조합하고, 다시 재생성하는 역할이기 때문입니다! 그래서 mlp로써 1x1 conv를 사용합니다.\n\nNIN의 전체 구조는 아래와 같습니다. 왜 이름이 ‘Network in Network’인지 이해가 되는 부분입니다. \n\n\n\n\n\n\nMotivation and High Level Considerations\n모델의 성능을 높이는 방법은 사실 아주 간단합니다. 모델의 크기라고 할 수 있는, 깊이와 넓이를 더 크게 해주면 됩니다! 이 방법이 아주 쉽고, 안전하게 모델의 성능을 보장할 수 있는 방법이죠. 그러나 이런 간단한 솔루션에도 두 가지 큰 문제가 존재합니다. \n\n1. “Bigger size means a larger number of parameters.”\n모델의 사이즈가 클수록, 학습해야 할 파라미터들이 더 많아진다는 것을 의미합니다. 그 결과 Overfitting에 더 취약해진다는 말이 됩니다. 특히 Overfitting은 학습할 데이터의 labeled examples의 수가 한정적일 때 더 큰 주요 bottleneck이 됩니다. \n아래와 같이 시베리안 허스키🐶와 에스키모견🐶을 구별하는 것은 전문가 정도 되어야 잘 구별할 수 있지 않을까요? 아래 이미지는 실제 ImageNet 2014 데이터 중 일부입니다. \n\n\n\n\n그럼 이런 데이터를 더 만들면 되지!라고 하면, 일단 강형욱 선생님..까지는 아니더라도 데이터 생성에만 해도 코스트가 비싸지고, 쉽지 않아집니다. 이런 경우처럼 데이터는 한정적일 때, 쉽게 말해서 양으로 승부할 수 없을 때가 있다는 것이죠. \n\n2. “The dramatically increased use of computational resources.”\n당연한 이야기로, 컴퓨팅 파워의 문제가 있습니다. 현실적으로 계산적인 예산이라는 것은 한정적이기 마련이고, 모델이 무식하게 큰 것에 비해서 계산해야 할 것은 실제로 그정도까지 필요가 없다면 자원낭비도 그런 자원낭비가 없겠죠. \n\n3. “Moving from fully connected to sparsely connected architectures!”\n그래서, 위 두 가지 문제에 대한 해결책으로 Arora et al.의 획기적인 연구성과에 따르면,\n\n‘데이터셋의 확률 분포가 아주 깊고 넓은 뉴럴넷에 의해서 표현된다면, 최적의 네트워크 구조가 마지막 layer을 얼마나 활성화 하는지에 따라, 통계적 상관관계를 살핌으로서 layer by layer로 분석될 수 있음‘\n\n  을 밝히면서, 더 큰 Sparsity를 추구하여서 최적의 모델 구조를 찾아줄 필요(=GoogleNet)가 있음을 주창합니다. 실제로 여타 다른 fine tunnning을 거치는 것 보다, Inception Structure를 사용했다느 것이 Object Detection의 Base net으로 사용했을 때, 아주 유용했다고 말하고 있습니다. \n\n개인적인 생각으로는 이 GoogleNet을 발표할 때부터, 아마 Google 사람들은 미래에 가능할 AutoML를 머리 속에 그렸다고 생각이 되네요. 🌝\n\n\n\n\nArchitectural Details\n그렇기 때문에, GoogleNet의 핵심 아이디어는 “최적의 local sparse structure가 근사될 수 있는 방법을 어떻게 찾을 수 있는가”로 수렴합니다. 그 고민의 결과로 탄생한 것이 Inception architecture입니다.\n논문을 보면, Inception Module이라고 부는 이 Module이 어떻게 탄생하게 됐는지에 대해 구구절절 설명을 해 놓습니다만, 쉽게 말하자면 아래와 같이 정리할 수 있습니다. \nThe Nativity of Inception Module\n\nConv filter Size가 작으면 위치적 정보는 잘 보전되는데 너무 숲을 안보고 나무만 보고(local region에만 집착하고), filter Size가 크면 클수록 추상화 정도가 올라가서 숲은 보이는데 나무가 잘 안보인다(위치적 정보는 떨어진다).😦\n기존의 ConvNet들처럼 그냥 순차적으로 말이야.. ‘어떤 filter Size 순서로 Conv layer를 배치할 것인가’ 고민하니까, 결국에는 1번과 같은 trade off를 감수해야하는 것이더라. 😕\n그럼 순차적으로 안쓰고 다 같이 쓰면 되겠네? 😃\n\n\n\n\nInception Module\n그래서 맨 처음에는 naive version으로 아래와 같은 모델은 먼저 만듭니다. \n\n\n  \n    \n      Inception module, naive version\n  \n\n\n\n보시다시피, 계산량이 많은 5x5 conv의 output과 max pooling의 output을 함께 merge해야 한다는 것은 max pooling의 특성상 input channel과 output channel의 개수가 같아야 한다는 점 때문에, 이는 엄청난 계산비용을 의미합니다. 😶\n\n이 naive version을 그대로 썻다가는, 제 아무리 최적의 sparse한 Structure를 찾았다고 할지라도 몇 stage를 못 건너가서 그 계산량이 폭발하면서 매우 비효율 적일 것입니다.   \n\n그래서 아래와 같은 1x1 conv를 사용한 차원축소버전으로 다시 만들게 됩니다. \n\n\n\n  \n    \n      Inception module with dimension reductions\n  \n\n\n\nNIN에서 사용된 1x1 conv는 인셉션에서 두 가지 목적으로 사용되어집니다. 첫 번째는 가장 중요하게, 주로 계산량을 줄여서 bottleneck을 피하게 해주는 차원축소(dimension reduction)의 역할입니다. \n1x1 conv를 통해 input으로 들어오는 이미지의 channel을 줄여서 output으로 내보내면서 손실된 정보는 없는 차원축소를 가능케 하고, 그 뒤에 3x3 or 5x5 Conv를 수행할 수 있게 해주면서 계산량을 획기적으로 줄여줍니다. 이로써, 앞서 언급했던 이미지의 위치정보와 추상화된 정보 모두를 한 번에 보는 욕심쟁이 모델이 가능해졌습니다. 😏\n특히, naive version의 문제였던 max pooling의 결과로 나오는 output의 channel도 다른 conv filter의 output channel과 맞춰 줄 수 있게 되면서, naive version의 문제를 멋지게 해결합니다! Network in Network의 느낌을 가지면서 잠시 다른 꿈에 들어갔다가 다시 나오는 그 느낌. Inception이 느껴지시나요?\n\n\n두 번째는 이 1x1 conv가 모델의 깊이(depth)와 함께 넓이(width)도 넓힐 수 있게 된 점입니다. 1x1 conv가 매번 ReLU를 함께 수행하기 때문에 모델의 깊이를 한층 더 깊게 가져갈 수 있게 해주지만, 결정적으로 1x1 conv 덕에 아끼게 되는 Computational resources들로 계산량의 어려움 없이 모델을 더 넓고 깊에 가져갈 수 있게 해줍니다.😎\n\n5. GoogLeNet\n자 ~ 드디어 GoogLeNet 전체 구조에 대해서 살펴볼 시간입니다!🐬 먼 길이었다.. 도입부에 말했듯, GoogLeNet에 LeNet이 보이는 이유는 Yann LeCun의 LeNet 5에 대한 Homage임을 논문에서 밝히고 있습니다. 멋있죠? :+1:\n\nGoogleNet의 구조의 세부사항을 표로 정리하면 아래와 같습니다. 😄 구글넷은 총 9개의 Inception Module로 구성되어 있습니다. \n\n\n\n  \n    \n      \n  \n\n\n\n\n첫 번째 Inception Module인 inception(3a) 부분만 그 작동방식을 설명하자면, 아래와 같습니다. \n\n이전 max pool의 결과 192개의 channel로 들어온 input에 대해,1) 1x1 conv 차원축소로 64 channel output.2) 1x1 conv 차원축소로 96 channels로 변환 후, 3x3 conv의 결과로 128 channel output.3) 1x1 conv 차원축소로 16 channels로 변환 후, 5x5 conv의 결과로 32 channel output.4) 3x3 max pool 진행 후, 1x1 conv로 32개 channel output.= total, 64 + 128 + 32 + 32 = 256 channel output\n\n  이 되겠습니다. 이런 방식으로 Inception Module은 작동합니다. 당연히 concat을 위해서 이미지 사이즈는 똑같아야하기 때문에 3x3, 5x5, max pool 모두 padding을 아주 잘 똘똘 두르고 있습니다.  😇\n\n학습시에 메모리 효율성을 위해서, 보통은 모델의 Higher level layer라고 부를 수 있는 위치에 가서야 Inception Module을 사용한다고 합니다. Input 이미지가 들어온 초입 부분에서는 전통적인 Convolution 방식으로 처리한 뒤에 사용하는 것이죠. \n\n그리고 기본적으로 이 Inception Module은 앞 Module의 결과에 또 다른 Module을 쌓는 방식으로 진행이 되다보니, Input/Output 이미지 사이즈가 동일합니다. 그래서 Resolution을 줄일 때는 이따끔씩 stride 2로 세팅된 max-pooling을 사용합니다. \n\nGoogleNet 전체 구조를 도식화하면 아래와 같습니다. 구조가 엄청 복잡해보이지만 앞서 살펴 본 Inception Module을 캐치하고나면 그나마 좀 덜 복잡해 보이는 것도 같습니다. 😅 Input Image Size는 224x224x3입니다.\n\n\n\n  \n    \n      GoogLeNet\n  \n\n\nAuxiliary classifiers\n재밌는 부분은, Inception Module (4a), (4d) 뒤에, Softmax를 통한 Classifie를 모델 중간에 두 개 삽입한 점입니다. 문자그대로 auxiliary classifier라고 부르는 이 친구들이 들어간 이유는, 모델의 낮은 단계에 해당하는 layer에서도 back propagation되는 gradient signal을 증폭시켜 성능을 올리기 위함입니다. \n\n실제로 학습할 때, 최종 Loss를 계산함에 있어서, 이 두 auxiliary classifiers들은 30%의 가중치를 가지고 학습을 하고, 학습이 끝난 뒤 inference time에는 쓰지 않습니다. 이 auxiliary classifier network에 대한 구체적인 설명도 논문에서는 아래와 같이 친절히 잘 해줍니다. \n\nAuxiliary Network Recipe\n\n(4a)는 4x4x512 output이 되도록, (4d)에서는 4x4x528 output이 되도록,average pooling layer는 5x5 filter size에 strde 3\n1x1 conv는 128개 output으로 차원축소 진행 후, ReLU 통과\nfc layer도 1024개로 맞추고, RelU 통과\ndropout은 70% ratio of dropped outputs\n마지막으로 softmax loss를 가진 linear layer. \n\n\n\n\n6. Training Methodology & Data Augmentation\n이렇게 만들어진 GoogleNet을 실제로 ILSVRC 2014 Classification Challenge에 출전하면서, 다음과 같은 방법들을 사용해서 1위를 차지 합니다.\nEnsemble\nEnsemble of 7 versions of the same GoogLeNet model\n\nData Augmentation\nResize the image to bigger size 4 scales(256, 288, 320, 352)\nleft, center, right square cropping \n4 corners and center 224x224 cropping & resizing center to 224x224\nmirroring image \n\n\ntotal, 4 x 3 x 6 x 2 = 144 times data augmentation per image\n\n\n\n\n  \n    \n      \n  \n\n\n\n결론적으로는 이렇게 사용한 구글넷은 동시대 타 모델들과 비교했을 때, 단일 모델 성능은 1위는 아니었지만 모델 3개 이상의 앙상블을 실시했을 때 타 모델들과 3% 이상의 격차를 내면서 1위를 차지했다는 것을 보여줍니다.😏\n그렇게 앞서 설명했던 Sparse architecture가 얼마나 유용한지, 자신들이 생각한 이론이 맞았음을 증명해 준다는 것을 아래와 같이 밝히고 있습니다✨\n\n\n  \n    \n      \n  \n\n\n\n\n\n7. Conclusions\n끝으로 ‘다른 모델로도 구글넷과 비슷한 depth와 width를 가지고 비슷한 성능을 낼 수 있을지 모르나, 훨씬 무겁고 학습하기 힘들 것이다’라고 말하면서 동시에, 자신들이 Sparse Architecture 이론이 현실적으로 가능하고 보편적으로 사용할 수 있음을 확실히 증명했다고 벅차게 밝힙니다. 😎\n동시에, 그런 결론은 미래에 자동화된 더 정교한 sparse model을 만들 수 있다는 유망한 미래를 뜻한다고 말하고 있습니다. 그리고, 결국엔 머지 않아 실제로 구글은 AutoML을 만들어버리게 되죠. 😅\n\n\n\n\n\n여기까지, GoogleNet이라고 부르는 Inception v1리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 구글넷보다 훨씬 단순한 구조로 성능은 조금 더 떨어지지만 더 많이 사랑을 받은 VGG 리뷰를 하겠습니다! 읽어주셔서 감사합니다. 🙇\n이 글은 DataCrew에서도 보실 수 있습니다.\n\nReferences\nNetwork in Network paper\nInception paper\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-07-30T20:19:18+09:00","dateModified":"2021-01-05T01:18:29+09:00","datePublished":"2020-07-30T20:19:18+09:00","description":"\n니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! \nfeat. Network in Network\n","headline":"Inception v1 - 2014","image":["inception.jpg","inception.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/07/30/googlenet/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2020/07/30/googlenet/","keywords":"ml, deep_learning, GoogleNet, Inception, Network in Network","thumbnailUrl":"inception.jpg"}</script>
-    <meta name="description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!  feat. Network in Network">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg"},"articleBody":"\n니가 뭘 좋아할지 몰라서 다 준비해봤어…라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!\nfeat. Network in Network\n\n\n\n너무 오랜만에 딥러닝 논문 정주행 리뷰네요. 올 해가 가기 전에는 2020년에 도착하고 싶은게 목표인데… 아직 2014년이라니…😢 더 분발해야겠습니다! 이번에 알아 볼 논문은 2014년 ILVRC에서 1위에 빛나는 GoogleNet입니다! 또 다른 이름으로, Inception이라고 불립니다.\n논문의 풀네임은 ‘Going deeper with convolutions’ 입니다. 저자는 Christian Szegedy et al.이고, 구글에서 발표한 논문이면서 동시에 CNN의 시초인 LeNet을 오마주하는 의미에서 이름을 GoogLeNet으로 부른다고 하네요!\n논문의 제목은 명작인… 2010년 레오나르도 디카프리오 주연의 영화 Inception의 'We need to go deeper’라는 명대사로 유명했던 인터넷 Meme을 딴 것이라고 하네요 😆 ZFNet까지의 구조들은 끽해야 Conv layer 몇 개와 Fully Conneted 2, 3개를 붙이는 구조에서 더욱 깊어진 CNN 모델 구조가 가능하게 된 점을 자랑스럽게 소개합니다. 😎\n\n\n Introduction\n\n\n2012 AlexNet을 시작으로 딥러닝 기술의 발전속도가 가속도가 한창 붙던 2014년. 🏃 이런 흐름은 단순히 하드웨어의 발전과 큰 데이터셋, 그리고 더 큰 모델구조 뿐만이 아니라, 새로운 아이디어들과 알고리즘, 그리고 발전된 Network Architecture 덕분이라고 설명합니다.\n\n\nGoogleNet은 AlexNet보다 12배 학습할 파라미터가 작지만 훨씬 더 정확도는 높은데요, 이것을 가능하게 한 코드네임 Inception. 그 모델 구조는 그 유명한 Network In Network에서 받은 영감으로부터 나오게 됐다고 합니다. 그럼, 이쯤에서 Network in Network에 대해 잠시 살펴보도록 할까요?\n\n\n\n Related Work\n Network in Network\n\nNetwork in Network는 2013년 12월에 소개된 논문으로, 또 한 번의 CNN의 급격한 발전을 이루도록 토태를 마련했다고나 할까요. 1x1 Conv layer의 유용성을 소개한 논문입니다.✨\nNetwork in Network(이하 NIN)의 핵심 개념은 Conv-Activation-Conv와 같이 단순하게 이어지는 Linear convolution layer 구조로는, 더 상위 수준의 Nonlinearity를 충분히 표현 할 수 없기 때문에 이를 보완하여 뉴럴넷의 표현력을 증가시키기 위함입니다.\n그 결과, 아래와 같이 좀 더 비선형적인 요소를 더 추가하여 모델의 추상화 수준을 올려주는 MLP를 Conv layer 사이에 더 넣어줘서 mlpconv layer를 탄생시켰습니다. 👏👏 그 결과 conv연산으로 생성되는 feacture map들이 MLP를 거치면서 서로 상호작용을 하고 정보를 더 주고 받게 되겠죠.\n\n\n\n\n이런 mlpconv를 반복하는 구조를 Cascaded cross channel(혹은 cross feature map) parametric pooling structure이라고 말합니다. 이렇게 mlpconv layer가 하는 일이 1x1 conv가 하는 일과 상응한다고 논문에서 말하고 있습니다. 1x1 conv가 하는 일이, input으로 들어오는 이미지의 channel들을 재조합하고, 다시 재생성하는 역할이기 때문입니다! 그래서 mlp로써 1x1 conv를 사용합니다.\n\n\nNIN의 전체 구조는 아래와 같습니다. 왜 이름이 'Network in Network’인지 이해가 되는 부분입니다.\n\n\n\n\n Motivation and High Level Considerations\n\n모델의 성능을 높이는 방법은 사실 아주 간단합니다. 모델의 크기라고 할 수 있는, 깊이와 넓이를 더 크게 해주면 됩니다! 이 방법이 아주 쉽고, 안전하게 모델의 성능을 보장할 수 있는 방법이죠. 그러나 이런 간단한 솔루션에도 두 가지 큰 문제가 존재합니다.\n\n 1. “Bigger size means a larger number of parameters.”\n\n모델의 사이즈가 클수록, 학습해야 할 파라미터들이 더 많아진다는 것을 의미합니다. 그 결과 Overfitting에 더 취약해진다는 말이 됩니다. 특히 Overfitting은 학습할 데이터의 labeled examples의 수가 한정적일 때 더 큰 주요 bottleneck이 됩니다.\n아래와 같이 시베리안 허스키🐶와 에스키모견🐶을 구별하는 것은 전문가 정도 되어야 잘 구별할 수 있지 않을까요? 아래 이미지는 실제 ImageNet 2014 데이터 중 일부입니다.\n\n\n\n그럼 이런 데이터를 더 만들면 되지!라고 하면, 일단 강형욱 선생님…까지는 아니더라도 데이터 생성에만 해도 코스트가 비싸지고, 쉽지 않아집니다. 이런 경우처럼 데이터는 한정적일 때, 쉽게 말해서 양으로 승부할 수 없을 때가 있다는 것이죠.\n\n 2. “The dramatically increased use of computational resources.”\n\n당연한 이야기로, 컴퓨팅 파워의 문제가 있습니다. 현실적으로 계산적인 예산이라는 것은 한정적이기 마련이고, 모델이 무식하게 큰 것에 비해서 계산해야 할 것은 실제로 그정도까지 필요가 없다면 자원낭비도 그런 자원낭비가 없겠죠.\n\n 3. “Moving from fully connected to sparsely connected architectures!”\n\n\n그래서, 위 두 가지 문제에 대한 해결책으로 Arora et al.의 획기적인 연구성과에 따르면,\n\n‘데이터셋의 확률 분포가 아주 깊고 넓은 뉴럴넷에 의해서 표현된다면, 최적의 네트워크 구조가 마지막 layer을 얼마나 활성화 하는지에 따라, 통계적 상관관계를 살핌으로서 layer by layer로 분석될 수 있음’\n\n을 밝히면서, 더 큰 Sparsity를 추구하여서 최적의 모델 구조를 찾아줄 필요(=GoogleNet)가 있음을 주창합니다. 실제로 여타 다른 fine tunnning을 거치는 것 보다, Inception Structure를 사용했다느 것이 Object Detection의 Base net으로 사용했을 때, 아주 유용했다고 말하고 있습니다.\n\n\n개인적인 생각으로는 이 GoogleNet을 발표할 때부터, 아마 Google 사람들은 미래에 가능할 AutoML를 머리 속에 그렸다고 생각이 되네요. 🌝\n\n\n\n Architectural Details\n\n그렇기 때문에, GoogleNet의 핵심 아이디어는 **“최적의 local sparse structure가 근사될 수 있는 방법을 어떻게 찾을 수 있는가”**로 수렴합니다. 그 고민의 결과로 탄생한 것이 Inception architecture입니다.\n논문을 보면, Inception Module이라고 부는 이 Module이 어떻게 탄생하게 됐는지에 대해 구구절절 설명을 해 놓습니다만, 쉽게 말하자면 아래와 같이 정리할 수 있습니다.\n\nThe Nativity of Inception Module\n\nConv filter Size가 작으면 위치적 정보는 잘 보전되는데 너무 숲을 안보고 나무만 보고(local region에만 집착하고), filter Size가 크면 클수록 추상화 정도가 올라가서 숲은 보이는데 나무가 잘 안보인다(위치적 정보는 떨어진다).😦\n기존의 ConvNet들처럼 그냥 순차적으로 말이야… ‘어떤 filter Size 순서로 Conv layer를 배치할 것인가’ 고민하니까, 결국에는 1번과 같은 trade off를 감수해야하는 것이더라. 😕\n그럼 순차적으로 안쓰고 다 같이 쓰면 되겠네? 😃\n\n\n\n\n Inception Module\n\n그래서 맨 처음에는 naive version으로 아래와 같은 모델은 먼저 만듭니다.\n\n\n  \n    \n  \tInception module, naive version\n  \n\n\n\n보시다시피, 계산량이 많은 5x5 conv의 output과 max pooling의 output을 함께 merge해야 한다는 것은 max pooling의 특성상 input channel과 output channel의 개수가 같아야 한다는 점 때문에, 이는 엄청난 계산비용을 의미합니다. 😶\n\n\n이 naive version을 그대로 썻다가는, 제 아무리 최적의 sparse한 Structure를 찾았다고 할지라도 몇 stage를 못 건너가서 그 계산량이 폭발하면서 매우 비효율 적일 것입니다.\n\n\n그래서 아래와 같은 1x1 conv를 사용한 차원축소버전으로 다시 만들게 됩니다.\n\n\n\n  \n    \n  \tInception module with dimension reductions\n  \n\n\nNIN에서 사용된 1x1 conv는 인셉션에서 두 가지 목적으로 사용되어집니다. 첫 번째는 가장 중요하게, 주로 계산량을 줄여서 bottleneck을 피하게 해주는 차원축소(dimension reduction)의 역할입니다.\n\n1x1 conv를 통해 input으로 들어오는 이미지의 channel을 줄여서 output으로 내보내면서 손실된 정보는 없는 차원축소를 가능케 하고, 그 뒤에 3x3 or 5x5 Conv를 수행할 수 있게 해주면서 계산량을 획기적으로 줄여줍니다. 이로써, 앞서 언급했던 이미지의 위치정보와 추상화된 정보 모두를 한 번에 보는 욕심쟁이 모델이 가능해졌습니다. 😏\n특히, naive version의 문제였던 max pooling의 결과로 나오는 output의 channel도 다른 conv filter의 output channel과 맞춰 줄 수 있게 되면서, naive version의 문제를 멋지게 해결합니다! Network in Network의 느낌을 가지면서 잠시 다른 꿈에 들어갔다가 다시 나오는 그 느낌. Inception이 느껴지시나요?\n\n\n두 번째는 이 1x1 conv가 모델의 깊이(depth)와 함께 넓이(width)도 넓힐 수 있게 된 점입니다. 1x1 conv가 매번 ReLU를 함께 수행하기 때문에 모델의 깊이를 한층 더 깊게 가져갈 수 있게 해주지만, 결정적으로 1x1 conv 덕에 아끼게 되는 Computational resources들로 계산량의 어려움 없이 모델을 더 넓고 깊에 가져갈 수 있게 해줍니다.😎\n\n 5. GoogLeNet\n\n\n자 ~ 드디어 GoogLeNet 전체 구조에 대해서 살펴볼 시간입니다!🐬 먼 길이었다… 도입부에 말했듯, GoogLeNet에 LeNet이 보이는 이유는 Yann LeCun의 LeNet 5에 대한 Homage임을 논문에서 밝히고 있습니다. 멋있죠? 👍\n\n\nGoogleNet의 구조의 세부사항을 표로 정리하면 아래와 같습니다. 😄 구글넷은 총 9개의 Inception Module로 구성되어 있습니다.\n\n\n\n  \n    \n  \t\n  \n\n\n\n첫 번째 Inception Module인 inception(3a) 부분만 그 작동방식을 설명하자면, 아래와 같습니다.\n\n이전 max pool의 결과 192개의 channel로 들어온 input에 대해,\n\n1x1 conv 차원축소로 64 channel output.\n1x1 conv 차원축소로 96 channels로 변환 후, 3x3 conv의 결과로 128 channel output.\n1x1 conv 차원축소로 16 channels로 변환 후, 5x5 conv의 결과로 32 channel output.\n3x3 max pool 진행 후, 1x1 conv로 32개 channel output.\n= total, 64 + 128 + 32 + 32 = 256 channel output\n\n\n이 되겠습니다. 이런 방식으로 Inception Module은 작동합니다. 당연히 concat을 위해서 이미지 사이즈는 똑같아야하기 때문에 3x3, 5x5, max pool 모두 padding을 아주 잘 똘똘 두르고 있습니다.  😇\n\n\n학습시에 메모리 효율성을 위해서, 보통은 모델의 Higher level layer라고 부를 수 있는 위치에 가서야 Inception Module을 사용한다고 합니다. Input 이미지가 들어온 초입 부분에서는 전통적인 Convolution 방식으로 처리한 뒤에 사용하는 것이죠.\n\n\n그리고 기본적으로 이 Inception Module은 앞 Module의 결과에 또 다른 Module을 쌓는 방식으로 진행이 되다보니, Input/Output 이미지 사이즈가 동일합니다. 그래서 Resolution을 줄일 때는 이따끔씩 stride 2로 세팅된 max-pooling을 사용합니다.\n\n\nGoogleNet 전체 구조를 도식화하면 아래와 같습니다. 구조가 엄청 복잡해보이지만 앞서 살펴 본 Inception Module을 캐치하고나면 그나마 좀 덜 복잡해 보이는 것도 같습니다. 😅 Input Image Size는 224x224x3입니다.\n\n\n\n  \n    \n  \tGoogLeNet\n  \n\n Auxiliary classifiers\n\n\n재밌는 부분은, Inception Module (4a), (4d) 뒤에, Softmax를 통한 Classifie를 모델 중간에 두 개 삽입한 점입니다. 문자그대로 auxiliary classifier라고 부르는 이 친구들이 들어간 이유는, 모델의 낮은 단계에 해당하는 layer에서도 back propagation되는 gradient signal을 증폭시켜 성능을 올리기 위함입니다.\n\n\n실제로 학습할 때, 최종 Loss를 계산함에 있어서, 이 두 auxiliary classifiers들은 30%의 가중치를 가지고 학습을 하고, 학습이 끝난 뒤 inference time에는 쓰지 않습니다. 이 auxiliary classifier network에 대한 구체적인 설명도 논문에서는 아래와 같이 친절히 잘 해줍니다.\n\nAuxiliary Network Recipe\n\n(4a)는 4x4x512 output이 되도록, (4d)에서는 4x4x528 output이 되도록,\naverage pooling layer는 5x5 filter size에 strde 3\n1x1 conv는 128개 output으로 차원축소 진행 후, ReLU 통과\nfc layer도 1024개로 맞추고, RelU 통과\ndropout은 70% ratio of dropped outputs\n마지막으로 softmax loss를 가진 linear layer.\n\n\n\n\n 6. Training Methodology & Data Augmentation\n\n\n이렇게 만들어진 GoogleNet을 실제로 ILSVRC 2014 Classification Challenge에 출전하면서, 다음과 같은 방법들을 사용해서 1위를 차지 합니다.\n Ensemble\n\nEnsemble of 7 versions of the same GoogLeNet model\n\n Data Augmentation\n\nResize the image to bigger size 4 scales(256, 288, 320, 352)\nleft, center, right square cropping\n4 corners and center 224x224 cropping & resizing center to 224x224\nmirroring image\n\n\ntotal, 4 x 3 x 6 x 2 = 144 times data augmentation per image\n\n\n\n\n  \n    \n  \t\n  \n\n\n결론적으로는 이렇게 사용한 구글넷은 동시대 타 모델들과 비교했을 때, 단일 모델 성능은 1위는 아니었지만 모델 3개 이상의 앙상블을 실시했을 때 타 모델들과 3% 이상의 격차를 내면서 1위를 차지했다는 것을 보여줍니다.😏\n그렇게 앞서 설명했던 Sparse architecture가 얼마나 유용한지, 자신들이 생각한 이론이 맞았음을 증명해 준다는 것을 아래와 같이 밝히고 있습니다✨\n\n\n  \n    \n  \t\n  \n\n 7. Conclusions\n\n끝으로 '다른 모델로도 구글넷과 비슷한 depth와 width를 가지고 비슷한 성능을 낼 수 있을지 모르나, 훨씬 무겁고 학습하기 힘들 것이다’라고 말하면서 동시에, 자신들이 Sparse Architecture 이론이 현실적으로 가능하고 보편적으로 사용할 수 있음을 확실히 증명했다고 벅차게 밝힙니다. 😎\n동시에, 그런 결론은 미래에 자동화된 더 정교한 sparse model을 만들 수 있다는 유망한 미래를 뜻한다고 말하고 있습니다. 그리고, 결국엔 머지 않아 실제로 구글은 AutoML을 만들어버리게 되죠. 😅\n\n\n\n\n여기까지, GoogleNet이라고 부르는 Inception v1리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 구글넷보다 훨씬 단순한 구조로 성능은 조금 더 떨어지지만 더 많이 사랑을 받은 VGG 리뷰를 하겠습니다! 읽어주셔서 감사합니다. 🙇\n이 글은 DataCrew에서도 보실 수 있습니다.\n\n References\n\nNetwork in Network paper\nInception paper\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-07-30T20:19:18+09:00","dateModified":"2021-01-05T01:18:29+09:00","datePublished":"2020-07-30T20:19:18+09:00","description":"\n니가 뭘 좋아할지 몰라서 다 준비해봤어…라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!\nfeat. Network in Network\n","headline":"Inception v1 - 2014","image":["inception.jpg","inception.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/07/30/googlenet/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2020/07/30/googlenet/","keywords":"ml, deep_learning, GoogleNet, Inception, Network in Network","thumbnailUrl":"inception.jpg"}</script>
+    <meta name="description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어…라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! feat. Network in Network">
 <meta name="keywords" content="ml,deep_learning,GoogleNet,Inception,Network in Network">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="Inception v1 - 2014">
 <meta property="og:url" content="http://www.stand-firm-peter.me/2020/07/30/googlenet/index.html">
 <meta property="og:site_name" content="Stand firm Peter">
-<meta property="og:description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!  feat. Network in Network">
+<meta property="og:description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어…라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! feat. Network in Network">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://www.stand-firm-peter.me/gallery/nin1.png">
 <meta property="og:image" content="http://www.stand-firm-peter.me/gallery/nin.png">
@@ -40,7 +40,7 @@
 <meta property="og:updated_time" content="2021-01-04T16:18:29.426Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Inception v1 - 2014">
-<meta name="twitter:description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!  feat. Network in Network">
+<meta name="twitter:description" content="니가 뭘 좋아할지 몰라서 다 준비해봤어…라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! feat. Network in Network">
 <meta name="twitter:image" content="http://www.stand-firm-peter.me/gallery/nin1.png">
     
     
@@ -232,176 +232,205 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <ul>
-<li>니가 뭘 좋아할지 몰라서 다 준비해봤어..라고 말하는 듯한 GoogleNet(Inception v1) 리뷰! </li>
+<li>니가 뭘 좋아할지 몰라서 다 준비해봤어…라고 말하는 듯한 GoogleNet(Inception v1) 리뷰!</li>
 <li>feat. Network in Network</li>
 </ul>
 <a id="more"></a>
-
 <ul>
-<li>너무 오랜만에 딥러닝 논문 정주행 리뷰네요. 올 해가 가기 전에는 2020년에 도착하고 싶은게 목표인데.. 아직 2014년이라니..<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f622.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f622.png?v8">😢</span> 더 분발해야겠습니다! 이번에 알아 볼 논문은 2014년 ILVRC에서 1위에 빛나는 GoogleNet입니다! 또 다른 이름으로, Inception이라고 불립니다. </li>
+<li>너무 오랜만에 딥러닝 논문 정주행 리뷰네요. 올 해가 가기 전에는 2020년에 도착하고 싶은게 목표인데… 아직 2014년이라니…😢 더 분발해야겠습니다! 이번에 알아 볼 논문은 2014년 ILVRC에서 1위에 빛나는 GoogleNet입니다! 또 다른 이름으로, Inception이라고 불립니다.</li>
 <li>논문의 풀네임은 <strong>‘Going deeper with convolutions’</strong> 입니다. 저자는 Christian Szegedy et al.이고, 구글에서 발표한 논문이면서 동시에 CNN의 시초인 LeNet을 오마주하는 의미에서 이름을 GoogLeNet으로 부른다고 하네요!</li>
-<li>논문의 제목은 명작인.. 2010년 레오나르도 디카프리오 주연의 영화 Inception의 ‘We need to go deeper’라는 명대사로 유명했던 인터넷 Meme을 딴 것이라고 하네요 <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f606.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f606.png?v8">😆</span> ZFNet까지의 구조들은 끽해야 Conv layer 몇 개와 Fully Conneted 2, 3개를 붙이는 구조에서 더욱 깊어진 CNN 모델 구조가 가능하게 된 점을 자랑스럽게 소개합니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span></li>
+<li>논문의 제목은 명작인… 2010년 레오나르도 디카프리오 주연의 영화 Inception의 'We need to go deeper’라는 명대사로 유명했던 인터넷 Meme을 딴 것이라고 하네요 😆 ZFNet까지의 구조들은 끽해야 Conv layer 몇 개와 Fully Conneted 2, 3개를 붙이는 구조에서 더욱 깊어진 CNN 모델 구조가 가능하게 된 점을 자랑스럽게 소개합니다. 😎</li>
 </ul>
 <hr>
-
-<h2 id="Introduction"><a href="#Introduction" class="headerlink" title="Introduction"></a><strong>Introduction</strong></h2><ul>
-<li><p>2012 AlexNet을 시작으로 딥러닝 기술의 발전속도가 가속도가 한창 붙던 2014년. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f3c3.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f3c3.png?v8">🏃</span> 이런 흐름은 단순히 하드웨어의 발전과 큰 데이터셋, 그리고 더 큰 모델구조 뿐만이 아니라, 새로운 아이디어들과 알고리즘, 그리고 발전된 Network Architecture 덕분이라고 설명합니다. </p>
+<h2 id="introduction"><a class="markdownIt-Anchor" href="#introduction"></a> <strong>Introduction</strong></h2>
+<ul>
+<li>
+<p>2012 AlexNet을 시작으로 딥러닝 기술의 발전속도가 가속도가 한창 붙던 2014년. 🏃 이런 흐름은 단순히 하드웨어의 발전과 큰 데이터셋, 그리고 더 큰 모델구조 뿐만이 아니라, 새로운 아이디어들과 알고리즘, 그리고 발전된 Network Architecture 덕분이라고 설명합니다.</p>
 </li>
-<li><p>GoogleNet은 <strong>AlexNet보다 12배 학습할 파라미터가 작지만</strong> 훨씬 더 정확도는 높은데요, 이것을 가능하게 한 코드네임 Inception. 그 모델 구조는 그 유명한 <strong>Network In Network</strong>에서 받은 영감으로부터 나오게 됐다고 합니다. 그럼, 이쯤에서 Network in Network에 대해 잠시 살펴보도록 할까요?</p>
+<li>
+<p>GoogleNet은 <strong>AlexNet보다 12배 학습할 파라미터가 작지만</strong> 훨씬 더 정확도는 높은데요, 이것을 가능하게 한 코드네임 Inception. 그 모델 구조는 그 유명한 <strong>Network In Network</strong>에서 받은 영감으로부터 나오게 됐다고 합니다. 그럼, 이쯤에서 Network in Network에 대해 잠시 살펴보도록 할까요?</p>
 </li>
 </ul>
 <br>
-
-<h2 id="Related-Work"><a href="#Related-Work" class="headerlink" title="Related Work"></a><strong>Related Work</strong></h2><h3 id="Network-in-Network"><a href="#Network-in-Network" class="headerlink" title="Network in Network"></a>Network in Network</h3><ul>
-<li>Network in Network는 2013년 12월에 소개된 논문으로, 또 한 번의 CNN의 급격한 발전을 이루도록 토태를 마련했다고나 할까요. <strong>1x1 Conv layer의 유용성</strong>을 소개한 논문입니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/2728.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png?v8">✨</span> </li>
-<li>Network in Network(이하 NIN)의 핵심 개념은 Conv-Activation-Conv와 같이 단순하게 이어지는 Linear convolution layer 구조로는, <u>더 상위 수준의 Nonlinearity를 충분히 표현 할 수 없기 때문에 이를 보완하여 뉴럴넷의 표현력을 증가시키기 위함</u>입니다. </li>
-<li>그 결과, 아래와 같이 <strong>좀 더 비선형적인 요소를 더 추가하여 모델의 추상화 수준을 올려주는 MLP를 Conv layer 사이에 더 넣어줘서 mlpconv layer</strong>를 탄생시켰습니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f44f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f44f.png?v8">👏</span><span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f44f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f44f.png?v8">👏</span> 그 결과 conv연산으로 생성되는 feacture map들이 MLP를 거치면서 서로 상호작용을 하고 정보를 더 주고 받게 되겠죠. </li>
+<h2 id="related-work"><a class="markdownIt-Anchor" href="#related-work"></a> <strong>Related Work</strong></h2>
+<h3 id="network-in-network"><a class="markdownIt-Anchor" href="#network-in-network"></a> Network in Network</h3>
+<ul>
+<li>Network in Network는 2013년 12월에 소개된 논문으로, 또 한 번의 CNN의 급격한 발전을 이루도록 토태를 마련했다고나 할까요. <strong>1x1 Conv layer의 유용성</strong>을 소개한 논문입니다.✨</li>
+<li>Network in Network(이하 NIN)의 핵심 개념은 Conv-Activation-Conv와 같이 단순하게 이어지는 Linear convolution layer 구조로는, <u>더 상위 수준의 Nonlinearity를 충분히 표현 할 수 없기 때문에 이를 보완하여 뉴럴넷의 표현력을 증가시키기 위함</u>입니다.</li>
+<li>그 결과, 아래와 같이 <strong>좀 더 비선형적인 요소를 더 추가하여 모델의 추상화 수준을 올려주는 MLP를 Conv layer 사이에 더 넣어줘서 mlpconv layer</strong>를 탄생시켰습니다. 👏👏 그 결과 conv연산으로 생성되는 feacture map들이 MLP를 거치면서 서로 상호작용을 하고 정보를 더 주고 받게 되겠죠.</li>
 </ul>
 <center><img src="/gallery/nin1.png" width="600"></center>
-
 <ul>
-<li><p>이런 mlpconv를 반복하는 구조를 <strong>Cascaded cross channel(혹은 cross feature map) parametric pooling structure</strong>이라고 말합니다. 이렇게 <strong>mlpconv layer가 하는 일이 1x1 conv가 하는 일과 상응한다</strong>고 논문에서 말하고 있습니다. 1x1 conv가 하는 일이, input으로 들어오는 이미지의 channel들을 재조합하고, 다시 재생성하는 역할이기 때문입니다! 그래서 mlp로써 1x1 conv를 사용합니다.</p>
+<li>
+<p>이런 mlpconv를 반복하는 구조를 <strong>Cascaded cross channel(혹은 cross feature map) parametric pooling structure</strong>이라고 말합니다. 이렇게 <strong>mlpconv layer가 하는 일이 1x1 conv가 하는 일과 상응한다</strong>고 논문에서 말하고 있습니다. 1x1 conv가 하는 일이, input으로 들어오는 이미지의 channel들을 재조합하고, 다시 재생성하는 역할이기 때문입니다! 그래서 mlp로써 1x1 conv를 사용합니다.</p>
 </li>
-<li><p>NIN의 전체 구조는 아래와 같습니다. 왜 이름이 ‘Network in Network’인지 이해가 되는 부분입니다. </p>
+<li>
+<p>NIN의 전체 구조는 아래와 같습니다. 왜 이름이 'Network in Network’인지 이해가 되는 부분입니다.</p>
 </li>
 </ul>
 <center><img src="/gallery/nin.png" width="800"></center>
-
 <br>
-
-<h2 id="Motivation-and-High-Level-Considerations"><a href="#Motivation-and-High-Level-Considerations" class="headerlink" title="Motivation and High Level Considerations"></a><strong>Motivation and High Level Considerations</strong></h2><ul>
-<li>모델의 성능을 높이는 방법은 사실 아주 간단합니다. 모델의 크기라고 할 수 있는, 깊이와 넓이를 더 크게 해주면 됩니다! 이 방법이 아주 쉽고, 안전하게 모델의 성능을 보장할 수 있는 방법이죠. 그러나 이런 간단한 솔루션에도 두 가지 큰 문제가 존재합니다. </li>
+<h2 id="motivation-and-high-level-considerations"><a class="markdownIt-Anchor" href="#motivation-and-high-level-considerations"></a> <strong>Motivation and High Level Considerations</strong></h2>
+<ul>
+<li>모델의 성능을 높이는 방법은 사실 아주 간단합니다. 모델의 크기라고 할 수 있는, 깊이와 넓이를 더 크게 해주면 됩니다! 이 방법이 아주 쉽고, 안전하게 모델의 성능을 보장할 수 있는 방법이죠. 그러나 이런 간단한 솔루션에도 두 가지 큰 문제가 존재합니다.</li>
 </ul>
-<h3 id="1-“Bigger-size-means-a-larger-number-of-parameters-”"><a href="#1-“Bigger-size-means-a-larger-number-of-parameters-”" class="headerlink" title="1. “Bigger size means a larger number of parameters.”"></a>1. “Bigger size means a larger number of parameters.”</h3><ul>
-<li>모델의 사이즈가 클수록, 학습해야 할 파라미터들이 더 많아진다는 것을 의미합니다. 그 결과 Overfitting에 더 취약해진다는 말이 됩니다. 특히 <strong>Overfitting은 학습할 데이터의 labeled examples의 수가 한정적일 때 더 큰 주요 bottleneck</strong>이 됩니다. </li>
-<li>아래와 같이 시베리안 허스키<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f436.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f436.png?v8">🐶</span>와 에스키모견<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f436.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f436.png?v8">🐶</span>을 구별하는 것은 전문가 정도 되어야 잘 구별할 수 있지 않을까요? 아래 이미지는 실제 ImageNet 2014 데이터 중 일부입니다. </li>
+<h3 id="1-bigger-size-means-a-larger-number-of-parameters"><a class="markdownIt-Anchor" href="#1-bigger-size-means-a-larger-number-of-parameters"></a> 1. “Bigger size means a larger number of parameters.”</h3>
+<ul>
+<li>모델의 사이즈가 클수록, 학습해야 할 파라미터들이 더 많아진다는 것을 의미합니다. 그 결과 Overfitting에 더 취약해진다는 말이 됩니다. 특히 <strong>Overfitting은 학습할 데이터의 labeled examples의 수가 한정적일 때 더 큰 주요 bottleneck</strong>이 됩니다.</li>
+<li>아래와 같이 시베리안 허스키🐶와 에스키모견🐶을 구별하는 것은 전문가 정도 되어야 잘 구별할 수 있지 않을까요? 아래 이미지는 실제 ImageNet 2014 데이터 중 일부입니다.</li>
 </ul>
 <center><img src="/gallery/inception_1.png" width="800"></center>
-
 <ul>
-<li>그럼 이런 데이터를 더 만들면 되지!라고 하면, 일단 강형욱 선생님..까지는 아니더라도 데이터 생성에만 해도 코스트가 비싸지고, 쉽지 않아집니다. 이런 경우처럼 데이터는 한정적일 때, 쉽게 말해서 양으로 승부할 수 없을 때가 있다는 것이죠. </li>
+<li>그럼 이런 데이터를 더 만들면 되지!라고 하면, 일단 강형욱 선생님…까지는 아니더라도 데이터 생성에만 해도 코스트가 비싸지고, 쉽지 않아집니다. 이런 경우처럼 데이터는 한정적일 때, 쉽게 말해서 양으로 승부할 수 없을 때가 있다는 것이죠.</li>
 </ul>
-<h3 id="2-“The-dramatically-increased-use-of-computational-resources-”"><a href="#2-“The-dramatically-increased-use-of-computational-resources-”" class="headerlink" title="2. “The dramatically increased use of computational resources.”"></a>2. “The dramatically increased use of computational resources.”</h3><ul>
-<li>당연한 이야기로, 컴퓨팅 파워의 문제가 있습니다. 현실적으로 계산적인 예산이라는 것은 한정적이기 마련이고, 모델이 무식하게 큰 것에 비해서 계산해야 할 것은 실제로 그정도까지 필요가 없다면 자원낭비도 그런 자원낭비가 없겠죠. </li>
+<h3 id="2-the-dramatically-increased-use-of-computational-resources"><a class="markdownIt-Anchor" href="#2-the-dramatically-increased-use-of-computational-resources"></a> 2. “The dramatically increased use of computational resources.”</h3>
+<ul>
+<li>당연한 이야기로, 컴퓨팅 파워의 문제가 있습니다. 현실적으로 계산적인 예산이라는 것은 한정적이기 마련이고, 모델이 무식하게 큰 것에 비해서 계산해야 할 것은 실제로 그정도까지 필요가 없다면 자원낭비도 그런 자원낭비가 없겠죠.</li>
 </ul>
-<h3 id="3-“Moving-from-fully-connected-to-sparsely-connected-architectures-”"><a href="#3-“Moving-from-fully-connected-to-sparsely-connected-architectures-”" class="headerlink" title="3. “Moving from fully connected to sparsely connected architectures!”"></a>3. “Moving from fully connected to sparsely connected architectures!”</h3><ul>
-<li><p>그래서, 위 두 가지 문제에 대한 해결책으로 Arora et al.의 <a href="https://arxiv.org/abs/1310.6343" rel="external nofollow noopener noreferrer" target="_blank">획기적인 연구성과</a>에 따르면,</p>
+<h3 id="3-moving-from-fully-connected-to-sparsely-connected-architectures"><a class="markdownIt-Anchor" href="#3-moving-from-fully-connected-to-sparsely-connected-architectures"></a> 3. “Moving from fully connected to sparsely connected architectures!”</h3>
+<ul>
+<li>
+<p>그래서, 위 두 가지 문제에 대한 해결책으로 Arora et al.의 <a href="https://arxiv.org/abs/1310.6343" rel="external nofollow noopener noreferrer" target="_blank">획기적인 연구성과</a>에 따르면,</p>
 <blockquote>
-<p>‘데이터셋의 확률 분포가 아주 깊고 넓은 뉴럴넷에 의해서 표현된다면, <strong>최적의 네트워크 구조가</strong> 마지막 layer을 얼마나 활성화 하는지에 따라, 통계적 상관관계를 살핌으로서 layer by layer로 <strong>분석될 수 있음</strong>‘</p>
+<p>‘데이터셋의 확률 분포가 아주 깊고 넓은 뉴럴넷에 의해서 표현된다면, <strong>최적의 네트워크 구조가</strong> 마지막 layer을 얼마나 활성화 하는지에 따라, 통계적 상관관계를 살핌으로서 layer by layer로 <strong>분석될 수 있음</strong>’</p>
 </blockquote>
-<p>  을 밝히면서, 더 큰 Sparsity를 추구하여서 최적의 모델 구조를 찾아줄 필요(=GoogleNet)가 있음을 주창합니다. 실제로 여타 다른 fine tunnning을 거치는 것 보다, Inception Structure를 사용했다느 것이 Object Detection의 Base net으로 사용했을 때, 아주 유용했다고 말하고 있습니다. </p>
+<p>을 밝히면서, 더 큰 Sparsity를 추구하여서 최적의 모델 구조를 찾아줄 필요(=GoogleNet)가 있음을 주창합니다. 실제로 여타 다른 fine tunnning을 거치는 것 보다, Inception Structure를 사용했다느 것이 Object Detection의 Base net으로 사용했을 때, 아주 유용했다고 말하고 있습니다.</p>
 </li>
-<li><p>개인적인 생각으로는 이 GoogleNet을 발표할 때부터, 아마 Google 사람들은 미래에 가능할 AutoML를 머리 속에 그렸다고 생각이 되네요. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f31d.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f31d.png?v8">🌝</span></p>
+<li>
+<p>개인적인 생각으로는 이 GoogleNet을 발표할 때부터, 아마 Google 사람들은 미래에 가능할 AutoML를 머리 속에 그렸다고 생각이 되네요. 🌝</p>
 </li>
 </ul>
 <br>
-
-<h2 id="Architectural-Details"><a href="#Architectural-Details" class="headerlink" title="Architectural Details"></a><strong>Architectural Details</strong></h2><ul>
-<li>그렇기 때문에, GoogleNet의 핵심 아이디어는 <strong>“최적의 local sparse structure가 근사될 수 있는 방법을 어떻게 찾을 수 있는가”</strong>로 수렴합니다. 그 고민의 결과로 탄생한 것이 Inception architecture입니다.</li>
-<li>논문을 보면, Inception Module이라고 부는 이 Module이 어떻게 탄생하게 됐는지에 대해 구구절절 설명을 해 놓습니다만, 쉽게 말하자면 아래와 같이 정리할 수 있습니다. <blockquote>
+<h2 id="architectural-details"><a class="markdownIt-Anchor" href="#architectural-details"></a> <strong>Architectural Details</strong></h2>
+<ul>
+<li>그렇기 때문에, GoogleNet의 핵심 아이디어는 **“최적의 local sparse structure가 근사될 수 있는 방법을 어떻게 찾을 수 있는가”**로 수렴합니다. 그 고민의 결과로 탄생한 것이 Inception architecture입니다.</li>
+<li>논문을 보면, Inception Module이라고 부는 이 Module이 어떻게 탄생하게 됐는지에 대해 구구절절 설명을 해 놓습니다만, 쉽게 말하자면 아래와 같이 정리할 수 있습니다.
+<blockquote>
 <p><strong>The Nativity of Inception Module</strong></p>
 <ol>
-<li><strong>Conv filter Size가 작으면</strong> 위치적 정보는 잘 보전되는데 너무 숲을 안보고 나무만 보고(local region에만 집착하고), <strong>filter Size가 크면</strong> 클수록 추상화 정도가 올라가서 숲은 보이는데 나무가 잘 안보인다(위치적 정보는 떨어진다).<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f626.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f626.png?v8">😦</span></li>
-<li>기존의 ConvNet들처럼 그냥 순차적으로 말이야.. ‘어떤 filter Size 순서로 Conv layer를 배치할 것인가’ 고민하니까, 결국에는 1번과 같은 trade off를 감수해야하는 것이더라. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f615.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f615.png?v8">😕</span></li>
-<li>그럼 순차적으로 안쓰고 다 같이 쓰면 되겠네? <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f603.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f603.png?v8">😃</span></li>
+<li><strong>Conv filter Size가 작으면</strong> 위치적 정보는 잘 보전되는데 너무 숲을 안보고 나무만 보고(local region에만 집착하고), <strong>filter Size가 크면</strong> 클수록 추상화 정도가 올라가서 숲은 보이는데 나무가 잘 안보인다(위치적 정보는 떨어진다).😦</li>
+<li>기존의 ConvNet들처럼 그냥 순차적으로 말이야… ‘어떤 filter Size 순서로 Conv layer를 배치할 것인가’ 고민하니까, 결국에는 1번과 같은 trade off를 감수해야하는 것이더라. 😕</li>
+<li>그럼 순차적으로 안쓰고 다 같이 쓰면 되겠네? 😃</li>
 </ol>
 </blockquote>
 </li>
 </ul>
-<h3 id="Inception-Module"><a href="#Inception-Module" class="headerlink" title="Inception Module"></a>Inception Module</h3><ul>
-<li>그래서 맨 처음에는 <strong>naive version</strong>으로 아래와 같은 모델은 먼저 만듭니다. </li>
+<h3 id="inception-module"><a class="markdownIt-Anchor" href="#inception-module"></a> Inception Module</h3>
+<ul>
+<li>그래서 맨 처음에는 <strong>naive version</strong>으로 아래와 같은 모델은 먼저 만듭니다.</li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/inception_2.png" width="800">
-      <figcaption>Inception module, naive version</figcaption>
+  	<figcaption>Inception module, naive version</figcaption>
   </figure>
 </center>
-
 <ul>
-<li><p>보시다시피, 계산량이 많은 5x5 conv의 output과 max pooling의 output을 함께 merge해야 한다는 것은 max pooling의 특성상 input channel과 output channel의 개수가 같아야 한다는 점 때문에, 이는 엄청난 계산비용을 의미합니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f636.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f636.png?v8">😶</span></p>
+<li>
+<p>보시다시피, 계산량이 많은 5x5 conv의 output과 max pooling의 output을 함께 merge해야 한다는 것은 max pooling의 특성상 input channel과 output channel의 개수가 같아야 한다는 점 때문에, 이는 엄청난 계산비용을 의미합니다. 😶</p>
 </li>
-<li><p>이 naive version을 그대로 썻다가는, 제 아무리 최적의 sparse한 Structure를 찾았다고 할지라도 몇 stage를 못 건너가서 그 계산량이 폭발하면서 매우 비효율 적일 것입니다.   </p>
+<li>
+<p>이 naive version을 그대로 썻다가는, 제 아무리 최적의 sparse한 Structure를 찾았다고 할지라도 몇 stage를 못 건너가서 그 계산량이 폭발하면서 매우 비효율 적일 것입니다.</p>
 </li>
-<li><p>그래서 아래와 같은 1x1 conv를 사용한 <strong>차원축소버전</strong>으로 다시 만들게 됩니다. </p>
+<li>
+<p>그래서 아래와 같은 1x1 conv를 사용한 <strong>차원축소버전</strong>으로 다시 만들게 됩니다.</p>
 </li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/inception_3.png" width="800">
-      <figcaption>Inception module with dimension reductions</figcaption>
+  	<figcaption>Inception module with dimension reductions</figcaption>
   </figure>
 </center>
-
 <ul>
-<li>NIN에서 사용된 <strong>1x1 conv는 인셉션에서 두 가지 목적</strong>으로 사용되어집니다. <strong>첫 번째</strong>는 가장 중요하게, 주로 <strong>계산량을 줄여서 bottleneck을 피하게 해주는 차원축소(dimension reduction)의 역할</strong>입니다. <ul>
-<li>1x1 conv를 통해 input으로 들어오는 이미지의 channel을 줄여서 output으로 내보내면서 손실된 정보는 없는 차원축소를 가능케 하고, 그 뒤에 3x3 or 5x5 Conv를 수행할 수 있게 해주면서 계산량을 획기적으로 줄여줍니다. 이로써, 앞서 언급했던 이미지의 위치정보와 추상화된 정보 모두를 한 번에 보는 욕심쟁이 모델이 가능해졌습니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8">😏</span></li>
+<li>NIN에서 사용된 <strong>1x1 conv는 인셉션에서 두 가지 목적</strong>으로 사용되어집니다. <strong>첫 번째</strong>는 가장 중요하게, 주로 <strong>계산량을 줄여서 bottleneck을 피하게 해주는 차원축소(dimension reduction)의 역할</strong>입니다.
+<ul>
+<li>1x1 conv를 통해 input으로 들어오는 이미지의 channel을 줄여서 output으로 내보내면서 손실된 정보는 없는 차원축소를 가능케 하고, 그 뒤에 3x3 or 5x5 Conv를 수행할 수 있게 해주면서 계산량을 획기적으로 줄여줍니다. 이로써, 앞서 언급했던 이미지의 위치정보와 추상화된 정보 모두를 한 번에 보는 욕심쟁이 모델이 가능해졌습니다. 😏</li>
 <li>특히, naive version의 문제였던 max pooling의 결과로 나오는 output의 channel도 다른 conv filter의 output channel과 맞춰 줄 수 있게 되면서, naive version의 문제를 멋지게 해결합니다! Network in Network의 느낌을 가지면서 잠시 다른 꿈에 들어갔다가 다시 나오는 그 느낌. Inception이 느껴지시나요?</li>
 </ul>
 </li>
-<li><strong>두 번째</strong>는 이 <strong>1x1 conv가 모델의 깊이(depth)와 함께 넓이(width)도 넓힐 수 있게 된 점</strong>입니다. 1x1 conv가 매번 ReLU를 함께 수행하기 때문에 모델의 깊이를 한층 더 깊게 가져갈 수 있게 해주지만, 결정적으로 1x1 conv 덕에 아끼게 되는 Computational resources들로 계산량의 어려움 없이 모델을 더 넓고 깊에 가져갈 수 있게 해줍니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span></li>
+<li><strong>두 번째</strong>는 이 <strong>1x1 conv가 모델의 깊이(depth)와 함께 넓이(width)도 넓힐 수 있게 된 점</strong>입니다. 1x1 conv가 매번 ReLU를 함께 수행하기 때문에 모델의 깊이를 한층 더 깊게 가져갈 수 있게 해주지만, 결정적으로 1x1 conv 덕에 아끼게 되는 Computational resources들로 계산량의 어려움 없이 모델을 더 넓고 깊에 가져갈 수 있게 해줍니다.😎</li>
 </ul>
-<h2 id="5-GoogLeNet"><a href="#5-GoogLeNet" class="headerlink" title="5. GoogLeNet"></a>5. GoogLeNet</h2><ul>
-<li><p>자 ~ 드디어 GoogLeNet 전체 구조에 대해서 살펴볼 시간입니다!<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f42c.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f42c.png?v8">🐬</span> <del>먼 길이었다..</del> 도입부에 말했듯, Goog<strong>LeNet</strong>에 LeNet이 보이는 이유는 Yann LeCun의 LeNet 5에 대한 Homage임을 논문에서 밝히고 있습니다. 멋있죠? :+1:</p>
+<h2 id="5-googlenet"><a class="markdownIt-Anchor" href="#5-googlenet"></a> 5. GoogLeNet</h2>
+<ul>
+<li>
+<p>자 ~ 드디어 GoogLeNet 전체 구조에 대해서 살펴볼 시간입니다!🐬 <s>먼 길이었다…</s> 도입부에 말했듯, Goog<strong>LeNet</strong>에 LeNet이 보이는 이유는 Yann LeCun의 LeNet 5에 대한 Homage임을 논문에서 밝히고 있습니다. 멋있죠? 👍</p>
 </li>
-<li><p>GoogleNet의 구조의 세부사항을 표로 정리하면 아래와 같습니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f604.png?v8">😄</span> 구글넷은 총 9개의 Inception Module로 구성되어 있습니다. </p>
+<li>
+<p>GoogleNet의 구조의 세부사항을 표로 정리하면 아래와 같습니다. 😄 구글넷은 총 9개의 Inception Module로 구성되어 있습니다.</p>
 </li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/googlenet_2.png" width="800">
-      <figcaption></figcaption>
+  	<figcaption></figcaption>
   </figure>
 </center>
-
-
 <ul>
-<li><p>첫 번째 Inception Module인 <code>inception(3a)</code> 부분만 그 작동방식을 설명하자면, 아래와 같습니다. </p>
+<li>
+<p>첫 번째 Inception Module인 <code>inception(3a)</code> 부분만 그 작동방식을 설명하자면, 아래와 같습니다.</p>
 <blockquote>
-<p>이전 max pool의 결과 192개의 channel로 들어온 input에 대해,<br>1) 1x1 conv 차원축소로 <strong>64</strong> channel output.<br>2) 1x1 conv 차원축소로 96 channels로 변환 후, 3x3 conv의 결과로 <strong>128</strong> channel output.<br>3) 1x1 conv 차원축소로 16 channels로 변환 후, 5x5 conv의 결과로 <strong>32</strong> channel output.<br>4) 3x3 max pool 진행 후, 1x1 conv로 <strong>32개</strong> channel output.<br>= <strong>total</strong>, 64 + 128 + 32 + 32 = <strong>256 channel output</strong></p>
+<p>이전 max pool의 결과 192개의 channel로 들어온 input에 대해,</p>
+<ol>
+<li>1x1 conv 차원축소로 <strong>64</strong> channel output.</li>
+<li>1x1 conv 차원축소로 96 channels로 변환 후, 3x3 conv의 결과로 <strong>128</strong> channel output.</li>
+<li>1x1 conv 차원축소로 16 channels로 변환 후, 5x5 conv의 결과로 <strong>32</strong> channel output.</li>
+<li>3x3 max pool 진행 후, 1x1 conv로 <strong>32개</strong> channel output.<br>
+= <strong>total</strong>, 64 + 128 + 32 + 32 = <strong>256 channel output</strong></li>
+</ol>
 </blockquote>
-<p>  이 되겠습니다. 이런 방식으로 Inception Module은 작동합니다. 당연히 concat을 위해서 이미지 사이즈는 똑같아야하기 때문에 3x3, 5x5, max pool 모두 padding을 아주 잘 똘똘 두르고 있습니다.  <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f607.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f607.png?v8">😇</span></p>
+<p>이 되겠습니다. 이런 방식으로 Inception Module은 작동합니다. 당연히 concat을 위해서 이미지 사이즈는 똑같아야하기 때문에 3x3, 5x5, max pool 모두 padding을 아주 잘 똘똘 두르고 있습니다.  😇</p>
 </li>
-<li><p>학습시에 메모리 효율성을 위해서, 보통은 모델의 Higher level layer라고 부를 수 있는 위치에 가서야 Inception Module을 사용한다고 합니다. Input 이미지가 들어온 초입 부분에서는 전통적인 Convolution 방식으로 처리한 뒤에 사용하는 것이죠. </p>
+<li>
+<p>학습시에 메모리 효율성을 위해서, 보통은 모델의 Higher level layer라고 부를 수 있는 위치에 가서야 Inception Module을 사용한다고 합니다. Input 이미지가 들어온 초입 부분에서는 전통적인 Convolution 방식으로 처리한 뒤에 사용하는 것이죠.</p>
 </li>
-<li><p>그리고 기본적으로 이 Inception Module은 앞 Module의 결과에 또 다른 Module을 쌓는 방식으로 진행이 되다보니, Input/Output 이미지 사이즈가 동일합니다. 그래서 Resolution을 줄일 때는 이따끔씩 stride 2로 세팅된 max-pooling을 사용합니다. </p>
+<li>
+<p>그리고 기본적으로 이 Inception Module은 앞 Module의 결과에 또 다른 Module을 쌓는 방식으로 진행이 되다보니, Input/Output 이미지 사이즈가 동일합니다. 그래서 Resolution을 줄일 때는 이따끔씩 stride 2로 세팅된 max-pooling을 사용합니다.</p>
 </li>
-<li><p>GoogleNet 전체 구조를 도식화하면 아래와 같습니다. 구조가 엄청 복잡해보이지만 앞서 살펴 본 Inception Module을 캐치하고나면 그나마 좀 덜 복잡해 보이는 것도 같습니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f605.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f605.png?v8">😅</span> Input Image Size는 224x224x3입니다.</p>
+<li>
+<p>GoogleNet 전체 구조를 도식화하면 아래와 같습니다. 구조가 엄청 복잡해보이지만 앞서 살펴 본 Inception Module을 캐치하고나면 그나마 좀 덜 복잡해 보이는 것도 같습니다. 😅 Input Image Size는 224x224x3입니다.</p>
 </li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/googlenet.png" width="800">
-      <figcaption>GoogLeNet</figcaption>
+  	<figcaption>GoogLeNet</figcaption>
   </figure>
 </center>
-
-<h3 id="Auxiliary-classifiers"><a href="#Auxiliary-classifiers" class="headerlink" title="Auxiliary classifiers"></a><strong>Auxiliary classifiers</strong></h3><ul>
-<li><p>재밌는 부분은, Inception Module (4a), (4d) 뒤에, Softmax를 통한 Classifie를 모델 중간에 두 개 삽입한 점입니다. 문자그대로 <strong>auxiliary classifier</strong>라고 부르는 이 친구들이 들어간 이유는, <strong>모델의 낮은 단계에 해당하는 layer에서도 back propagation되는 gradient signal을 증폭시켜 성능을 올리기 위함</strong>입니다. </p>
+<h3 id="auxiliary-classifiers"><a class="markdownIt-Anchor" href="#auxiliary-classifiers"></a> <strong>Auxiliary classifiers</strong></h3>
+<ul>
+<li>
+<p>재밌는 부분은, Inception Module (4a), (4d) 뒤에, Softmax를 통한 Classifie를 모델 중간에 두 개 삽입한 점입니다. 문자그대로 <strong>auxiliary classifier</strong>라고 부르는 이 친구들이 들어간 이유는, <strong>모델의 낮은 단계에 해당하는 layer에서도 back propagation되는 gradient signal을 증폭시켜 성능을 올리기 위함</strong>입니다.</p>
 </li>
-<li><p>실제로 학습할 때, 최종 Loss를 계산함에 있어서, 이 두 auxiliary classifiers들은 30%의 가중치를 가지고 학습을 하고, 학습이 끝난 뒤 inference time에는 쓰지 않습니다. 이 auxiliary classifier network에 대한 구체적인 설명도 논문에서는 아래와 같이 친절히 잘 해줍니다. </p>
+<li>
+<p>실제로 학습할 때, 최종 Loss를 계산함에 있어서, 이 두 auxiliary classifiers들은 30%의 가중치를 가지고 학습을 하고, 학습이 끝난 뒤 inference time에는 쓰지 않습니다. 이 auxiliary classifier network에 대한 구체적인 설명도 논문에서는 아래와 같이 친절히 잘 해줍니다.</p>
 <blockquote>
 <p><strong>Auxiliary Network Recipe</strong></p>
 <ol>
-<li>(4a)는 4x4x512 output이 되도록, (4d)에서는 4x4x528 output이 되도록,<br>average pooling layer는 5x5 filter size에 strde 3</li>
+<li>(4a)는 4x4x512 output이 되도록, (4d)에서는 4x4x528 output이 되도록,<br>
+average pooling layer는 5x5 filter size에 strde 3</li>
 <li>1x1 conv는 128개 output으로 차원축소 진행 후, ReLU 통과</li>
 <li>fc layer도 1024개로 맞추고, RelU 통과</li>
 <li>dropout은 70% ratio of dropped outputs</li>
-<li>마지막으로 softmax loss를 가진 linear layer. </li>
+<li>마지막으로 softmax loss를 가진 linear layer.</li>
 </ol>
 </blockquote>
 </li>
 </ul>
-<h2 id="6-Training-Methodology-amp-Data-Augmentation"><a href="#6-Training-Methodology-amp-Data-Augmentation" class="headerlink" title="6. Training Methodology & Data Augmentation"></a>6. Training Methodology & Data Augmentation</h2><ul>
-<li><p>이렇게 만들어진 GoogleNet을 실제로 ILSVRC 2014 Classification Challenge에 출전하면서, 다음과 같은 방법들을 사용해서 1위를 차지 합니다.</p>
-<h4 id="Ensemble"><a href="#Ensemble" class="headerlink" title="Ensemble"></a>Ensemble</h4><ul>
+<h2 id="6-training-methodology-data-augmentation"><a class="markdownIt-Anchor" href="#6-training-methodology-data-augmentation"></a> 6. Training Methodology & Data Augmentation</h2>
+<ul>
+<li>
+<p>이렇게 만들어진 GoogleNet을 실제로 ILSVRC 2014 Classification Challenge에 출전하면서, 다음과 같은 방법들을 사용해서 1위를 차지 합니다.</p>
+<h4 id="ensemble"><a class="markdownIt-Anchor" href="#ensemble"></a> Ensemble</h4>
+<ul>
 <li>Ensemble of 7 versions of the same GoogLeNet model</li>
 </ul>
-<h4 id="Data-Augmentation"><a href="#Data-Augmentation" class="headerlink" title="Data Augmentation"></a>Data Augmentation</h4><ol>
+<h4 id="data-augmentation"><a class="markdownIt-Anchor" href="#data-augmentation"></a> Data Augmentation</h4>
+<ol>
 <li>Resize the image to bigger size 4 scales(256, 288, 320, 352)</li>
-<li>left, center, right square cropping </li>
+<li>left, center, right square cropping</li>
 <li>4 corners and center 224x224 cropping & resizing center to 224x224</li>
-<li>mirroring image </li>
+<li>mirroring image</li>
 </ol>
 <ul>
 <li>total, 4 x 3 x 6 x 2 = <strong>144 times data augmentation per image</strong></li>
@@ -411,36 +440,32 @@
 <center>
   <figure>
     <img src="/gallery/googlenet_3.png" width="800">
-      <figcaption></figcaption>
+  	<figcaption></figcaption>
   </figure>
 </center>
-
 <ul>
-<li>결론적으로는 이렇게 사용한 구글넷은 동시대 타 모델들과 비교했을 때, 단일 모델 성능은 1위는 아니었지만 모델 3개 이상의 앙상블을 실시했을 때 타 모델들과 3% 이상의 격차를 내면서 1위를 차지했다는 것을 보여줍니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8">😏</span></li>
-<li>그렇게 앞서 설명했던 Sparse architecture가 얼마나 유용한지, 자신들이 생각한 이론이 맞았음을 증명해 준다는 것을 아래와 같이 밝히고 있습니다<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/2728.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png?v8">✨</span></li>
+<li>결론적으로는 이렇게 사용한 구글넷은 동시대 타 모델들과 비교했을 때, 단일 모델 성능은 1위는 아니었지만 모델 3개 이상의 앙상블을 실시했을 때 타 모델들과 3% 이상의 격차를 내면서 1위를 차지했다는 것을 보여줍니다.😏</li>
+<li>그렇게 앞서 설명했던 Sparse architecture가 얼마나 유용한지, 자신들이 생각한 이론이 맞았음을 증명해 준다는 것을 아래와 같이 밝히고 있습니다✨</li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/googlenet_4.png" width="800">
-      <figcaption></figcaption>
+  	<figcaption></figcaption>
   </figure>
 </center>
-
-
-
-
-<h2 id="7-Conclusions"><a href="#7-Conclusions" class="headerlink" title="7. Conclusions"></a>7. Conclusions</h2><ul>
-<li>끝으로 ‘다른 모델로도 구글넷과 비슷한 depth와 width를 가지고 비슷한 성능을 낼 수 있을지 모르나, 훨씬 무겁고 학습하기 힘들 것이다’라고 말하면서 동시에, 자신들이 <strong>Sparse Architecture 이론이 현실적으로 가능하고 보편적으로 사용할 수 있음을 확실히 증명했다</strong>고 벅차게 밝힙니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span></li>
-<li>동시에, 그런 결론은 미래에 자동화된 더 정교한 sparse model을 만들 수 있다는 유망한 미래를 뜻한다고 말하고 있습니다. 그리고, 결국엔 머지 않아 실제로 구글은 AutoML을 만들어버리게 되죠. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f605.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f605.png?v8">😅</span></li>
+<h2 id="7-conclusions"><a class="markdownIt-Anchor" href="#7-conclusions"></a> 7. Conclusions</h2>
+<ul>
+<li>끝으로 '다른 모델로도 구글넷과 비슷한 depth와 width를 가지고 비슷한 성능을 낼 수 있을지 모르나, 훨씬 무겁고 학습하기 힘들 것이다’라고 말하면서 동시에, 자신들이 <strong>Sparse Architecture 이론이 현실적으로 가능하고 보편적으로 사용할 수 있음을 확실히 증명했다</strong>고 벅차게 밝힙니다. 😎</li>
+<li>동시에, 그런 결론은 미래에 자동화된 더 정교한 sparse model을 만들 수 있다는 유망한 미래를 뜻한다고 말하고 있습니다. 그리고, 결국엔 머지 않아 실제로 구글은 AutoML을 만들어버리게 되죠. 😅</li>
 </ul>
 <br>
 <hr>
-
 <ul>
-<li>여기까지, GoogleNet이라고 부르는 Inception v1리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 구글넷보다 훨씬 단순한 구조로 성능은 조금 더 떨어지지만 더 많이 사랑을 받은 VGG 리뷰를 하겠습니다! 읽어주셔서 감사합니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f647.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f647.png?v8">🙇</span></li>
+<li>여기까지, GoogleNet이라고 부르는 Inception v1리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 구글넷보다 훨씬 단순한 구조로 성능은 조금 더 떨어지지만 더 많이 사랑을 받은 VGG 리뷰를 하겠습니다! 읽어주셔서 감사합니다. 🙇</li>
 <li>이 글은 <a href="http://datacrew.tech/inception-v1-2014/" rel="external nofollow noopener noreferrer" target="_blank">DataCrew</a>에서도 보실 수 있습니다.</li>
 </ul>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
+<ul>
 <li>Network in Network <a href="https://arxiv.org/pdf/1312.4400.pdf" rel="external nofollow noopener noreferrer" target="_blank">paper</a></li>
 <li>Inception <a href="https://arxiv.org/pdf/1409.4842.pdf" rel="external nofollow noopener noreferrer" target="_blank">paper</a></li>
 </ul>
@@ -766,6 +791,6 @@
             all[i].SourceElement().parentNode.className += ' has-jax';
     });
 </script>
-<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
 </body>
 </html>
