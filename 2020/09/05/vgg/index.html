@@ -21,14 +21,14 @@
             <link rel="alternate" type="application/rss+xml" title="RSS" href="/rss.xml">
         
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg"},"articleBody":"\n뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을..\n심플한 구조로 많은 사랑을 받은 VGG 리뷰!\n\n\n\n\n심플한 구조로 많은 사랑을 받은 VGG 리뷰 입니다. :) VGG라는 이름의 뜻은 저자인 Karen Simonyan과 Andrew Zisserman이 속한 Oxford 그룹의 이름이 Visual Geometry Group이어서 그 앞글자를 딴 것이라고 하네요!\n바로 이전에 리뷰했던 GoogleNet v1과 같이 ImageNet 2014 Challange에서 활약을 해서 유명해 졌는데, 이 때, VGG는 localisation에서는 1위, Classification은 GoogleNet v1에 밀려 2위를 하게 됩니다. \nGoogleNet v1은 이후 Inception v2, v3, v4으로 발전이 되는데요, 그 이유 중에 하나가 ImageNet 2014에서 VGG를 제치고 1위를 했음에도 불구하고, 그 복잡한 구조 때문에 많은 연구자들이 비교적 빠르게 실험을 할 수 있는 VGG를 더 많이 사랑하면서 생긴 이유도 어느 정도는 있다고 하는 풍문..🌝\n\n\n\n1. Introduction\nVGG는 논문에서 태초의 AlexNet에서 Receptive Field를 작게 가져가고 Stride를 줄여 성능을 올린 ZFNet. \nMax pooling으로 정보손실이 너무 많으니까, Max pooling을 하긴 하는데 Stride를 더 작게 가져가서 정보를 더 많이 담은 FeatureMap을 생성하자!(는게 제가 느낀 핵심..)인 Sermanet et al.의 OverFeat이라는 논문. \n그리고 마지막로 다양한 위치의 이미지 정보를 활용하는 것이 성능을 올릴 수 있다는 것을 증명한 Howard씨가 쓴 Some-Improvements-on-Deep-Convolutional-Neural을 언급하면서, 딥러닝의 발전을 언급합니다. \n위의 언급한 발전들에 영감을 받았는지, 3x3이라는 작은 Conv filter만! 사용하면서, 정보는 최대한 많이 담아가는. 그리고 동시에 더 ‘깊은’ 구조를 가지고 있는 VGG가 탄생합니다. \n\n\n\n\n2. Convnet Configurations2.1. Architecture 🏗\nConvNet의 Depth를 늘리는 것이 어떤 발전을 가져다 주는지를 확실히 비교하기 위해서 모든 ConvNet의 구성을 ConvNet Layer의 수를 제외하고는 모두 똑같이 맞춥니다!\n모든 VGG 모델들은 layer의 수만 다르고 다 아래와 같은 공통점을 가지고 있습니다. \n\n\nVGG Architecture\n\nInput size: 224 x 224 RGB\nPreprocessing으로 mean RGB 값은 빼 줌.\nConv filter Size: 3 x 3 (좌우, 위아래, 중앙의 정보를 구별할 수 있는 가장 작은 형태)\n기본적으로 3x3 Conv는 1 padding으로 사이즈를 줄지 않게.\nReLU for nonlinearity.\n5번의 Max-pooling 2x2 with stride 2로 이미지 줄이기.\nConv Layer stack이 끝나면 3개의 FC layers + Softmax.\n\n\n2.2. Configurations ✨\n8 Conv + 3 FC layers 구성의 A type부터, 16 conv layers + 3 fc layers 구성의 E까지, 그 깊이를 다르게 해서 다양한 구성을 합니다. \nA-LRN에서 LRN은, Local Response Normalisation이라는 것으로, 이전 AlexNet 포스팅에서 다룬 개념인데요, 근접한 커널들을 정규화 해주면서 좀 더 뉴런들이 튈 수 있는(?) 특징을 만들어 내게 경쟁을 시키려는 의도를 가지고 있습니다. 하지만 논문에서는 메모리와 계산시간만 많이 잡아 먹을뿐, 별 효과는 없었다고 하네요. \n또한 C type에서는 linear transforamtion을 의미하는 1x1 conv를 써보기도 합니다. \n\n\n  \n    \n      VGG ConvNet configurations\n  \n\n\n\n\n2.3. Discussion 💬\n아무래도 이 부분이 제일 저는 재밌었습니다. 총 3가지 화두가 있습니다.\n\n2.3.1. 3x3 filter의 효과\nAlexNet의 11x11 + stride 4의 무지막지한 첫 번째 Conv Layer와, 그 다음에 크기를 줄여서 성능향상을 도모하긴 했지만, 그래도 크게 느껴지는 7x7 + stride 2의 레이어를 언급하면서 3x3 필터를 사용한 이유에 대해서 설명합니다. 3x3 Conv layer 두개를 겹치면 5x5 Conv layer 효과를 내고, 3개를 겹치면 7x7의 효과를 낼 수 있다는 것이지요. \n아래 그림과 같이 5x5 이미지가 있다고 했을 때, 3x3 filter를 먼저 적용하면 (stride 1) 그 결과 3x3 feature map이 생성이 되고, 그 3x3을 3x3 kernel을 또 한 번 통과하면 처음 이미지에서 5x5 filter를 한 번 통과시킨 것과 같은 결과를 마주 할 수 있게 됩니다😏 7x7은 같은 방식으로 3x3을 세 번 통과한 것일테구요! \n\n\n  \n    \n      Two 3x3 Convs have a 5x5 filter effect.\n  \n\n\n\n7x7 filter를 사용했다면 필요한 학습해야 하는 parameter는 channel을 $C$만큼 가지고 있다고하면, $7^2C^2 = 49C^2$개이지만, 3x3 filter를 사용한다면, $3(3^2C^2) = 27C^2$일 뿐이므로 45% 정도나 절약할 수 있습니다! 이는 큰 차이죠. \n\n단순히 계산량만 줄인 것이 아니라, 결과적으로 3x3 filter를 여러번 쓰는만큼, ReLU와 같은 non-linearity가 더 추가되는 결과로 이어지기 때문에, 모델의 표현력 또한 좋아집니다! 이는 마치 7x7짜리 필터의 설명력은 3x3로 더 많이 분해해서 설명하는 것과 같습니다.👍 \n\n\n2.3.2. Why 1x1 Conv?\nC type에서 1x1는 왜 들어가 있지?하는 질문을 할 수 있습니다. 차원을 굳이 1x1으로 맞춰준 이유는, input으로 들어오는 정보는 최대한 건드리지 않으면서 Network in Network에서 말했듯이, non-linearity만 더 추가해보는 실험이었다고 이해할 수 있습니다. \n\n2.3.3. 깊게 가져가는 것이 좋은 것이여\n2014년 당시, Goodfellow의 deep ConvNets (11개 레이어)와 GoogleNet을 언급하면서 더 깊은 레이어들이 더 좋은 성능을 입증하고 있다는 것을 말하고 있습니다. \n다만, 구글넷의 구조는 너무 복잡하다고 말하면서, 아무래도 모델이 너무 필요이상으로 복잡하면 오버피팅에 상대적으로 약하기 때문인지 자신들이 Single Network 성능으로만 본다면 Classification에서도 성능이 훨씬 더 좋다고 말합니다. 😏 \n\n3. Training 🏃\nVGG 모델 자체에 대한 정보라기 보다는, Preprocessing 및 Post Processing에 관한 이야기라고 판단이 되어서, VGG를 어떻게 학습하고 평가했는지에 대한 세부적인 내용은 본 블로그에서는 다루지 않겠습니다. :) 논문에서 아주 자세하게 설명해주고 있으니 관심 있는 분들은 직접 논문을 살펴 보시는 것도 좋을 것 같습니다.\n간단히 말하자면 도입부에서 언급한 Some-Improvements-on-Deep-Convolutional-Neural이라는 논문의 영향으로, 다양한 스케일의 이미지와 다양한 위치의 Cropped 이미지를 사용해서 성능을 높이는 Augmentation에 관한 영역이라고 소개할 수 있겠습니다. \n\n4. Results 🙌\nILSVRC-2012 dataset에 대한 실험결과, 다양한 type의 VGG들의 성능은 확실히 19 layers를 가지고 있는 E type으로 갈수록 좋아집니다. \n\n\n  \n    \n      \n  \n\n\n\n그리고, 2.3.3.에서 말했던 것처럼, Ensemble을 사용하지 않은 단일 모델의 성능으로만 보면, VGG가 더 좋다는 것을 말미에서 꼭 넣어서 증명해주고 있습니다. \n\n\n  \n    \n      \n  \n\n\n\n\n\n\n여기까지, VGG 리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 VGG를 타산지석 삼아 레벨업을 도모한 inception v2, v3를 동시에 살펴보도록 하겠습니다. 😎\n이 글은 DataCrew에서도 보실 수 있습니다.\n\nReferences\nVGG paper\nWhy can a 5x5 convolution kernel be replaced with two 3x3 kernels? Quara\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-09-05T20:19:18+09:00","dateModified":"2021-01-05T17:38:50+09:00","datePublished":"2020-09-05T20:19:18+09:00","description":"\n뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을..\n심플한 구조로 많은 사랑을 받은 VGG 리뷰!\n","headline":"VGG - 2014","image":["vgg.jpg","vgg.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/09/05/vgg/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2020/09/05/vgg/","keywords":"ml, deep_learning, VGG, vgg","thumbnailUrl":"vgg.jpg"}</script>
-    <meta name="description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을.. 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg"},"articleBody":"\n뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을…\n심플한 구조로 많은 사랑을 받은 VGG 리뷰!\n\n\n\n심플한 구조로 많은 사랑을 받은 VGG 리뷰 입니다. 😃 VGG라는 이름의 뜻은 저자인 Karen Simonyan과 Andrew Zisserman이 속한 Oxford 그룹의 이름이 Visual Geometry Group이어서 그 앞글자를 딴 것이라고 하네요!\n바로 이전에 리뷰했던 GoogleNet v1과 같이 ImageNet 2014 Challange에서 활약을 해서 유명해 졌는데, 이 때, VGG는 localisation에서는 1위, Classification은 GoogleNet v1에 밀려 2위를 하게 됩니다.\nGoogleNet v1은 이후 Inception v2, v3, v4으로 발전이 되는데요, 그 이유 중에 하나가 ImageNet 2014에서 VGG를 제치고 1위를 했음에도 불구하고, 그 복잡한 구조 때문에 많은 연구자들이 비교적 빠르게 실험을 할 수 있는 VGG를 더 많이 사랑하면서 생긴 이유도 어느 정도는 있다고 하는 풍문…🌝\n\n\n 1. Introduction\n\nVGG는 논문에서 태초의 AlexNet에서 Receptive Field를 작게 가져가고 Stride를 줄여 성능을 올린 ZFNet.\nMax pooling으로 정보손실이 너무 많으니까, Max pooling을 하긴 하는데 Stride를 더 작게 가져가서 정보를 더 많이 담은 FeatureMap을 생성하자!(는게 제가 느낀 핵심…)인 Sermanet et al.의 OverFeat이라는 논문.\n그리고 마지막로 다양한 위치의 이미지 정보를 활용하는 것이 성능을 올릴 수 있다는 것을 증명한 Howard씨가 쓴 Some-Improvements-on-Deep-Convolutional-Neural을 언급하면서, 딥러닝의 발전을 언급합니다.\n위의 언급한 발전들에 영감을 받았는지, 3x3이라는 작은 Conv filter만! 사용하면서, 정보는 최대한 많이 담아가는. 그리고 동시에 더 ‘깊은’ 구조를 가지고 있는 VGG가 탄생합니다.\n\n\n 2. Convnet Configurations\n 2.1. Architecture 🏗\n\n\nConvNet의 Depth를 늘리는 것이 어떤 발전을 가져다 주는지를 확실히 비교하기 위해서 모든 ConvNet의 구성을 ConvNet Layer의 수를 제외하고는 모두 똑같이 맞춥니다!\n\n\n모든 VGG 모델들은 layer의 수만 다르고 다 아래와 같은 공통점을 가지고 있습니다.\n\nVGG Architecture\n\nInput size: 224 x 224 RGB\nPreprocessing으로 mean RGB 값은 빼 줌.\nConv filter Size: 3 x 3 (좌우, 위아래, 중앙의 정보를 구별할 수 있는 가장 작은 형태)\n기본적으로 3x3 Conv는 1 padding으로 사이즈를 줄지 않게.\nReLU for nonlinearity.\n5번의 Max-pooling 2x2 with stride 2로 이미지 줄이기.\nConv Layer stack이 끝나면 3개의 FC layers + Softmax.\n\n\n\n\n 2.2. Configurations ✨\n\n8 Conv + 3 FC layers 구성의 A type부터, 16 conv layers + 3 fc layers 구성의 E까지, 그 깊이를 다르게 해서 다양한 구성을 합니다.\nA-LRN에서 LRN은, Local Response Normalisation이라는 것으로, 이전 AlexNet 포스팅에서 다룬 개념인데요, 근접한 커널들을 정규화 해주면서 좀 더 뉴런들이 튈 수 있는(?) 특징을 만들어 내게 경쟁을 시키려는 의도를 가지고 있습니다. 하지만 논문에서는 메모리와 계산시간만 많이 잡아 먹을뿐, 별 효과는 없었다고 하네요.\n또한 C type에서는 linear transforamtion을 의미하는 1x1 conv를 써보기도 합니다.\n\n\n  \n    \n  \tVGG ConvNet configurations\n  \n\n 2.3. Discussion 💬\n\n아무래도 이 부분이 제일 저는 재밌었습니다. 총 3가지 화두가 있습니다.\n\n 2.3.1. 3x3 filter의 효과\n\nAlexNet의 11x11 + stride 4의 무지막지한 첫 번째 Conv Layer와, 그 다음에 크기를 줄여서 성능향상을 도모하긴 했지만, 그래도 크게 느껴지는 7x7 + stride 2의 레이어를 언급하면서 3x3 필터를 사용한 이유에 대해서 설명합니다. 3x3 Conv layer 두개를 겹치면 5x5 Conv layer 효과를 내고, 3개를 겹치면 7x7의 효과를 낼 수 있다는 것이지요.\n아래 그림과 같이 5x5 이미지가 있다고 했을 때, 3x3 filter를 먼저 적용하면 (stride 1) 그 결과 3x3 feature map이 생성이 되고, 그 3x3을 3x3 kernel을 또 한 번 통과하면 처음 이미지에서 5x5 filter를 한 번 통과시킨 것과 같은 결과를 마주 할 수 있게 됩니다😏 7x7은 같은 방식으로 3x3을 세 번 통과한 것일테구요!\n\n\n  \n    \n  \tTwo 3x3 Convs have a 5x5 filter effect.\n  \n\n\n\n7x7 filter를 사용했다면 필요한 학습해야 하는 parameter는 channel을 CCC만큼 가지고 있다고하면, 72C2=49C27^2C^2 = 49C^272C2=49C2개이지만, 3x3 filter를 사용한다면, 3(32C2)=27C23(3^2C^2) = 27C^23(32C2)=27C2일 뿐이므로 45% 정도나 절약할 수 있습니다! 이는 큰 차이죠.\n\n\n단순히 계산량만 줄인 것이 아니라, 결과적으로 3x3 filter를 여러번 쓰는만큼, ReLU와 같은 non-linearity가 더 추가되는 결과로 이어지기 때문에, 모델의 표현력 또한 좋아집니다! 이는 마치 7x7짜리 필터의 설명력은 3x3로 더 많이 분해해서 설명하는 것과 같습니다.👍\n\n\n 2.3.2. Why 1x1 Conv?\n\nC type에서 1x1는 왜 들어가 있지?하는 질문을 할 수 있습니다. 차원을 굳이 1x1으로 맞춰준 이유는, input으로 들어오는 정보는 최대한 건드리지 않으면서 Network in Network에서 말했듯이, non-linearity만 더 추가해보는 실험이었다고 이해할 수 있습니다.\n\n 2.3.3. 깊게 가져가는 것이 좋은 것이여\n\n2014년 당시, Goodfellow의 deep ConvNets (11개 레이어)와 GoogleNet을 언급하면서 더 깊은 레이어들이 더 좋은 성능을 입증하고 있다는 것을 말하고 있습니다.\n다만, 구글넷의 구조는 너무 복잡하다고 말하면서, 아무래도 모델이 너무 필요이상으로 복잡하면 오버피팅에 상대적으로 약하기 때문인지 자신들이 Single Network 성능으로만 본다면 Classification에서도 성능이 훨씬 더 좋다고 말합니다. 😏\n\n 3. Training 🏃\n\nVGG 모델 자체에 대한 정보라기 보다는, Preprocessing 및 Post Processing에 관한 이야기라고 판단이 되어서, VGG를 어떻게 학습하고 평가했는지에 대한 세부적인 내용은 본 블로그에서는 다루지 않겠습니다. 😃 논문에서 아주 자세하게 설명해주고 있으니 관심 있는 분들은 직접 논문을 살펴 보시는 것도 좋을 것 같습니다.\n간단히 말하자면 도입부에서 언급한 Some-Improvements-on-Deep-Convolutional-Neural이라는 논문의 영향으로, 다양한 스케일의 이미지와 다양한 위치의 Cropped 이미지를 사용해서 성능을 높이는 Augmentation에 관한 영역이라고 소개할 수 있겠습니다.\n\n 4. Results 🙌\n\nILSVRC-2012 dataset에 대한 실험결과, 다양한 type의 VGG들의 성능은 확실히 19 layers를 가지고 있는 E type으로 갈수록 좋아집니다.\n\n\n  \n    \n  \t\n  \n\n\n그리고, 2.3.3.에서 말했던 것처럼, Ensemble을 사용하지 않은 단일 모델의 성능으로만 보면, VGG가 더 좋다는 것을 말미에서 꼭 넣어서 증명해주고 있습니다.\n\n\n  \n    \n  \t\n  \n\n\n\n\n여기까지, VGG 리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 VGG를 타산지석 삼아 레벨업을 도모한 inception v2, v3를 동시에 살펴보도록 하겠습니다. 😎\n이 글은 DataCrew에서도 보실 수 있습니다.\n\n References\n\nVGG paper\nWhy can a 5x5 convolution kernel be replaced with two 3x3 kernels? Quara\n\n\n        document.querySelectorAll('.github-emoji')\n          .forEach(el => {\n            if (!el.dataset.src) { return; }\n            const img = document.createElement('img');\n            img.style = 'display:none !important;';\n            img.src = el.dataset.src;\n            img.addEventListener('error', () => {\n              img.remove();\n              el.style.color = 'inherit';\n              el.style.backgroundImage = 'none';\n              el.style.background = 'none';\n            });\n            img.addEventListener('load', () => {\n              img.remove();\n            });\n            document.body.appendChild(img);\n          });\n      ","dateCreated":"2020-09-05T20:19:18+09:00","dateModified":"2021-01-05T17:38:50+09:00","datePublished":"2020-09-05T20:19:18+09:00","description":"\n뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을…\n심플한 구조로 많은 사랑을 받은 VGG 리뷰!\n","headline":"VGG - 2014","image":["vgg.jpg","vgg.jpg"],"mainEntityOfPage":{"@type":"WebPage","@id":"http://www.stand-firm-peter.me/2020/09/05/vgg/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":["https://github.com/petercha90","https://www.linkedin.com/in/peter-cha-022927134/","#about"],"image":"avatar.jpeg","logo":{"@type":"ImageObject","url":"avatar.jpeg"}},"url":"http://www.stand-firm-peter.me/2020/09/05/vgg/","keywords":"ml, deep_learning, VGG, vgg","thumbnailUrl":"vgg.jpg"}</script>
+    <meta name="description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을… 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
 <meta name="keywords" content="ml,deep_learning,VGG,vgg">
 <meta property="og:type" content="blog">
 <meta property="og:title" content="VGG - 2014">
 <meta property="og:url" content="http://www.stand-firm-peter.me/2020/09/05/vgg/index.html">
 <meta property="og:site_name" content="Stand firm Peter">
-<meta property="og:description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을.. 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
+<meta property="og:description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을… 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
 <meta property="og:locale" content="en">
 <meta property="og:image" content="http://www.stand-firm-peter.me/gallery/vgg_1.png">
 <meta property="og:image" content="http://www.stand-firm-peter.me/gallery/vgg_2.png">
@@ -37,7 +37,7 @@
 <meta property="og:updated_time" content="2021-01-05T08:38:50.899Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="VGG - 2014">
-<meta name="twitter:description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을.. 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
+<meta name="twitter:description" content="뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을… 심플한 구조로 많은 사랑을 받은 VGG 리뷰!">
 <meta name="twitter:image" content="http://www.stand-firm-peter.me/gallery/vgg_1.png">
     
     
@@ -230,31 +230,32 @@
     <div class="post-content markdown">
         <div class="main-content-wrap">
             <ul>
-<li>뭐가 그리 복잡해? <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f626.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f626.png?v8">😦</span> 3x3 하나면 되는 것을..</li>
+<li>뭐가 그리 복잡해? 😦 3x3 하나면 되는 것을…</li>
 <li>심플한 구조로 많은 사랑을 받은 VGG 리뷰!</li>
 </ul>
 <a id="more"></a>
-
 <ul>
-<li>심플한 구조로 많은 사랑을 받은 VGG 리뷰 입니다. :) VGG라는 이름의 뜻은 저자인 Karen Simonyan과 Andrew Zisserman이 속한 Oxford 그룹의 이름이 <strong>V</strong>isual <strong>G</strong>eometry <strong>G</strong>roup이어서 그 앞글자를 딴 것이라고 하네요!</li>
-<li>바로 이전에 리뷰했던 GoogleNet v1과 같이 ImageNet 2014 Challange에서 활약을 해서 유명해 졌는데, 이 때, VGG는 localisation에서는 1위, Classification은 GoogleNet v1에 밀려 2위를 하게 됩니다. </li>
-<li>GoogleNet v1은 이후 Inception v2, v3, v4으로 발전이 되는데요, 그 이유 중에 하나가 ImageNet 2014에서 VGG를 제치고 1위를 했음에도 불구하고, 그 복잡한 구조 때문에 많은 연구자들이 비교적 빠르게 실험을 할 수 있는 VGG를 더 많이 사랑하면서 생긴 이유도 어느 정도는 있다고 하는 풍문..<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f31d.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f31d.png?v8">🌝</span></li>
+<li>심플한 구조로 많은 사랑을 받은 VGG 리뷰 입니다. 😃 VGG라는 이름의 뜻은 저자인 Karen Simonyan과 Andrew Zisserman이 속한 Oxford 그룹의 이름이 <strong>V</strong>isual <strong>G</strong>eometry <strong>G</strong>roup이어서 그 앞글자를 딴 것이라고 하네요!</li>
+<li>바로 이전에 리뷰했던 GoogleNet v1과 같이 ImageNet 2014 Challange에서 활약을 해서 유명해 졌는데, 이 때, VGG는 localisation에서는 1위, Classification은 GoogleNet v1에 밀려 2위를 하게 됩니다.</li>
+<li>GoogleNet v1은 이후 Inception v2, v3, v4으로 발전이 되는데요, 그 이유 중에 하나가 ImageNet 2014에서 VGG를 제치고 1위를 했음에도 불구하고, 그 복잡한 구조 때문에 많은 연구자들이 비교적 빠르게 실험을 할 수 있는 VGG를 더 많이 사랑하면서 생긴 이유도 어느 정도는 있다고 하는 풍문…🌝</li>
 </ul>
 <hr>
-
-<h2 id="1-Introduction"><a href="#1-Introduction" class="headerlink" title="1. Introduction"></a><strong>1. Introduction</strong></h2><ul>
-<li>VGG는 논문에서 태초의 AlexNet에서 Receptive Field를 작게 가져가고 Stride를 줄여 성능을 올린 ZFNet. </li>
-<li>Max pooling으로 정보손실이 너무 많으니까, Max pooling을 하긴 하는데 Stride를 더 작게 가져가서 정보를 더 많이 담은 FeatureMap을 생성하자!(는게 제가 느낀 핵심..)인 Sermanet et al.의 OverFeat이라는 논문. </li>
-<li>그리고 마지막로 다양한 위치의 이미지 정보를 활용하는 것이 성능을 올릴 수 있다는 것을 증명한 Howard씨가 쓴 Some-Improvements-on-Deep-Convolutional-Neural을 언급하면서, 딥러닝의 발전을 언급합니다. </li>
-<li>위의 언급한 발전들에 영감을 받았는지, <strong>3x3이라는 작은 Conv filter만! 사용</strong>하면서, 정보는 최대한 많이 담아가는. 그리고 동시에 더 <strong>‘깊은’</strong> 구조를 가지고 있는 VGG가 탄생합니다. </li>
+<h2 id="1-introduction"><a class="markdownIt-Anchor" href="#1-introduction"></a> <strong>1. Introduction</strong></h2>
+<ul>
+<li>VGG는 논문에서 태초의 AlexNet에서 Receptive Field를 작게 가져가고 Stride를 줄여 성능을 올린 ZFNet.</li>
+<li>Max pooling으로 정보손실이 너무 많으니까, Max pooling을 하긴 하는데 Stride를 더 작게 가져가서 정보를 더 많이 담은 FeatureMap을 생성하자!(는게 제가 느낀 핵심…)인 Sermanet et al.의 OverFeat이라는 논문.</li>
+<li>그리고 마지막로 다양한 위치의 이미지 정보를 활용하는 것이 성능을 올릴 수 있다는 것을 증명한 Howard씨가 쓴 Some-Improvements-on-Deep-Convolutional-Neural을 언급하면서, 딥러닝의 발전을 언급합니다.</li>
+<li>위의 언급한 발전들에 영감을 받았는지, <strong>3x3이라는 작은 Conv filter만! 사용</strong>하면서, 정보는 최대한 많이 담아가는. 그리고 동시에 더 <strong>‘깊은’</strong> 구조를 가지고 있는 VGG가 탄생합니다.</li>
 </ul>
 <br>
-
-
-<h2 id="2-Convnet-Configurations"><a href="#2-Convnet-Configurations" class="headerlink" title="2. Convnet Configurations"></a><strong>2. Convnet Configurations</strong></h2><h3 id="2-1-Architecture-building-construction"><a href="#2-1-Architecture-building-construction" class="headerlink" title="2.1. Architecture :building_construction:"></a>2.1. Architecture <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f3d7.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f3d7.png?v8">🏗</span></h3><ul>
-<li>ConvNet의 Depth를 늘리는 것이 어떤 발전을 가져다 주는지를 확실히 비교하기 위해서 모든 ConvNet의 구성을 ConvNet Layer의 수를 제외하고는 모두 똑같이 맞춥니다!</li>
-<li>모든 VGG 모델들은 layer의 수만 다르고 다 아래와 같은 공통점을 가지고 있습니다. </li>
-</ul>
+<h2 id="2-convnet-configurations"><a class="markdownIt-Anchor" href="#2-convnet-configurations"></a> <strong>2. Convnet Configurations</strong></h2>
+<h3 id="21-architecture"><a class="markdownIt-Anchor" href="#21-architecture"></a> 2.1. Architecture 🏗</h3>
+<ul>
+<li>
+<p>ConvNet의 Depth를 늘리는 것이 어떤 발전을 가져다 주는지를 확실히 비교하기 위해서 모든 ConvNet의 구성을 ConvNet Layer의 수를 제외하고는 모두 똑같이 맞춥니다!</p>
+</li>
+<li>
+<p>모든 VGG 모델들은 layer의 수만 다르고 다 아래와 같은 공통점을 가지고 있습니다.</p>
 <blockquote>
 <p><strong>VGG Architecture</strong></p>
 <ol>
@@ -267,79 +268,84 @@
 <li>Conv Layer stack이 끝나면 3개의 FC layers + Softmax.</li>
 </ol>
 </blockquote>
-<h3 id="2-2-Configurations-sparkles"><a href="#2-2-Configurations-sparkles" class="headerlink" title="2.2. Configurations :sparkles:"></a>2.2. Configurations <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/2728.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/2728.png?v8">✨</span></h3><ul>
-<li>8 Conv + 3 FC layers 구성의 A type부터, 16 conv layers + 3 fc layers 구성의 E까지, 그 깊이를 다르게 해서 다양한 구성을 합니다. </li>
-<li>A-LRN에서 LRN은, Local Response Normalisation이라는 것으로, 이전 <a href="https://www.stand-firm-peter.me/2020/07/09/AlexNet/">AlexNet 포스팅</a>에서 다룬 개념인데요, 근접한 커널들을 정규화 해주면서 좀 더 뉴런들이 튈 수 있는(?) 특징을 만들어 내게 경쟁을 시키려는 의도를 가지고 있습니다. 하지만 논문에서는 메모리와 계산시간만 많이 잡아 먹을뿐, 별 효과는 없었다고 하네요. </li>
-<li>또한 C type에서는 linear transforamtion을 의미하는 1x1 conv를 써보기도 합니다. </li>
+</li>
+</ul>
+<h3 id="22-configurations"><a class="markdownIt-Anchor" href="#22-configurations"></a> 2.2. Configurations ✨</h3>
+<ul>
+<li>8 Conv + 3 FC layers 구성의 A type부터, 16 conv layers + 3 fc layers 구성의 E까지, 그 깊이를 다르게 해서 다양한 구성을 합니다.</li>
+<li>A-LRN에서 LRN은, Local Response Normalisation이라는 것으로, 이전 <a href="https://www.stand-firm-peter.me/2020/07/09/AlexNet/">AlexNet 포스팅</a>에서 다룬 개념인데요, 근접한 커널들을 정규화 해주면서 좀 더 뉴런들이 튈 수 있는(?) 특징을 만들어 내게 경쟁을 시키려는 의도를 가지고 있습니다. 하지만 논문에서는 메모리와 계산시간만 많이 잡아 먹을뿐, 별 효과는 없었다고 하네요.</li>
+<li>또한 C type에서는 linear transforamtion을 의미하는 1x1 conv를 써보기도 합니다.</li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/vgg_1.png" width="800">
-      <figcaption>VGG ConvNet configurations</figcaption>
+  	<figcaption>VGG ConvNet configurations</figcaption>
   </figure>
 </center>
-
-
-
-<h3 id="2-3-Discussion-speech-balloon"><a href="#2-3-Discussion-speech-balloon" class="headerlink" title="2.3. Discussion :speech_balloon:"></a>2.3. Discussion <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f4ac.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f4ac.png?v8">💬</span></h3><ul>
+<h3 id="23-discussion"><a class="markdownIt-Anchor" href="#23-discussion"></a> 2.3. Discussion 💬</h3>
+<ul>
 <li>아무래도 이 부분이 제일 저는 재밌었습니다. 총 3가지 화두가 있습니다.</li>
 </ul>
-<h4 id="2-3-1-3x3-filter의-효과"><a href="#2-3-1-3x3-filter의-효과" class="headerlink" title="2.3.1. 3x3 filter의 효과"></a>2.3.1. <code>3x3 filter</code>의 효과</h4><ul>
-<li>AlexNet의 <code>11x11 + stride 4</code>의 무지막지한 첫 번째 Conv Layer와, 그 다음에 크기를 줄여서 성능향상을 도모하긴 했지만, 그래도 크게 느껴지는 <code>7x7 + stride 2</code>의 레이어를 언급하면서 <code>3x3 필터</code>를 사용한 이유에 대해서 설명합니다. 3x3 Conv layer 두개를 겹치면 5x5 Conv layer 효과를 내고, 3개를 겹치면 7x7의 효과를 낼 수 있다는 것이지요. </li>
-<li>아래 그림과 같이 5x5 이미지가 있다고 했을 때, 3x3 filter를 먼저 적용하면 (stride 1) 그 결과 3x3 feature map이 생성이 되고, 그 3x3을 3x3 kernel을 또 한 번 통과하면 처음 이미지에서 5x5 filter를 한 번 통과시킨 것과 같은 결과를 마주 할 수 있게 됩니다<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8">😏</span> 7x7은 같은 방식으로 3x3을 세 번 통과한 것일테구요! </li>
+<h4 id="231-3x3-filter의-효과"><a class="markdownIt-Anchor" href="#231-3x3-filter의-효과"></a> 2.3.1. <code>3x3 filter</code>의 효과</h4>
+<ul>
+<li>AlexNet의 <code>11x11 + stride 4</code>의 무지막지한 첫 번째 Conv Layer와, 그 다음에 크기를 줄여서 성능향상을 도모하긴 했지만, 그래도 크게 느껴지는 <code>7x7 + stride 2</code>의 레이어를 언급하면서 <code>3x3 필터</code>를 사용한 이유에 대해서 설명합니다. 3x3 Conv layer 두개를 겹치면 5x5 Conv layer 효과를 내고, 3개를 겹치면 7x7의 효과를 낼 수 있다는 것이지요.</li>
+<li>아래 그림과 같이 5x5 이미지가 있다고 했을 때, 3x3 filter를 먼저 적용하면 (stride 1) 그 결과 3x3 feature map이 생성이 되고, 그 3x3을 3x3 kernel을 또 한 번 통과하면 처음 이미지에서 5x5 filter를 한 번 통과시킨 것과 같은 결과를 마주 할 수 있게 됩니다😏 7x7은 같은 방식으로 3x3을 세 번 통과한 것일테구요!</li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/vgg_2.png" width="800">
-      <figcaption>Two 3x3 Convs have a 5x5 filter effect.</figcaption>
+  	<figcaption>Two 3x3 Convs have a 5x5 filter effect.</figcaption>
   </figure>
 </center>
-
 <ul>
-<li><p><code>7x7 filter</code>를 사용했다면 필요한 학습해야 하는 parameter는 channel을 $C$만큼 가지고 있다고하면, $7^2C^2 = 49C^2$개이지만, <code>3x3 filter</code>를 사용한다면, $3(3^2C^2) = 27C^2$일 뿐이므로 45% 정도나 절약할 수 있습니다! 이는 큰 차이죠. </p>
+<li>
+<p><code>7x7 filter</code>를 사용했다면 필요한 학습해야 하는 parameter는 channel을 <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mi>C</mi></mrow><annotation encoding="application/x-tex">C</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.68333em;vertical-align:0em;"></span><span class="mord mathdefault" style="margin-right:0.07153em;">C</span></span></span></span>만큼 가지고 있다고하면, <span class="katex"><span class="katex-mathml"><math><semantics><mrow><msup><mn>7</mn><mn>2</mn></msup><msup><mi>C</mi><mn>2</mn></msup><mo>=</mo><mn>49</mn><msup><mi>C</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">7^2C^2 = 49C^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord"><span class="mord">7</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">4</span><span class="mord">9</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>개이지만, <code>3x3 filter</code>를 사용한다면, <span class="katex"><span class="katex-mathml"><math><semantics><mrow><mn>3</mn><mo stretchy="false">(</mo><msup><mn>3</mn><mn>2</mn></msup><msup><mi>C</mi><mn>2</mn></msup><mo stretchy="false">)</mo><mo>=</mo><mn>27</mn><msup><mi>C</mi><mn>2</mn></msup></mrow><annotation encoding="application/x-tex">3(3^2C^2) = 27C^2</annotation></semantics></math></span><span class="katex-html" aria-hidden="true"><span class="base"><span class="strut" style="height:1.064108em;vertical-align:-0.25em;"></span><span class="mord">3</span><span class="mopen">(</span><span class="mord"><span class="mord">3</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span><span class="mclose">)</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span><span class="mrel">=</span><span class="mspace" style="margin-right:0.2777777777777778em;"></span></span><span class="base"><span class="strut" style="height:0.8141079999999999em;vertical-align:0em;"></span><span class="mord">2</span><span class="mord">7</span><span class="mord"><span class="mord mathdefault" style="margin-right:0.07153em;">C</span><span class="msupsub"><span class="vlist-t"><span class="vlist-r"><span class="vlist" style="height:0.8141079999999999em;"><span style="top:-3.063em;margin-right:0.05em;"><span class="pstrut" style="height:2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mtight">2</span></span></span></span></span></span></span></span></span></span></span>일 뿐이므로 45% 정도나 절약할 수 있습니다! 이는 큰 차이죠.</p>
 </li>
-<li><p>단순히 계산량만 줄인 것이 아니라, <u>결과적으로 3x3 filter를 여러번 쓰는만큼, ReLU와 같은 non-linearity가 더 추가</u>되는 결과로 이어지기 때문에, 모델의 표현력 또한 좋아집니다! 이는 마치 7x7짜리 필터의 설명력은 3x3로 더 많이 분해해서 설명하는 것과 같습니다.<span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f44d.png?v8">👍</span> </p>
+<li>
+<p>단순히 계산량만 줄인 것이 아니라, <u>결과적으로 3x3 filter를 여러번 쓰는만큼, ReLU와 같은 non-linearity가 더 추가</u>되는 결과로 이어지기 때문에, 모델의 표현력 또한 좋아집니다! 이는 마치 7x7짜리 필터의 설명력은 3x3로 더 많이 분해해서 설명하는 것과 같습니다.👍</p>
 </li>
 </ul>
-<h4 id="2-3-2-Why-1x1-Conv"><a href="#2-3-2-Why-1x1-Conv" class="headerlink" title="2.3.2. Why 1x1 Conv?"></a>2.3.2. Why <code>1x1 Conv</code>?</h4><ul>
-<li>C type에서 1x1는 왜 들어가 있지?하는 질문을 할 수 있습니다. 차원을 굳이 1x1으로 맞춰준 이유는, input으로 들어오는 정보는 최대한 건드리지 않으면서 <a href="https://www.stand-firm-peter.me/2020/07/30/googlenet/#Network-in-Network">Network in Network</a>에서 말했듯이, non-linearity만 더 추가해보는 실험이었다고 이해할 수 있습니다. </li>
+<h4 id="232-why-1x1-conv"><a class="markdownIt-Anchor" href="#232-why-1x1-conv"></a> 2.3.2. Why <code>1x1 Conv</code>?</h4>
+<ul>
+<li>C type에서 1x1는 왜 들어가 있지?하는 질문을 할 수 있습니다. 차원을 굳이 1x1으로 맞춰준 이유는, input으로 들어오는 정보는 최대한 건드리지 않으면서 <a href="https://www.stand-firm-peter.me/2020/07/30/googlenet/#Network-in-Network">Network in Network</a>에서 말했듯이, non-linearity만 더 추가해보는 실험이었다고 이해할 수 있습니다.</li>
 </ul>
-<h4 id="2-3-3-깊게-가져가는-것이-좋은-것이여"><a href="#2-3-3-깊게-가져가는-것이-좋은-것이여" class="headerlink" title="2.3.3. 깊게 가져가는 것이 좋은 것이여"></a>2.3.3. 깊게 가져가는 것이 좋은 것이여</h4><ul>
-<li>2014년 당시, Goodfellow의 deep ConvNets (11개 레이어)와 GoogleNet을 언급하면서 더 깊은 레이어들이 더 좋은 성능을 입증하고 있다는 것을 말하고 있습니다. </li>
-<li>다만, 구글넷의 구조는 너무 복잡하다고 말하면서, 아무래도 모델이 너무 필요이상으로 복잡하면 오버피팅에 상대적으로 약하기 때문인지 자신들이 Single Network 성능으로만 본다면 Classification에서도 성능이 훨씬 더 좋다고 말합니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60f.png?v8">😏</span> </li>
+<h4 id="233-깊게-가져가는-것이-좋은-것이여"><a class="markdownIt-Anchor" href="#233-깊게-가져가는-것이-좋은-것이여"></a> 2.3.3. 깊게 가져가는 것이 좋은 것이여</h4>
+<ul>
+<li>2014년 당시, Goodfellow의 deep ConvNets (11개 레이어)와 GoogleNet을 언급하면서 더 깊은 레이어들이 더 좋은 성능을 입증하고 있다는 것을 말하고 있습니다.</li>
+<li>다만, 구글넷의 구조는 너무 복잡하다고 말하면서, 아무래도 모델이 너무 필요이상으로 복잡하면 오버피팅에 상대적으로 약하기 때문인지 자신들이 Single Network 성능으로만 본다면 Classification에서도 성능이 훨씬 더 좋다고 말합니다. 😏</li>
 </ul>
-<h2 id="3-Training-runner"><a href="#3-Training-runner" class="headerlink" title="3. Training :runner:"></a>3. Training <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f3c3.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f3c3.png?v8">🏃</span></h2><ul>
-<li>VGG 모델 자체에 대한 정보라기 보다는, Preprocessing 및 Post Processing에 관한 이야기라고 판단이 되어서, VGG를 어떻게 학습하고 평가했는지에 대한 세부적인 내용은 본 블로그에서는 다루지 않겠습니다. :) 논문에서 아주 자세하게 설명해주고 있으니 관심 있는 분들은 직접 논문을 살펴 보시는 것도 좋을 것 같습니다.</li>
-<li>간단히 말하자면 도입부에서 언급한 Some-Improvements-on-Deep-Convolutional-Neural이라는 논문의 영향으로, 다양한 스케일의 이미지와 다양한 위치의 Cropped 이미지를 사용해서 성능을 높이는 Augmentation에 관한 영역이라고 소개할 수 있겠습니다. </li>
+<h2 id="3-training"><a class="markdownIt-Anchor" href="#3-training"></a> 3. Training 🏃</h2>
+<ul>
+<li>VGG 모델 자체에 대한 정보라기 보다는, Preprocessing 및 Post Processing에 관한 이야기라고 판단이 되어서, VGG를 어떻게 학습하고 평가했는지에 대한 세부적인 내용은 본 블로그에서는 다루지 않겠습니다. 😃 논문에서 아주 자세하게 설명해주고 있으니 관심 있는 분들은 직접 논문을 살펴 보시는 것도 좋을 것 같습니다.</li>
+<li>간단히 말하자면 도입부에서 언급한 Some-Improvements-on-Deep-Convolutional-Neural이라는 논문의 영향으로, 다양한 스케일의 이미지와 다양한 위치의 Cropped 이미지를 사용해서 성능을 높이는 Augmentation에 관한 영역이라고 소개할 수 있겠습니다.</li>
 </ul>
-<h2 id="4-Results-raised-hands"><a href="#4-Results-raised-hands" class="headerlink" title="4. Results :raised_hands:"></a>4. Results <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f64c.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f64c.png?v8">🙌</span></h2><ul>
-<li>ILSVRC-2012 dataset에 대한 실험결과, 다양한 type의 VGG들의 성능은 확실히 19 layers를 가지고 있는 E type으로 갈수록 좋아집니다. </li>
+<h2 id="4-results"><a class="markdownIt-Anchor" href="#4-results"></a> 4. Results 🙌</h2>
+<ul>
+<li>ILSVRC-2012 dataset에 대한 실험결과, 다양한 type의 VGG들의 성능은 확실히 19 layers를 가지고 있는 E type으로 갈수록 좋아집니다.</li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/vgg_3.png" width="800">
-      <figcaption></figcaption>
+  	<figcaption></figcaption>
   </figure>
 </center>
-
 <ul>
-<li>그리고, 2.3.3.에서 말했던 것처럼, Ensemble을 사용하지 않은 단일 모델의 성능으로만 보면, VGG가 더 좋다는 것을 말미에서 꼭 넣어서 증명해주고 있습니다. </li>
+<li>그리고, 2.3.3.에서 말했던 것처럼, Ensemble을 사용하지 않은 단일 모델의 성능으로만 보면, VGG가 더 좋다는 것을 말미에서 꼭 넣어서 증명해주고 있습니다.</li>
 </ul>
 <center>
   <figure>
     <img src="/gallery/vgg_4.png" width="800">
-      <figcaption></figcaption>
+  	<figcaption></figcaption>
   </figure>
 </center>
-
 <br>
 <hr>
-
 <ul>
-<li>여기까지, VGG 리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 VGG를 타산지석 삼아 레벨업을 도모한 inception v2, v3를 동시에 살펴보도록 하겠습니다. <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f60e.png?v8">😎</span></li>
+<li>여기까지, VGG 리뷰를 마치도록 하겠습니다. 다음 포스팅에서는 VGG를 타산지석 삼아 레벨업을 도모한 inception v2, v3를 동시에 살펴보도록 하겠습니다. 😎</li>
 <li>이 글은 <a href="http://datacrew.tech/vgg-2014/" rel="external nofollow noopener noreferrer" target="_blank">DataCrew</a>에서도 보실 수 있습니다.</li>
 </ul>
-<h2 id="References"><a href="#References" class="headerlink" title="References"></a>References</h2><ul>
+<h2 id="references"><a class="markdownIt-Anchor" href="#references"></a> References</h2>
+<ul>
 <li>VGG <a href="https://arxiv.org/pdf/1409.1556.pdf" rel="external nofollow noopener noreferrer" target="_blank">paper</a></li>
 <li>Why can a 5x5 convolution kernel be replaced with two 3x3 kernels? <a href="https://www.quora.com/Why-can-a-5x5-convolution-kernel-be-replaced-with-two-3x3-kernels#:~:text=The%205x5%20convolution%20results%20in1,is%20always%20in%20the%20pudding." rel="external nofollow noopener noreferrer" target="_blank">Quara</a></li>
 </ul>
