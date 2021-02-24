@@ -3,50 +3,57 @@
 
 
     <url>
-        <loc>http://www.stand-firm-peter.me/tags/resnext/</loc>
-        <lastmod>2021-01-27T16:50:37.166Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.2</priority>
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
-        <lastmod>2021-01-27T16:50:37.166Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/tags/densenet/</loc>
+        <lastmod>2021-02-24T11:47:01.649Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/deep-learning/</loc>
-        <lastmod>2021-01-27T16:50:37.166Z</lastmod>
+        <lastmod>2021-02-24T11:47:01.649Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/ml/</loc>
-        <lastmod>2021-01-27T16:50:37.166Z</lastmod>
+        <lastmod>2021-02-24T11:47:01.649Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/inception-resnet/</loc>
-        <lastmod>2021-01-26T15:08:31.339Z</lastmod>
+        <lastmod>2021-02-24T08:28:08.486Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/inception-v4/</loc>
-        <lastmod>2021-01-26T15:08:31.339Z</lastmod>
+        <lastmod>2021-02-24T08:28:08.486Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/resnet/</loc>
+        <lastmod>2021-02-24T08:28:08.486Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>
 
     <url>
         <loc>http://www.stand-firm-peter.me/tags/inception/</loc>
-        <lastmod>2021-01-26T15:08:31.339Z</lastmod>
+        <lastmod>2021-02-24T08:28:08.486Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.2</priority>
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/tags/resnext/</loc>
+        <lastmod>2021-01-27T16:50:37.166Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.2</priority>
     </url>

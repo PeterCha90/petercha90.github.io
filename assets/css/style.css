@@ -8038,6 +8038,46 @@ body.compensate-for-scrollbar {
   src: local("Open Sans"), local("OpenSans"), url(../fonts/open-sans.ttf) format("truetype"); }
 
 @font-face {
+  font-family: 'NanumGothic';
+  font-style: normal;
+  font-weight: 400;
+  src: local("Nanum Gothic"), local("NanumGothic"), url(../fonts/NanumGothic-Regular.ttf) format("truetype"); }
+
+@font-face {
+  font-family: "NanumGothic";
+  font-style: normal;
+  font-weight: 300;
+  src: local("NanumSquareRoundL"), url("NanumSquareRoundL.eot"), url("NanumSquareRoundL.eot?#iefix") format("embedded-opentype"), url("NanumSquareRoundL.woff2") format("woff2"), url("NanumSquareRoundL.woff") format("woff"), url("NanumSquareRoundL.ttf") format("truetype");
+  /* Safari, Android, iOS */ }
+
+@font-face {
+  font-family: "NanumGothic";
+  font-style: normal;
+  font-weight: 400;
+  src: local("NanumSquareRoundR"), url("NanumSquareRoundR.eot"), url("NanumSquareRoundR.eot?#iefix") format("embedded-opentype"), url("NanumSquareRoundR.woff2") format("woff2"), url("NanumSquareRoundR.woff") format("woff"), url("NanumSquareRoundR.ttf") format("truetype");
+  /* Safari, Android, iOS */ }
+
+@font-face {
+  font-family: "NanumGothic";
+  font-style: normal;
+  font-weight: 700;
+  src: local("NanumSquareRoundB"), url("NanumSquareRoundB.eot"), url("NanumSquareRoundB.eot?#iefix") format("embedded-opentype"), url("NanumSquareRoundB.woff2") format("woff2"), url("NanumSquareRoundB.woff") format("woff"), url("NanumSquareRoundB.ttf") format("truetype");
+  /* Safari, Android, iOS */ }
+
+@font-face {
+  font-family: "NanumGothic";
+  font-style: normal;
+  font-weight: 800;
+  src: local("NanumSquareRoundEB"), url("NanumSquareRoundEB.eot"), url("NanumSquareRoundEB.eot?#iefix") format("embedded-opentype"), url("NanumSquareRoundEB.woff2") format("woff2"), url("NanumSquareRoundEB.woff") format("woff"), url("NanumSquareRoundEB.ttf") format("truetype");
+  /* Safari, Android, iOS */ }
+
+@font-face {
+  font-family: 'NanumGothic';
+  font-style: normal;
+  font-weight: 700;
+  src: local("NanumGothic-Bold"), local("NanumGothic-Bold"), url(../fonts/NanumGothic-Bold.ttf) format("truetype"); }
+
+@font-face {
   font-family: 'Open Sans';
   font-style: normal;
   font-weight: 700;
@@ -8074,7 +8114,7 @@ body.compensate-for-scrollbar {
   src: local("Merriweather Bold Italic"), local("Merriweather-BoldItalic"), url(../fonts/merriweather-bold-italic.ttf) format("truetype"); }
 
 html {
-  font-family: "Open Sans", sans-serif;
+  font-family: "NanumSquareRound", "NanumGothic", "Open Sans", sans-serif;
   font-size: 10px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
@@ -8088,7 +8128,7 @@ body {
   margin: 0;
   padding: 0;
   background: white;
-  font-family: "Open Sans", sans-serif;
+  font-family: "NanumSquareRound", "NanumGothic", "Open Sans", sans-serif;
   font-size: 1.6rem;
   line-height: 1.9em;
   letter-spacing: 0.01em;
@@ -8104,7 +8144,7 @@ h4,
 h5,
 h6 {
   letter-spacing: -0.04em;
-  font-family: "Open Sans", sans-serif;
+  font-family: "NanumSquareRound", "NanumGothic", "Open Sans", sans-serif;
   font-weight: 700;
   line-height: 1.45em;
   color: #4a4a4a; }
@@ -8186,7 +8226,7 @@ pre > code {
   width: 100%;
   box-sizing: border-box;
   padding: 15px;
-  font-family: Menlo, Consolas, monospace;
+  font-family: NanumSquareRound, NanumGothic, Menlo, Consolas, monospace;
   border: none;
   margin: 0;
   cursor: text;
@@ -8197,7 +8237,7 @@ pre > code {
 code {
   font-size: 1.5rem;
   display: inline-block;
-  font-family: Menlo, Consolas, monospace;
+  font-family: "NanumSquareRound", "NanumGothic", Menlo, Consolas, monospace;
   font-weight: 400;
   background-color: #f7f8f8;
   padding: 0 10px; }
@@ -8672,7 +8712,7 @@ blockquote {
       transform: translate3d(75px, 0, 0); } }
 
 #sidebar {
-  font-family: "Open Sans", sans-serif;
+  font-family: "NanumSquareRound", "NanumGothic", "Open Sans", sans-serif;
   height: 100%;
   position: fixed;
   top: 0;
@@ -9480,7 +9520,7 @@ blockquote {
 
 .caption {
   display: block;
-  font-family: "Merriweather", serif;
+  font-family: "NanumSquareRound", "NanumGothic", "Merriweather", serif;
   font-size: 1.3rem;
   color: #81929d;
   text-align: center;
@@ -9508,7 +9548,7 @@ figure.highlight,
   .codeblock .code,
   .codeblock .tag {
     background-color: inherit;
-    font-family: Menlo, Consolas, monospace;
+    font-family: NanumSquareRound, NanumGothic, Menlo, Consolas, monospace;
     border: none;
     padding: 0;
     margin: 0;
@@ -9567,7 +9607,7 @@ figure.highlight,
 
 .gist .line,
 .gist .line-number {
-  font-family: Menlo, Consolas, monospace;
+  font-family: "NanumSquareRound", "NanumGothic", Menlo, Consolas, monospace;
   font-size: 1em;
   margin: 0 0 5px 0; }
 
@@ -9732,7 +9772,7 @@ figure.highlight,
     position: absolute;
     bottom: 0;
     width: calc(100% - (1.5em) * 2);
-    font-family: "Open Sans";
+    font-family: "NanumSquareRound", "NanumGothic", "Open Sans";
     font-style: italic;
     background: rgba(0, 0, 0, 0.75);
     font-size: 1.3rem;
@@ -9942,7 +9982,7 @@ a.fancybox {
       text-decoration: none; }
   .post .post-meta {
     line-height: 1.5em;
-    font-family: "Open Sans", sans-serif;
+    font-family: "NanumSquareRound", "NanumGothic", "Open Sans", sans-serif;
     font-size: 1.3rem;
     font-weight: 400;
     color: #9eabb3; }
@@ -9951,7 +9991,7 @@ a.fancybox {
   .post .post-content {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
-    font-family: "Merriweather", serif;
+    font-family: "NanumSquareRound", "NanumGothic", "Merriweather", serif;
     color: #5d686f;
     margin-top: 20px;
     font-weight: 400;
@@ -10082,7 +10122,7 @@ a.fancybox {
         text-decoration: none; }
     .post-header-cover .post-header .post-meta {
       max-width: 750px;
-      font-family: "Open Sans", sans-serif;
+      font-family: "NanumSquareRound", "NanumGothic", "Open Sans", sans-serif;
       font-size: 1.6rem;
       color: white !important;
       font-weight: 400;
@@ -10230,14 +10270,14 @@ a.fancybox {
   .postShorten .postShorten-meta,
   .postShorten .postShorten-readingtime,
   .postShorten .postShorten-excerpt_link {
-    font-family: "Open Sans", sans-serif;
+    font-family: "NanumSquareRound", "NanumGothic", "Open Sans", sans-serif;
     font-size: 1.3rem;
     font-weight: 400; }
   .postShorten .postShorten-excerpt,
   .postShorten .postShorten-content {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
-    font-family: "Merriweather", serif;
+    font-family: "NanumSquareRound", "NanumGothic", "Merriweather", serif;
     color: #5d686f;
     font-weight: 400;
     overflow: hidden;
@@ -10509,7 +10549,7 @@ a.tag--small,
   color: #349ef3 !important; }
 
 .font-merryweather {
-  font-family: "Merriweather", serif; }
+  font-family: "NanumSquareRound", "NanumGothic", "Merriweather", serif; }
 
 .tooltip, [data-tooltip] {
   position: relative;
