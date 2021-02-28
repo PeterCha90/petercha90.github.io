@@ -223,7 +223,7 @@
             
                 <div class="postShorten-excerpt">
                     <ul>
-<li>여길봐 여길! 👋 Feature 생성에 도움을 주는 Attention!</li>
+<li>여길봐 여길! <span class="github-emoji" style="color: transparent;background:no-repeat url(https://github.githubassets.com/images/icons/emoji/unicode/1f44b.png?v8) center/contain" data-src="https://github.githubassets.com/images/icons/emoji/unicode/1f44b.png?v8">👋</span> Feature 생성에 도움을 주는 Attention!</li>
 <li>Residual과 만난 Attention, Residual Attention Network Review.</li>
 </ul>
                     
@@ -528,5 +528,20 @@
 
 
 
-    </body>
+    <script type="text/x-mathjax-config">
+    MathJax.Hub.Config({
+        tex2jax: {
+            inlineMath: [ ["$","$"], ["\\(","\\)"] ],
+            skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+            processEscapes: true
+        }
+    });
+    MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax();
+        for (var i = 0; i < all.length; ++i)
+            all[i].SourceElement().parentNode.className += ' has-jax';
+    });
+</script>
+<script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+</body>
 </html>
