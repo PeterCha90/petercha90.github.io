@@ -8,16 +8,24 @@
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/2021/02/27/res-attention/</loc>
-        <lastmod>2021-02-28T12:38:54.949Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/2021/02/24/densenet/</loc>
+        <lastmod>2021-03-11T02:31:08.386Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
     </url>
 
     <url>
-        <loc>http://www.stand-firm-peter.me/2021/02/24/densenet/</loc>
-        <lastmod>2021-02-28T12:38:45.582Z</lastmod>
+        <loc>http://www.stand-firm-peter.me/2019/08/11/mobilenet/</loc>
+        <lastmod>2021-03-02T13:51:04.725Z</lastmod>
+        <changefreq>weekly</changefreq>
+        <priority>0.6</priority>
+
+    </url>
+
+    <url>
+        <loc>http://www.stand-firm-peter.me/2021/02/27/res-attention/</loc>
+        <lastmod>2021-02-28T12:38:54.949Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
@@ -82,14 +90,6 @@
     <url>
         <loc>http://www.stand-firm-peter.me/2018/09/24/l1l2/</loc>
         <lastmod>2021-01-06T08:34:04.753Z</lastmod>
-        <changefreq>weekly</changefreq>
-        <priority>0.6</priority>
-
-    </url>
-
-    <url>
-        <loc>http://www.stand-firm-peter.me/2019/08/11/mobilenet/</loc>
-        <lastmod>2021-01-05T08:53:41.708Z</lastmod>
         <changefreq>weekly</changefreq>
         <priority>0.6</priority>
 
