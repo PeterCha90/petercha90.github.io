@@ -1,0 +1,429 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Peter&#39;s Place">
+    <title>How to build a Hexo blog. 🏡 - Peter&#39;s Place</title>
+    <meta name="author" content="Peter Cha">
+    
+        <meta name="keywords" content="tutorial,blog,hexo,tranquilpeak">
+    
+    
+        <link rel="icon" href="https://petercha90.github.io/assets/images/favicon.ico">
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":[],"image":"peter.webp"},"articleBody":"\n\n\n\n\n안녕하세요, Blog 주인장 PETER입니다.👋 \n이 블로그는 정적인(Static) Site를 만들어주는 Hexo라는 Node.js 기반 프레임워크로 만들어졌습니다. 한물간(?) 프레임워크이긴 한 것 같습니다만, 그래도 빠르게 이쁜 블로그를 뚝딱 만들 수 있다는 건 아무래도 큰 장점은 맞는 것 같아요. :) 만들다가 이왕 알게된 기능 설정 방법들에 대해 정리해 놓습니다. \n이 블로그에 적용된 Tranquilpeak 이라는 테마를 중점적으로 설명하려 하는데요, Hexo를 설치하고 github.io blog로 만드는 방법, Hexo 테마 설정하는 방법까지는 조금만 검색하셔도 금방 찾으실 수 있으니 아신다고 가정하고 작성할게요. :)\n나만의 홈페이지를 만든다는 것은 온라인에 나만의 공간, 나만의 집🏠을 만드는 것과도 같죠.😉 혹여나 이 블로그가 마음에 드셔서 비슷하게 만들어 보시고자 하는 분들께 도움이 되면 좋겠네요!\n\n💬 Disqus Comment 설정\n\n\n \n\n\n\n\n\n \n\n\n\n\n\n \n\n\n\n\n\n \n\n\n✍️ Font 적용하기🧑🏻‍💻 Favicon 설정하기☕️ Buy me a coffee","dateCreated":"2025-01-29T16:59:08+09:00","dateModified":"2025-01-29T19:37:10+09:00","datePublished":"2025-01-29T16:59:08+09:00","description":"\n\nHexo blog를 만드는 방법 👷🏻‍♂️ \nTranquilpeak Theme 적용하기 🌿\nDisqus 댓글, 폰트적용, favicon 설정까지! 🐾\n","headline":"How to build a Hexo blog. 🏡","image":["house.webp","house.webp"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":[],"image":"peter.webp","logo":{"@type":"ImageObject","url":"peter.webp"}},"url":"https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/","keywords":"tutorial, blog, hexo, tranquilpeak","thumbnailUrl":"house.webp"}</script>
+    <meta name="description" content="Hexo blog를 만드는 방법 👷🏻‍♂️  Tranquilpeak Theme 적용하기 🌿 Disqus 댓글, 폰트적용, favicon 설정까지! 🐾">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="How to build a Hexo blog. 🏡">
+<meta property="og:url" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/index.html">
+<meta property="og:site_name" content="Peter&#39;s Place">
+<meta property="og:description" content="Hexo blog를 만드는 방법 👷🏻‍♂️  Tranquilpeak Theme 적용하기 🌿 Disqus 댓글, 폰트적용, favicon 설정까지! 🐾">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/disqus_1.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/disqus_2.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/disqus_3.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/disqus_4.webp">
+<meta property="article:published_time" content="2025-01-29T07:59:08.000Z">
+<meta property="article:modified_time" content="2025-01-29T10:37:10.165Z">
+<meta property="article:author" content="Peter Cha">
+<meta property="article:tag" content="tutorial">
+<meta property="article:tag" content="blog">
+<meta property="article:tag" content="hexo">
+<meta property="article:tag" content="tranquilpeak">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/disqus_1.webp">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://petercha90.github.io/assets/images/peter.webp"/>
+    
+    
+        <meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/house.webp"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/house.webp"/>
+    
+    
+        <meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/house.webp"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/house.webp"/>
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-bus7xadzjd5dectcdiq6wshyi9s7acbaocbzhdhv2b8ylu7nstpcapg1hurd.min.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DFMCMD9E8V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-DFMCMD9E8V');
+    </script>
+
+
+    
+
+    
+        
+    
+</head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Peter&#39;s Place
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="/assets/images/peter.webp" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/peter.webp" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
+                <!-- 
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                 -->
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Search tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/visitors-book"
+                            
+                            rel="noopener"
+                            title="Visitors&#39; book"
+                        >
+                        <i class="sidebar-button-icon fa fa-book" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Visitors&#39; book</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/profile/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/atom.xml"
+                            
+                            rel="noopener"
+                            title="RSS"
+                        >
+                        <i class="sidebar-button-icon fa fa-rss" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">RSS</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+        <div class="post-header-cover
+                    text-center
+                    post-header-cover--partial"
+             style="background-image:url('/2025/01/29/hexo-tranquilpeak/house.webp');"
+             data-behavior="4">
+            
+        </div>
+
+            <div style="background: rgba(255,255,255,0.94);" id="main" data-behavior="4"
+                 class="hasCover
+                        hasCoverMetaOut
+                        hasCoverCaption">
+                
+<article class="post">
+    
+        <span class="post-header-cover-caption caption">How to build a Hexo blog with tranquilpeak theme.</span>
+    
+    
+        <div class="post-header main-content-wrap text-center">
+    
+        <h1 class="post-title">
+            How to build a Hexo blog. 🏡
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2025-01-29T16:59:08+09:00">
+	
+		    Jan 29, 2025
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/tutorial/">tutorial</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+
+<br>
+
+<ul>
+<li>안녕하세요, Blog 주인장 PETER입니다.👋 </li>
+<li>이 블로그는 정적인(Static) Site를 만들어주는 Hexo라는 Node.js 기반 프레임워크로 만들어졌습니다. 한물간(?) 프레임워크이긴 한 것 같습니다만, 그래도 빠르게 이쁜 블로그를 뚝딱 만들 수 있다는 건 아무래도 큰 장점은 맞는 것 같아요. :) 만들다가 이왕 알게된 기능 설정 방법들에 대해 정리해 놓습니다. </li>
+<li>이 블로그에 적용된 <a target="_blank" rel="noopener" href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak"><code>Tranquilpeak</code></a> 이라는 테마를 중점적으로 설명하려 하는데요, Hexo를 설치하고 github.io blog로 만드는 방법, Hexo 테마 설정하는 방법까지는 조금만 검색하셔도 금방 찾으실 수 있으니 아신다고 가정하고 작성할게요. :)</li>
+<li>나만의 홈페이지를 만든다는 것은 온라인에 나만의 공간, 나만의 집🏠을 만드는 것과도 같죠.😉 혹여나 이 블로그가 마음에 드셔서 비슷하게 만들어 보시고자 하는 분들께 도움이 되면 좋겠네요!</li>
+</ul>
+<h3 id="💬-Disqus-Comment-설정"><a href="#💬-Disqus-Comment-설정" class="headerlink" title="💬 Disqus Comment 설정"></a>💬 Disqus Comment 설정</h3><br>
+<center><img src="disqus_1.webp" style="width:100%;">
+<div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
+</center> 
+<br>
+
+<br>
+<center><img src="disqus_2.webp" style="width:100%;">
+<div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
+</center> 
+<br>
+
+<br>
+<center><img src="disqus_3.webp" style="width:100%;">
+<div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
+</center> 
+<br>
+
+<br>
+<center><img src="disqus_4.webp" style="width:100%;">
+<div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
+</center> 
+<br>
+
+<h3 id="✍️-Font-적용하기"><a href="#✍️-Font-적용하기" class="headerlink" title="✍️ Font 적용하기"></a>✍️ Font 적용하기</h3><h3 id="🧑🏻‍💻-Favicon-설정하기"><a href="#🧑🏻‍💻-Favicon-설정하기" class="headerlink" title="🧑🏻‍💻 Favicon 설정하기"></a>🧑🏻‍💻 Favicon 설정하기</h3><h3 id="☕️-Buy-me-a-coffee"><a href="#☕️-Buy-me-a-coffee" class="headerlink" title="☕️ Buy me a coffee"></a>☕️ Buy me a coffee</h3>
+            
+
+
+        </div>
+    </div>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        <center><a target="_blank" rel="noopener" href="https://www.buymeacoffee.com/petercha"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=petercha&button_colour=FFDD00&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=ffffff" /></a></center>
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/blog/" rel="tag">blog</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/hexo/" rel="tag">hexo</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/tranquilpeak/" rel="tag">tranquilpeak</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/tutorial/" rel="tag">tutorial</a>
+
+            </div>
+        
+        
+        
+            
+                <div id="disqus_thread">
+    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+</div>
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2025 Peter Cha. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/peter.webp" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Peter Cha</h4>
+        
+            <div style="margin-top: -5%" id="about-card-bio"> A normal developer.
+        
+        
+                <br> <br>
+                📭 &nbsp;
+                 petercha90@gmail.com
+                <br/>
+            </div>
+            
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.webp');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-fjnzjupl3s5gmub0u0syimotd5vmiapwis0edvtdymzveqja54qknpxgm8rq.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        <script>
+          var disqus_config = function() {
+            this.page.url = 'https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/';
+              
+            this.page.identifier = '2025/01/29/hexo-tranquilpeak/';
+              
+          };
+          (function() {
+            var d = document, s = d.createElement('script');
+            var disqus_shortname = 'petercha90';
+            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+          })();
+        </script>
+    
+
+
+
+
+    </body>
+</html>
