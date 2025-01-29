@@ -8179,8 +8179,8 @@ dl dd {
   margin-left: 0; }
 
 pre > code {
-  display: block;
-  width: 100%;
+  display: hidden;
+  width: 0%;
   box-sizing: border-box;
   padding: 15px;
   font-family: Menlo, Consolas, monospace;
@@ -8188,7 +8188,7 @@ pre > code {
   margin: 0;
   cursor: text;
   overflow-x: auto;
-  line-height: 1.7em;
+  line-height: 1.3em;
   font-size: 1.4rem; }
 
 code {
@@ -8196,8 +8196,11 @@ code {
   display: inline-block;
   font-family: Menlo, Consolas, monospace;
   font-weight: 400;
-  background-color: #f7f8f8;
-  padding: 0 10px; }
+  color: white;
+  background-color: rgba(0, 0, 0, 0.6);
+  border-radius: 10px;
+  padding-left: 5px;
+  padding-right: 5px; }
 
 acronym,
 abbr {
@@ -8295,7 +8298,7 @@ blockquote {
     #about #about-card #about-card-location,
     #about #about-card #about-card-bio {
       font-size: 1.6rem;
-      line-height: 1.9em;
+      line-height: 1.6em;
       font-weight: 400;
       color: #5d686f; }
 
@@ -9718,11 +9721,13 @@ figure.highlight,
   figure.highlight .gutter,
   .codeblock .gutter {
     border-right: 1px solid;
-    padding: 0.3em 15px; }
+    padding: 0.3em 15px;
+    display: none; }
   figure.highlight .code,
   .codeblock .code {
     padding: 0.3em 15px 0.3em 1em;
-    width: 100%; }
+    width: 100%;
+    border-radius: 7px; }
     figure.highlight .code pre,
     .codeblock .code pre {
       max-width: calc(750px - 50px);
@@ -10137,7 +10142,7 @@ a.fancybox {
   .post .post-content {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
-    font-family: "NanumGothicCoding";
+    font-family: "NanumGothic";
     color: #5d686f;
     margin-top: 20px;
     font-weight: 400;
@@ -10416,14 +10421,14 @@ a.fancybox {
   .postShorten .postShorten-meta,
   .postShorten .postShorten-readingtime,
   .postShorten .postShorten-excerpt_link {
-    font-family: "NanumGothicCoding";
+    font-family: "NanumGothic";
     font-size: 1.3rem;
     font-weight: 400; }
   .postShorten .postShorten-excerpt,
   .postShorten .postShorten-content {
     text-rendering: optimizelegibility;
     letter-spacing: -0.3px;
-    font-family: "NanumGothicCoding";
+    font-family: "NanumGothic";
     color: #5d686f;
     font-weight: 400;
     overflow: hidden;
@@ -10713,7 +10718,7 @@ a.tag--small,
     color: #fff;
     content: attr(data-tooltip);
     font-size: 0.93em;
-    line-height: 1.9em;
+    line-height: 1.6em;
     border-radius: 5px; }
   .tooltip:before, [data-tooltip]:before, .tooltip:after, [data-tooltip]:after {
     position: absolute;
@@ -10880,11 +10885,7 @@ a.tag--small,
     transform: translateY(-50%); }
 
 pre > code {
-  background: #f7f8f8;
   color: #333; }
-
-code {
-  background-color: #f7f8f8; }
 
 .codeblock--tabbed figcaption .tab.active {
   background: #349ef3;
@@ -10892,15 +10893,12 @@ code {
 
 figure.highlight,
 .codeblock {
-  background: #f7f8f8;
   color: #333; }
   figure.highlight figcaption,
   .codeblock figcaption {
-    background: #f7f8f8;
     color: #999999; }
   figure.highlight .gutter,
   .codeblock .gutter {
-    background: #f7f8f8;
     border-right-color: #e6e6e6; }
     figure.highlight .gutter .line,
     .codeblock .gutter .line {
