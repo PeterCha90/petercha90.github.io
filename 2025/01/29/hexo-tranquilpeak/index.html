@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="generator" content="Peter&#39;s Place">
-    <title>How to build a Hexo blog. 🏡 - Peter&#39;s Place</title>
+    <title>Hexo Tranquilpeak Blog 🏡 - Peter&#39;s Place</title>
     <meta name="author" content="Peter Cha">
     
         <meta name="keywords" content="tutorial,blog,hexo,tranquilpeak">
@@ -15,13 +15,13 @@
         <link rel="icon" href="https://petercha90.github.io/assets/images/favicon.ico">
     
     
-    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":[],"image":"peter.webp"},"articleBody":"\n\n\n\n\n안녕하세요, Blog 주인장 PETER입니다.👋 \n이 블로그는 정적인(Static) Site를 만들어주는 Hexo라는 Node.js 기반 프레임워크로 만들어졌습니다. 한물간(?) 프레임워크이긴 한 것 같습니다만, 그래도 빠르게 이쁜 블로그를 뚝딱 만들 수 있다는 건 아무래도 큰 장점은 맞는 것 같아요. :) 만들다가 이왕 알게된 기능 설정 방법들에 대해 정리해 놓습니다. \n이 블로그에 적용된 Tranquilpeak 이라는 테마를 중점적으로 설명하려 하는데요, Hexo를 설치하고 github.io blog로 만드는 방법, Hexo 테마 설정하는 방법까지는 조금만 검색하셔도 금방 찾으실 수 있으니 아신다고 가정하고 작성할게요. :)\n나만의 홈페이지를 만든다는 것은 온라인에 나만의 공간, 나만의 집🏠을 만드는 것과도 같죠.😉 혹여나 이 블로그가 마음에 드셔서 비슷하게 만들어 보시고자 하는 분들께 도움이 되면 좋겠네요!\n\n💬 Disqus Comment 설정\nDisqus 댓글을 설정하기 위해서는 아래와 같이 tranquilpeak의 _config.yml파일의 disqus_shortname 부분에 써 줄, shortname이 필요합니다. 아래는 Disqus에서 등록할 shortname을 찾는 방법입니다. \n  \n  \n  \n\nDisqus에 가입이 되었다면, 로그인 후 우상단에 Site Admin을 클릭해주세요.\n  \n  \n  \n\n그 다음, 아래 그림과 같이 Site를 선택합니다. 생성한 사이트가 없다면, + New를 클릭해주세요.\n  \n   \n  \n\n새로 생성을 하는 경우 아래와 같이 Website Name에 입력할 부분이 아래 적혀있는 설명과 같이 shortname으로 사용되게 됩니다. \n  \n  \n  \n\n이미 사이트를 생성했는데 기억이 안나는 경우는, 사용하고자 하는 사이트를 클릭하시고 아래와 같이 Settings를 클릭하시면 아래와 같이 Shortname을 확인할 수 있으니, 복사해서 쓰시면 됩니다!\n  \n  \n  \n\n번외로 아래와 같이 리액션투표 기능이 쓸데없이 제공되는데, disable을 시키고 싶으시다면\n  \n  \n  \n\ndisqus에서 해당 site를 클릭하면 나오는 화면 좌측 메뉴 중 emotions가 있으니 클릭하시고 가장 아래에서 확인 할 수 있는 “Turns Reactions off“를 클릭해주세요.\n  \n  \n  \n  \n  \n  \n\n✍️ Custom Font 적용하기\n핵심은 아래 사진과 같이 _variables.scss 파일을 수정하는 것입니다! 저는 나눔고딕을 사용하고 싶어서 $nanum 이라는 변수를 만들어주고, 이름을 NanumGothic이라고 설정해준 뒤, 게시글(Post)과 관련된 모든 부분에는 모두 nanum을 쓰도록 아래와 같이 설정해 주었습니다. \n  \n  \n  \n\n사용하고자 하는 폰트의 영어이름은, Google Fonts에서 검색해서 나오는 폰트 이름을 띄어쓰기 없이 검색했을 때 나온다면 적용이 되는 것으로 보였어요. \n  \n  \n  \n폰트 설정에 관련된 Issue 확인 결과, Tranquilpeak 테마를 만든 Louis Barranqueiro의 답변에 의하면 Google Font가 아닌 로컬의 폰트를 적용하고 싶다면,\n\ntranquilpeak/source/_fonts 폴더 아래에 사용하려는 폰트의 .ttf 파일을 추가해주고\ntranquilpeak/source/_css/utils/_fonts.scss 파일에 로컬의 폰트를 import 한 뒤에 사용하라고 가이드 해주고 있으니 이 또한 참고해주세요. :)\n\n\n\n🧑🏻‍💻 Favicon 설정하기\n브라우저에서 blog 탭 좌측에 위치하는 아이콘인 Favicon은 tranquilpeak/_config.yml 파일의 아래 favicon: 영역에 favicon 파일 이름을 넣어주면 끝!\n  12345678910111213...# or in `source/assets/images/` if you can&#x27;t or don&#x27;t want to build the theme,# and use relative url : `your-image.png`cover_image: cover.webp# Your favicon located in folder `source/_images/` (development) or in `source/assets/images/` (production)favicon: favicon.ico# Display an image gallery at the end of a post which have photos variables (false: disabled, true: enabled)image_gallery: true# Pagination behavior of archive, category and tag pages (false: pagination disabled, true: pagination enabled)archive_pagination: truecategory_pagination: truetag_pagination: true...\n\n\n\n☕️ Buy me a coffee","dateCreated":"2025-01-29T16:59:08+09:00","dateModified":"2025-01-30T01:02:47+09:00","datePublished":"2025-01-29T16:59:08+09:00","description":"\n\nHexo blog를 만드는 방법 👷🏻‍♂️ \nTranquilpeak Theme 적용하기 🌿\nDisqus 댓글, 폰트적용, favicon 설정까지! 🐾\n","headline":"How to build a Hexo blog. 🏡","image":["house.webp","house.webp"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":[],"image":"peter.webp","logo":{"@type":"ImageObject","url":"peter.webp"}},"url":"https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/","keywords":"tutorial, blog, hexo, tranquilpeak","thumbnailUrl":"house.webp"}</script>
-    <meta name="description" content="Hexo blog를 만드는 방법 👷🏻‍♂️  Tranquilpeak Theme 적용하기 🌿 Disqus 댓글, 폰트적용, favicon 설정까지! 🐾">
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":[],"image":"peter.webp"},"articleBody":"\n\n\n\n\n안녕하세요, Blog 주인장 PETER입니다.👋 \n이 블로그는 정적인(Static) Site를 만들어주는 Hexo라는 Node.js 기반 프레임워크로 만들어졌습니다. 2012년에 Tommy Chen이라는 대만 개발자님이 만든.. 2017-20년 쯤을 풍미했던 10년도 더 된 할아버지👴🏻 프레임워크가 됐네요.ㅎㅎㅎ\n저도 Next.js로 블로그를 만들까.. 하다가, 오래되긴 했지만 빠르게 이쁜 블로그를 뚝딱 만들 수 있다는 건 아무래도 큰 장점은 맞는 것 같아 다시 Hexo로 돌아왔어요. 다시 블로그를 만들다 이왕 알게된 기능 설정 방법들에 대해 정리해 튜토리얼을 써봅니다. :) \n이 글은, 이 블로그에 적용된 Tranquilpeak 이라는 테마를 중점적으로 설명합니다! Hexo를 설치하고 github.io blog로 만드는 방법, Hexo 테마 설정하는 방법까지는 아래 링크 참조해주세요 :) ChatGPT같은 LLM에게 물어보시면 hexo 명령어에 대해서도 쉽게 아실 수 있습니다. \n나만의 홈페이지를 만든다는 것은 온라인에 나만의 공간, 나만의 집🏠을 만드는 것과도 같죠.😉 혹시 이 블로그가 마음에 드셔서 비슷하게 만들어 보시고자 하는 분들께 도움이 되면 좋겠네요! \nHexo 설치 및 Github 연동하기Tranquilpeak 설치 및 적용\n\n\n\n\n\n💬 Disqus Comment 설정\nDisqus 댓글을 설정하기 위해서는 아래와 같이 tranquilpeak의 _config.yml파일의 disqus_shortname 부분에 써 줄, shortname이 필요합니다. 아래는 Disqus에서 등록할 shortname을 찾는 방법입니다. \n  \n  \n  \n\nDisqus에 가입이 되었다면, 로그인 후 우상단에 Site Admin을 클릭해주세요.\n  \n  \n  \n\n그 다음, 아래 그림과 같이 Site를 선택합니다. 생성한 사이트가 없다면, + New를 클릭해주세요.\n  \n   \n  \n\n새로 생성을 하는 경우 아래와 같이 Website Name에 입력할 부분이 아래 적혀있는 설명과 같이 shortname으로 사용되게 됩니다. \n  \n  \n  \n\n이미 사이트를 생성했는데 기억이 안나는 경우는, 사용하고자 하는 사이트를 클릭하시고 아래와 같이 Settings를 클릭하시면 아래와 같이 Shortname을 확인할 수 있으니, 복사해서 쓰시면 됩니다!\n  \n  \n  \n\n번외로 아래와 같이 Disqus를 설치하면, 아래와 같은 리액션투표 기능이 쓸데없이 제공됩니다. 이 기능을 disable 시키고 싶으시다면,\n  \n  \n  \n\ndisqus에서 해당 site를 클릭하면 나오는 화면 좌측 메뉴 중 emotions가 있으니 클릭하시고 가장 아래에서 확인 할 수 있는 “Turns Reactions off“를 클릭해주세요.\n  \n  \n  \n  \n  \n  \n\n✍️ Custom Font 적용하기\n핵심은 아래 사진과 같이 _variables.scss 파일을 수정하는 것입니다! 경로는 themes/tranquilpeak/source/_css/utils/_variables.scss 입니다.:) \n\n저는 나눔고딕을 사용하고 싶어서 $nanum 이라는 변수를 만들어주고, 이름을 NanumGothic이라고 설정해준 뒤, 게시글(Post)과 관련된 모든 부분에는 모두 nanum을 쓰도록 아래와 같이 설정해 주었습니다. \n  \n  \n  \n\n사용하고자 하는 폰트의 영어이름은, Google Fonts에서 검색해서 나오는 폰트 이름을 띄어쓰기 없이 검색했을 때 나온다면 적용이 되는 것으로 보였어요. \n  \n  \n  \n내가 적용하고 싶은 폰트가 Google Fonts에 없는 로컬의 폰트를 적용하고 싶다?!면, 폰트 설정에 관련된 Issue 확인 결과,\n\ntranquilpeak/source/_fonts 폴더 아래에 사용하려는 폰트의 .ttf 파일을 추가해주고\ntranquilpeak/source/_css/utils/_fonts.scss 파일에 로컬의 폰트를 import 한 뒤에 사용하라고 Tranquilpeak 테마를 만든 Louis Barranqueiro님이 직접 가이드 해주고 있으니 이 또한 참고해주세요. :)\n\n\n아참, tranquilpeak&#x2F;source&#x2F; 경로 이하 파일을 수정한 경우, tranquilpeak 디렉토리 내에서 꼭 `npm run prod`를 실행해서 build를 다시 해야 적용되니, 이 부분도 놓치지 마세요!\n\n\n\n\n🧑🏻‍💻 Favicon 설정하기\n브라우저에서 blog 탭 좌측에 위치하는 아이콘인 Favicon은 tranquilpeak/source/assets/images 폴더 아래에 favicon용 이미지를 넣어놓고, tranquilpeak/_config.yml 파일의 아래 favicon: 영역에 favicon 파일 이름을 넣어주면 끝!\n  \n  \n  \ntranquilpeak/_config.ymlyml...# and use relative url : `your-image.png`cover_image: cover.webp# Your favicon located in folder `source/_images/` ..favicon: favicon.ico# Display an image gallery at the end of a post ...image_gallery: true...\n  \n\nfavicon용 아이콘 만들어주는 사이트들은 다양합니다! 저는 favicon.io에서 만들었어요! \n\n왜인지는 모르겠으나.. Favicon은 Deploy(hexo d)를 한 다음에만 확인할 수 있고, hexo s로 시작해서 확인하는 로컬에는 확인을 못하는게 정상이라고 하니(Issue), 참고하시면 되시겠습니다. :)\n\n\n\n\n☕️ Buy me a coffee\nBuy me a coffee는 Creator들이 간단하게 후원을 받을 수 있도록 해주는 서비스 입니다 :) 가입을 하면 나만의 배너를 만들 수 있고, 그 링크를 통해 다른 사람들이 고마움을 표현하고 Creator를 후원할 수 있게 해주는. 거기다 무료인 🐐(GOAT) 서비스죠. \n\n가입을 진행하시고 로그인을 하셨다면, 좌측 메뉴에서 Buttons &amp; Graphics를 클릭해주시면 나만의 버튼을 꾸밀 수 있는 창이 뜹니다. 설정을 다 하셨다면, Generate button을 클릭해주세요. \n  \n  \n  \n\n그 다음에 나오는 화면에서 아래와 같이 Copy code 버튼을 클릭하셔서 script 코드를 복사해줍니다.\n  \n  \n  \n\n이제 복사한 이 코드를 원하는 위치에 넣어주면 되는데요, 저같은 경우 제가 쓰게될 모든 Post 가장 하단에 댓글란 바로 위에 위치했으면 해서, themes/tranquilpeak/layout/_partial/post.ejs 파일에 아래와 같이 Disqus 댓글 코드 앞에 넣어줬습니다. \n  \n  \n  \n\nThank you!\n자, 여기까지 이 블로그가 만들어진 Hexo Tranquilpeak 테마의 다양한 설정법에 대해 알아보았습니다! 그 외에도, 배경화면을 약간 투명으로 설정하는 방법, sidebar customization하는 방법 등, 혹시 제 블로그를 보시면서 궁금한 기능이 있으시다면 댓글로 문의주시면 알려드리도록 할게요 :) \n제 블로그 첫 번째 글을 읽어주셔서 감사합니다!🙇🏻‍♂️\n","dateCreated":"2025-01-29T16:59:08+09:00","dateModified":"2025-01-30T18:11:57+09:00","datePublished":"2025-01-29T16:59:08+09:00","description":"\n\nHexo blog를 만드는 방법 (feat. Tranquilpeak) 👷🏻‍♂️ \nDisqus 댓글, 폰트적용, favicon 설정까지! 🧑🏻‍💻\n","headline":"Hexo Tranquilpeak Blog 🏡","image":["house.webp","house.webp"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":[],"image":"peter.webp","logo":{"@type":"ImageObject","url":"peter.webp"}},"url":"https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/","keywords":"tutorial, blog, hexo, tranquilpeak","thumbnailUrl":"house.webp"}</script>
+    <meta name="description" content="Hexo blog를 만드는 방법 (feat. Tranquilpeak) 👷🏻‍♂️  Disqus 댓글, 폰트적용, favicon 설정까지! 🧑🏻‍💻">
 <meta property="og:type" content="blog">
-<meta property="og:title" content="How to build a Hexo blog. 🏡">
+<meta property="og:title" content="Hexo Tranquilpeak Blog 🏡">
 <meta property="og:url" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/index.html">
 <meta property="og:site_name" content="Peter&#39;s Place">
-<meta property="og:description" content="Hexo blog를 만드는 방법 👷🏻‍♂️  Tranquilpeak Theme 적용하기 🌿 Disqus 댓글, 폰트적용, favicon 설정까지! 🐾">
+<meta property="og:description" content="Hexo blog를 만드는 방법 (feat. Tranquilpeak) 👷🏻‍♂️  Disqus 댓글, 폰트적용, favicon 설정까지! 🧑🏻‍💻">
 <meta property="og:locale" content="en_US">
 <meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/disqus_0.webp">
 <meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/disqus_1.webp">
@@ -33,8 +33,12 @@
 <meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/disqus_7.webp">
 <meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/font.webp">
 <meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/font2.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/favicon.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/buyme_1.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/buyme_2.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/buyme_3.webp">
 <meta property="article:published_time" content="2025-01-29T07:59:08.000Z">
-<meta property="article:modified_time" content="2025-01-29T16:02:47.785Z">
+<meta property="article:modified_time" content="2025-01-30T09:11:57.509Z">
 <meta property="article:author" content="Peter Cha">
 <meta property="article:tag" content="tutorial">
 <meta property="article:tag" content="blog">
@@ -60,7 +64,7 @@
     
     <!--STYLES-->
     
-<link rel="stylesheet" href="/assets/css/style-qb2sthw1aoanmrh9dtcihpujegc9ns986jhxalmr37sloobci4rbp5d4ff4s.min.css">
+<link rel="stylesheet" href="/assets/css/style-mv4nmjpat6n2tl4gqm29rfj04ktgp0fshotjyfulhjyanhqpntt8bztaeuul.min.css">
 
     <!--STYLES END-->
     
@@ -79,7 +83,24 @@
     
         
     
-</head>
+<style>
+    figure.codeblock {
+       margin: 0;
+    }
+    figure figcaption .tabs {
+      display: flex;
+      margin: 0;
+    }
+    figure figcaption .tabs .tab {
+      cursor: pointer;
+      list-style: none;
+      padding: 5px 15px;
+    }
+    figure figcaption .tabs .tab.active {
+      background: #2d2d2d;
+      color: white;
+    }
+  </style></head>
 
     <body>
         <div id="blog">
@@ -272,7 +293,7 @@
         <div class="post-header main-content-wrap text-center">
     
         <h1 class="post-title">
-            How to build a Hexo blog. 🏡
+            Hexo Tranquilpeak Blog 🏡
         </h1>
     
     
@@ -303,10 +324,16 @@
 
 <ul>
 <li>안녕하세요, Blog 주인장 PETER입니다.👋 </li>
-<li>이 블로그는 정적인(Static) Site를 만들어주는 Hexo라는 Node.js 기반 프레임워크로 만들어졌습니다. 한물간(?) 프레임워크이긴 한 것 같습니다만, 그래도 빠르게 이쁜 블로그를 뚝딱 만들 수 있다는 건 아무래도 큰 장점은 맞는 것 같아요. :) 만들다가 이왕 알게된 기능 설정 방법들에 대해 정리해 놓습니다. </li>
-<li>이 블로그에 적용된 <a target="_blank" rel="noopener" href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak"><code>Tranquilpeak</code></a> 이라는 테마를 중점적으로 설명하려 하는데요, Hexo를 설치하고 github.io blog로 만드는 방법, Hexo 테마 설정하는 방법까지는 조금만 검색하셔도 금방 찾으실 수 있으니 아신다고 가정하고 작성할게요. :)</li>
-<li>나만의 홈페이지를 만든다는 것은 온라인에 나만의 공간, 나만의 집🏠을 만드는 것과도 같죠.😉 혹여나 이 블로그가 마음에 드셔서 비슷하게 만들어 보시고자 하는 분들께 도움이 되면 좋겠네요!</li>
+<li>이 블로그는 정적인(Static) Site를 만들어주는 Hexo라는 Node.js 기반 프레임워크로 만들어졌습니다. 2012년에 Tommy Chen이라는 대만 개발자님이 만든.. 2017-20년 쯤을 풍미했던 10년도 더 된 할아버지👴🏻 프레임워크가 됐네요.ㅎㅎㅎ</li>
+<li>저도 Next.js로 블로그를 만들까.. 하다가, 오래되긴 했지만 빠르게 이쁜 블로그를 뚝딱 만들 수 있다는 건 아무래도 큰 장점은 맞는 것 같아 다시 Hexo로 돌아왔어요. 다시 블로그를 만들다 이왕 알게된 기능 설정 방법들에 대해 정리해 튜토리얼을 써봅니다. :) </li>
+<li>이 글은, 이 블로그에 적용된 <strong><a target="_blank" rel="noopener" href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak">Tranquilpeak</a></strong> 이라는 테마를 중점적으로 설명합니다! Hexo를 설치하고 github.io blog로 만드는 방법, Hexo 테마 설정하는 방법까지는 아래 링크 참조해주세요 :) ChatGPT같은 LLM에게 물어보시면 hexo 명령어에 대해서도 쉽게 아실 수 있습니다. </li>
+<li>나만의 홈페이지를 만든다는 것은 온라인에 나만의 공간, 나만의 집🏠을 만드는 것과도 같죠.😉 혹시 이 블로그가 마음에 드셔서 비슷하게 만들어 보시고자 하는 분들께 도움이 되면 좋겠네요! <blockquote>
+<p><a target="_blank" rel="noopener" href="https://velog.io/@koseony/GitHub-blog%EB%A7%8C%EB%93%A4%EA%B8%B0"><code>Hexo 설치 및 Github 연동하기</code></a><br><a target="_blank" rel="noopener" href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak?tab=readme-ov-file#quick-start"><code>Tranquilpeak 설치 및 적용</code></a></p>
+</blockquote>
+</li>
 </ul>
+<br>
+
 <h3 id="💬-Disqus-Comment-설정"><a href="#💬-Disqus-Comment-설정" class="headerlink" title="💬 Disqus Comment 설정"></a>💬 Disqus Comment 설정</h3><ul>
 <li><p>Disqus 댓글을 설정하기 위해서는 아래와 같이 tranquilpeak의 <code>_config.yml</code>파일의 <strong>disqus_shortname</strong> 부분에 써 줄, shortname이 필요합니다. 아래는 Disqus에서 등록할 shortname을 찾는 방법입니다. </p>
   <img src="disqus_0.webp" style="width:80%;">
@@ -333,7 +360,7 @@
   <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
   <br>
 </li>
-<li><p>번외로 아래와 같이 리액션투표 기능이 <s>쓸데없이</s> 제공되는데, disable을 시키고 싶으시다면</p>
+<li><p>번외로 아래와 같이 Disqus를 설치하면, 아래와 같은 리액션투표 기능이 <s>쓸데없이</s> 제공됩니다. 이 기능을 disable 시키고 싶으시다면,</p>
   <img src="disqus_6.webp" style="width:100%;">
   <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
   <br>
@@ -347,7 +374,9 @@
   <br></li>
 </ul>
 <h3 id="✍️-Custom-Font-적용하기"><a href="#✍️-Custom-Font-적용하기" class="headerlink" title="✍️ Custom Font 적용하기"></a>✍️ Custom Font 적용하기</h3><ul>
-<li><p>핵심은 아래 사진과 같이 <code>_variables.scss</code> 파일을 수정하는 것입니다! 저는 나눔고딕을 사용하고 싶어서 $nanum 이라는 변수를 만들어주고, 이름을 NanumGothic이라고 설정해준 뒤, 게시글(Post)과 관련된 모든 부분에는 모두 nanum을 쓰도록 아래와 같이 설정해 주었습니다. </p>
+<li><p>핵심은 아래 사진과 같이 <code>_variables.scss</code> 파일을 수정하는 것입니다! 경로는 <strong><span class="highlight-text" style="background-color:#FFDFB8;">themes/tranquilpeak/source/_css/utils/_variables.scss</span></strong> 입니다.:) </p>
+</li>
+<li><p>저는 나눔고딕을 사용하고 싶어서 $nanum 이라는 변수를 만들어주고, 이름을 NanumGothic이라고 설정해준 뒤, 게시글(Post)과 관련된 모든 부분에는 모두 nanum을 쓰도록 아래와 같이 설정해 주었습니다. </p>
   <img src="font.webp" style="width:100%;">
   <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
   <br>
@@ -356,20 +385,54 @@
   <img src="font2.webp" style="width:80%;">
   <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
   <br></li>
-<li><p>폰트 설정에 관련된 <strong><a target="_blank" rel="noopener" href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak/issues/16">Issue</a></strong> 확인 결과, Tranquilpeak 테마를 만든 Louis Barranqueiro의 답변에 의하면 Google Font가 아닌 로컬의 폰트를 적용하고 싶다면,</p>
+<li><p>내가 적용하고 싶은 폰트가 Google Fonts에 없는 로컬의 폰트를 적용하고 싶다?!면, 폰트 설정에 관련된 <strong><a target="_blank" rel="noopener" href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak/issues/16">Issue</a></strong> 확인 결과,</p>
 <ol>
 <li><strong><span class="highlight-text" style="background-color:#FFDFB8;">tranquilpeak/source/_fonts</span></strong> 폴더 아래에 사용하려는 폰트의 <code>.ttf</code> 파일을 추가해주고</li>
-<li><strong><span class="highlight-text" style="background-color:#FFDFB8;">tranquilpeak/source/_css/utils/_fonts.scss</span></strong> 파일에 로컬의 폰트를 import 한 뒤에 사용하라고 가이드 해주고 있으니 이 또한 참고해주세요. :)</li>
+<li><strong><span class="highlight-text" style="background-color:#FFDFB8;">tranquilpeak/source/_css/utils/_fonts.scss</span></strong> 파일에 로컬의 폰트를 import 한 뒤에 사용하라고 Tranquilpeak 테마를 만든 Louis Barranqueiro님이 직접 가이드 해주고 있으니 이 또한 참고해주세요. :)</li>
 </ol>
 </li>
-</ul>
-<h3 id="🧑🏻‍💻-Favicon-설정하기"><a href="#🧑🏻‍💻-Favicon-설정하기" class="headerlink" title="🧑🏻‍💻 Favicon 설정하기"></a>🧑🏻‍💻 Favicon 설정하기</h3><ul>
-<li><p>브라우저에서 blog 탭 좌측에 위치하는 아이콘인 Favicon은 <strong><span class="highlight-text" style="background-color:#FFDFB8;">tranquilpeak/_config.yml</span></strong> 파일의 아래 <code>favicon:</code> 영역에 favicon 파일 이름을 넣어주면 끝!</p>
-  <figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="string">...</span></span><br><span class="line"><span class="comment"># or in `source/assets/images/` if you can&#x27;t or don&#x27;t want to build the theme,</span></span><br><span class="line"><span class="comment"># and use relative url : `your-image.png`</span></span><br><span class="line"><span class="attr">cover_image:</span> <span class="string">cover.webp</span></span><br><span class="line"><span class="comment"># Your favicon located in folder `source/_images/` (development) or in `source/assets/images/` (production)</span></span><br><span class="line"><span class="attr">favicon:</span> <span class="string">favicon.ico</span></span><br><span class="line"><span class="comment"># Display an image gallery at the end of a post which have photos variables (false: disabled, true: enabled)</span></span><br><span class="line"><span class="attr">image_gallery:</span> <span class="literal">true</span></span><br><span class="line"><span class="comment"># Pagination behavior of archive, category and tag pages (false: pagination disabled, true: pagination enabled)</span></span><br><span class="line"><span class="attr">archive_pagination:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">category_pagination:</span> <span class="literal">true</span></span><br><span class="line"><span class="attr">tag_pagination:</span> <span class="literal">true</span></span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></table></figure>
+<li><p>아참, <strong><U>tranquilpeak&#x2F;source&#x2F; 경로 이하 파일을 수정한 경우</u></strong>, <span class="highlight-text" style="background-color:#72d6a4;">tranquilpeak 디렉토리 내에서 꼭 `npm run prod`를 실행해서 build를 다시 해야 적용되니,</span> 이 부분도 놓치지 마세요!</p>
 </li>
-<li></li>
 </ul>
-<h3 id="☕️-Buy-me-a-coffee"><a href="#☕️-Buy-me-a-coffee" class="headerlink" title="☕️ Buy me a coffee"></a>☕️ Buy me a coffee</h3>
+<br>
+
+<h3 id="🧑🏻‍💻-Favicon-설정하기"><a href="#🧑🏻‍💻-Favicon-설정하기" class="headerlink" title="🧑🏻‍💻 Favicon 설정하기"></a>🧑🏻‍💻 Favicon 설정하기</h3><ul>
+<li><p>브라우저에서 blog 탭 좌측에 위치하는 아이콘인 Favicon은 <strong><span class="highlight-text" style="background-color:#FFDFB8;">tranquilpeak/source/assets/images</span></strong> 폴더 아래에 favicon용 이미지를 넣어놓고, <strong><span class="highlight-text" style="background-color:#FFDFB8;">tranquilpeak/_config.yml</span></strong> 파일의 아래 <code>favicon:</code> 영역에 favicon 파일 이름을 넣어주면 끝!</p>
+  <img src="favicon.webp" style="width:70%;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
+  <hr>
+<figure class="codeblock codeblock--tabbed"><figcaption><span>tranquilpeak/_config.yml</span><ul class="tabs"><li class="tab active">yml</li></ul></figcaption><div class="tabs-content"><figure class="highlight yml" style="display: block;"><table><tbody><tr><td class="code"><pre><span class="line"><span class="string">...</span></span><br><span class="line"><span class="comment"># and use relative url : `your-image.png`</span></span><br><span class="line"><span class="attr">cover_image:</span> <span class="string">cover.webp</span></span><br><span class="line"><span class="comment"># Your favicon located in folder `source/_images/` ..</span></span><br><span class="line"><span class="attr">favicon:</span> <span class="string">favicon.ico</span></span><br><span class="line"><span class="comment"># Display an image gallery at the end of a post ...</span></span><br><span class="line"><span class="attr">image_gallery:</span> <span class="literal">true</span></span><br><span class="line"><span class="string">...</span></span><br></pre></td></tr></tbody></table></figure></div></figure>
+  
+</li>
+<li><p>favicon용 아이콘 만들어주는 사이트들은 다양합니다! 저는 <a target="_blank" rel="noopener" href="https://favicon.io/favicon-converter/">favicon.io</a>에서 만들었어요! </p>
+</li>
+<li><p>왜인지는 모르겠으나.. Favicon은 Deploy(<code>hexo d</code>)를 한 다음에만 확인할 수 있고, <code>hexo s</code>로 시작해서 확인하는 로컬에는 확인을 못하는게 정상이라고 하니(<strong><a target="_blank" rel="noopener" href="https://github.com/LouisBarranqueiro/hexo-theme-tranquilpeak/issues/484#issuecomment-375968407">Issue</a></strong>), 참고하시면 되시겠습니다. :)</p>
+</li>
+</ul>
+<br>
+
+<h3 id="☕️-Buy-me-a-coffee"><a href="#☕️-Buy-me-a-coffee" class="headerlink" title="☕️ Buy me a coffee"></a>☕️ Buy me a coffee</h3><ul>
+<li><p><a target="_blank" rel="noopener" href="https://buymeacoffee.com/">Buy me a coffee</a>는 Creator들이 간단하게 후원을 받을 수 있도록 해주는 서비스 입니다 :) 가입을 하면 나만의 배너를 만들 수 있고, 그 링크를 통해 다른 사람들이 고마움을 표현하고 Creator를 후원할 수 있게 해주는. 거기다 무료인 🐐(GOAT) 서비스죠. </p>
+</li>
+<li><p>가입을 진행하시고 로그인을 하셨다면, 좌측 메뉴에서 <code>Buttons &amp; Graphics</code>를 클릭해주시면 나만의 버튼을 꾸밀 수 있는 창이 뜹니다. 설정을 다 하셨다면, <code>Generate button</code>을 클릭해주세요. </p>
+  <img src="buyme_1.webp" style="width:90%;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
+  <br>
+</li>
+<li><p>그 다음에 나오는 화면에서 아래와 같이 <code>Copy code</code> 버튼을 클릭하셔서 script 코드를 복사해줍니다.</p>
+  <img src="buyme_2.webp" style="width:90%;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
+  <br>
+</li>
+<li><p>이제 복사한 이 코드를 원하는 위치에 넣어주면 되는데요, 저같은 경우 제가 쓰게될 모든 Post 가장 하단에 댓글란 바로 위에 위치했으면 해서, <strong><span class="highlight-text" style="background-color:#FFDFB8;">themes/tranquilpeak/layout/_partial/post.ejs</span></strong> 파일에 아래와 같이 Disqus 댓글 코드 앞에 넣어줬습니다. </p>
+  <img src="buyme_3.webp" style="width:100%;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;"></div>
+  <br></li>
+</ul>
+<h4 id="Thank-you"><a href="#Thank-you" class="headerlink" title="Thank you!"></a>Thank you!</h4><ul>
+<li>자, 여기까지 이 블로그가 만들어진 Hexo Tranquilpeak 테마의 다양한 설정법에 대해 알아보았습니다! 그 외에도, 배경화면을 약간 투명으로 설정하는 방법, sidebar customization하는 방법 등, 혹시 제 블로그를 보시면서 궁금한 기능이 있으시다면 댓글로 문의주시면 알려드리도록 할게요 :) </li>
+<li>제 블로그 첫 번째 글을 읽어주셔서 감사합니다!🙇🏻‍♂️</li>
+</ul>
             
 
 
@@ -442,7 +505,7 @@
 <div id="cover" style="background-image:url('/assets/images/cover.webp');"></div>
         <!--SCRIPTS-->
 
-<script src="/assets/js/script-wyed9tjjys2utkzdskipd7erbjm4mjtgkqnbupdrhhcjkckfjr5cjgo3yv3k.min.js"></script>
+<script src="/assets/js/script-hmvmibqp7rl2plyeqmv6qipqlrkburzphdqwilvvpeupxsehd16se4ghyhaj.min.js"></script>
 
 <!--SCRIPTS END-->
 
@@ -469,5 +532,20 @@
 
 
 
-    </body>
+    <script>
+  $(document).ready(function() {
+    $('figure.codeblock').find('.tab').click(function() {
+        var $codeblock = $(this).parent().parent().parent();
+        var $tab = $(this);
+        // remove "active" css class on all tabs
+        $tab.siblings().removeClass('active');
+        // add "active" css class on the clicked tab
+        $tab.addClass('active');
+        // hide all tab contents
+        $codeblock.find('.highlight').hide();
+        // show only the right one
+        $codeblock.find('.highlight.' + $tab.text()).show();
+    });
+  });
+  </script></body>
 </html>

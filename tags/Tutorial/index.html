@@ -33,7 +33,7 @@
     
     <!--STYLES-->
     
-<link rel="stylesheet" href="/assets/css/style-qb2sthw1aoanmrh9dtcihpujegc9ns986jhxalmr37sloobci4rbp5d4ff4s.min.css">
+<link rel="stylesheet" href="/assets/css/style-mv4nmjpat6n2tl4gqm29rfj04ktgp0fshotjyfulhjyanhqpntt8bztaeuul.min.css">
 
     <!--STYLES END-->
     
@@ -50,7 +50,24 @@
     
 
     
-</head>
+<style>
+    figure.codeblock {
+       margin: 0;
+    }
+    figure figcaption .tabs {
+      display: flex;
+      margin: 0;
+    }
+    figure figcaption .tabs .tab {
+      cursor: pointer;
+      list-style: none;
+      padding: 5px 15px;
+    }
+    figure figcaption .tabs .tab.active {
+      background: #2d2d2d;
+      color: white;
+    }
+  </style></head>
 
     <body>
         <div id="blog">
@@ -239,9 +256,9 @@
                         <a
                             class="link-unstyled"
                             href="/2025/01/29/hexo-tranquilpeak/"
-                            aria-label=": How to build a Hexo blog. 🏡"
+                            aria-label=": Hexo Tranquilpeak Blog 🏡"
                         >
-                            How to build a Hexo blog. 🏡
+                            Hexo Tranquilpeak Blog 🏡
                         </a>
                     
                 </h1>
@@ -265,15 +282,14 @@
                 <div class="postShorten-excerpt">
                     <span id="more"></span>
 <ul>
-<li>Hexo blog를 만드는 방법 👷🏻‍♂️ </li>
-<li>Tranquilpeak Theme 적용하기 🌿</li>
-<li>Disqus 댓글, 폰트적용, favicon 설정까지! 🐾</li>
+<li>Hexo blog를 만드는 방법 (feat. Tranquilpeak) 👷🏻‍♂️ </li>
+<li>Disqus 댓글, 폰트적용, favicon 설정까지! 🧑🏻‍💻</li>
 </ul>
                     
                         <a
                             href="/2025/01/29/hexo-tranquilpeak/"
                             class="postShorten-excerpt_link link"
-                            aria-label=": How to build a Hexo blog. 🏡"
+                            aria-label=": Hexo Tranquilpeak Blog 🏡"
                         >
                             Continue reading
                         </a>
@@ -285,7 +301,7 @@
         
             <a
                 href="/2025/01/29/hexo-tranquilpeak/"
-                aria-label=": How to build a Hexo blog. 🏡"
+                aria-label=": Hexo Tranquilpeak Blog 🏡"
             >
                 <div class="postShorten-thumbnailimg">
                     <img alt="" src="https://petercha90.github.io/2025/01/29/hexo-tranquilpeak/house.webp"/>
@@ -350,7 +366,7 @@
 <div id="cover" style="background-image:url('/assets/images/cover.webp');"></div>
         <!--SCRIPTS-->
 
-<script src="/assets/js/script-wyed9tjjys2utkzdskipd7erbjm4mjtgkqnbupdrhhcjkckfjr5cjgo3yv3k.min.js"></script>
+<script src="/assets/js/script-hmvmibqp7rl2plyeqmv6qipqlrkburzphdqwilvvpeupxsehd16se4ghyhaj.min.js"></script>
 
 <!--SCRIPTS END-->
 
@@ -358,5 +374,20 @@
 
 
 
-    </body>
+    <script>
+  $(document).ready(function() {
+    $('figure.codeblock').find('.tab').click(function() {
+        var $codeblock = $(this).parent().parent().parent();
+        var $tab = $(this);
+        // remove "active" css class on all tabs
+        $tab.siblings().removeClass('active');
+        // add "active" css class on the clicked tab
+        $tab.addClass('active');
+        // hide all tab contents
+        $codeblock.find('.highlight').hide();
+        // show only the right one
+        $codeblock.find('.highlight.' + $tab.text()).show();
+    });
+  });
+  </script></body>
 </html>

@@ -1650,10 +1650,11 @@ blockquote {
 
 figure.highlight,
 .codeblock {
-  margin: 10px 0;
+  margin: 5px 0;
   line-height: 1.3em;
-  padding-top: 15px;
-  padding-bottom: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
   overflow: hidden; }
   figure.highlight table,
   .codeblock table {
@@ -1698,7 +1699,8 @@ figure.highlight,
   .codeblock .code {
     padding: 0.3em 15px 0.3em 1em;
     width: 100%;
-    border-radius: 7px; }
+    border-radius: 7px;
+    color: white; }
     figure.highlight .code pre,
     .codeblock .code pre {
       max-width: calc(750px - 50px);
@@ -1707,7 +1709,8 @@ figure.highlight,
   figure.highlight .line,
   .codeblock .line {
     height: 1.3em;
-    font-size: 1.4rem; }
+    font-size: 1.4rem;
+    color: white; }
 
 .codeblock--tabbed figure.highlight,
 .codeblock--tabbed pre > code {
@@ -1723,7 +1726,8 @@ figure.highlight,
     cursor: pointer;
     display: inline-block;
     margin: 0 5px;
-    padding: 0 7px; }
+    padding: 0 7px;
+    border-radius: 5px; }
     .codeblock--tabbed figcaption .tabs .tab:last-child {
       margin-right: 0; }
 
