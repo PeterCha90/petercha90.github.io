@@ -138,10 +138,10 @@ table {
     background: #f7f8f8; }
 
 hr {
-  margin: 1.5em 0 0;
+  margin: 1.5em 0 1.5em;
   outline: none;
   border: none;
-  border-top: 1px solid #eef2f8; }
+  border-top: 1px solid #c5cad1; }
 
 dl dt {
   font-weight: bold; }
@@ -154,12 +154,12 @@ pre > code {
   width: 0%;
   box-sizing: border-box;
   padding: 15px;
+  margin: 5px;
   font-family: Menlo, Consolas, monospace;
   border: none;
-  margin: 0;
   cursor: text;
   overflow-x: auto;
-  line-height: 1.3em;
+  line-height: 1.2em;
   font-size: 1.4rem; }
 
 code {
@@ -168,10 +168,10 @@ code {
   font-family: Menlo, Consolas, monospace;
   font-weight: 400;
   color: white;
-  background-color: rgba(0, 0, 0, 0.6);
+  margin: 3px 0px;
+  background-color: rgba(174, 19, 19, 0.6);
   border-radius: 10px;
-  padding-left: 5px;
-  padding-right: 5px; }
+  padding: 0px 5px; }
 
 acronym,
 abbr {
@@ -179,9 +179,8 @@ abbr {
 
 blockquote {
   border-left: 3px solid #5d686f;
-  padding: 0 15px;
-  font-style: italic;
-  margin: 1.5em 0 0; }
+  padding: 0 5px;
+  margin: 0.5em 0 0; }
   blockquote cite:before {
     content: ' — ';
     padding: 0 0.3em; }
@@ -1650,10 +1649,10 @@ blockquote {
 
 figure.highlight,
 .codeblock {
-  margin: 5px 0;
-  line-height: 1.3em;
-  padding-top: 5px;
-  padding-bottom: 5px;
+  margin: 5px;
+  line-height: 1.2em;
+  padding-top: 1px;
+  padding-bottom: 10px;
   border-radius: 5px;
   overflow: hidden; }
   figure.highlight table,
@@ -1672,7 +1671,7 @@ figure.highlight,
     font-family: Menlo, Consolas, monospace;
     border: none;
     padding: 0;
-    margin: 0;
+    margin: 10px;
     cursor: text; }
   figure.highlight .gutter,
   figure.highlight .code,
@@ -1708,7 +1707,7 @@ figure.highlight,
       overflow-y: hidden; }
   figure.highlight .line,
   .codeblock .line {
-    height: 1.3em;
+    height: 1.2em;
     font-size: 1.4rem;
     color: white; }
 
@@ -2860,7 +2859,11 @@ a.tag--small,
     transform: translateY(-50%); }
 
 pre > code {
+  background: #494343;
   color: #333; }
+
+code {
+  background-color: #494343; }
 
 .codeblock--tabbed figcaption .tab.active {
   background: #349ef3;
@@ -2868,12 +2871,15 @@ pre > code {
 
 figure.highlight,
 .codeblock {
+  background: #494343;
   color: #333; }
   figure.highlight figcaption,
   .codeblock figcaption {
+    background: #494343;
     color: #999999; }
   figure.highlight .gutter,
   .codeblock .gutter {
+    background: #494343;
     border-right-color: #e6e6e6; }
     figure.highlight .gutter .line,
     .codeblock .gutter .line {
@@ -2883,7 +2889,7 @@ figure.highlight,
     color: #969896; }
   figure.highlight .string,
   .codeblock .string {
-    color: #183691; }
+    color: #55a532; }
   figure.highlight .keyword,
   .codeblock .keyword {
     color: #a71d5d; }
@@ -2936,7 +2942,7 @@ figure.highlight,
   figure.highlight.coffeescript .code .attribute,
   .codeblock.coffeescript .code .reserved,
   .codeblock.coffeescript .code .attribute {
-    color: #1d3e81; }
+    color: #55a532; }
   figure.highlight.coffeescript .code .subst,
   figure.highlight.coffeescript .code .regexp,
   figure.highlight.coffeescript .code .attribute,
@@ -3048,7 +3054,7 @@ figure.highlight,
   figure.highlight.http .code .attr,
   .codeblock.http .code .attribute,
   .codeblock.http .code .attr {
-    color: #183691; }
+    color: #55a532; }
   figure.highlight.http .code .literal,
   .codeblock.http .code .literal {
     color: #0086b3; }
@@ -3088,7 +3094,7 @@ figure.highlight,
     color: #0086b3; }
   figure.highlight.java .code .params,
   .codeblock.java .code .params {
-    color: #1d3e81; }
+    color: #55a532; }
   figure.highlight.js .code .built_in,
   figure.highlight.js .code .title,
   .codeblock.js .code .built_in,
@@ -3115,7 +3121,7 @@ figure.highlight,
     color: #0086b3; }
   figure.highlight.json .code .attribute,
   .codeblock.json .code .attribute {
-    color: #183691; }
+    color: #55a532; }
   figure.highlight.json .code .number,
   figure.highlight.json .code .literal,
   .codeblock.json .code .number,
@@ -3146,7 +3152,7 @@ figure.highlight,
   .codeblock.md .code .blockquote,
   .codeblock.md .code .quote,
   .codeblock.md .code .section {
-    color: #183691; }
+    color: #55a532; }
   figure.highlight.md .code .link_reference,
   figure.highlight.md .code .symbol,
   figure.highlight.md .code .code,
@@ -3171,7 +3177,7 @@ figure.highlight,
     color: #0086b3; }
   figure.highlight.nginx .code .regexp,
   .codeblock.nginx .code .regexp {
-    color: #183691; }
+    color: #55a532; }
   figure.highlight.nginx .code .variable,
   .codeblock.nginx .code .variable {
     color: #333; }
@@ -3187,7 +3193,7 @@ figure.highlight,
       color: #df5000; }
   figure.highlight.objectivec .code .meta-string,
   .codeblock.objectivec .code .meta-string {
-    color: #183691; }
+    color: #55a532; }
   figure.highlight.objectivec .code .title,
   .codeblock.objectivec .code .title {
     color: #795da3; }
@@ -3262,7 +3268,7 @@ figure.highlight,
   figure.highlight.xml .value, figure.highlight.html .value,
   .codeblock.xml .value,
   .codeblock.html .value {
-    color: #183691; }
+    color: #55a532; }
   figure.highlight.xml .attribute,
   figure.highlight.xml .attr, figure.highlight.html .attribute,
   figure.highlight.html .attr,
@@ -3433,7 +3439,7 @@ figure.highlight,
   .codeblock.yml .type,
   .codeblock.yml .literal,
   .codeblock.yml .meta {
-    color: #183691; }
+    color: #55a532; }
   figure.highlight.yml .number,
   .codeblock.yml .number {
     color: #0086b3; }
