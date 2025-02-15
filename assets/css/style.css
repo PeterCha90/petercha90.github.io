@@ -9679,9 +9679,8 @@ blockquote {
 
 figure.highlight,
 .codeblock {
-  margin: 5px;
+  margin: 5px 0px;
   line-height: 1em;
-  padding: 5px;
   border-radius: 5px;
   overflow: auto; }
   figure.highlight table,
@@ -10894,7 +10893,8 @@ pre > code {
 
 code {
   background-color: #494343;
-  color: white; }
+  color: white;
+  margin: 0px 0px; }
 
 .codeblock--tabbed figcaption .tab.active {
   background: #349ef3;
