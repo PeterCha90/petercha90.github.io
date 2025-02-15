@@ -8187,8 +8187,9 @@ pre > code {
   font-family: Menlo, Consolas, monospace;
   border: none;
   cursor: text;
+  color: black;
   overflow-x: auto;
-  line-height: 1.2em;
+  line-height: 1em;
   font-size: 1.4rem; }
 
 code {
@@ -8196,8 +8197,8 @@ code {
   display: inline-block;
   font-family: Menlo, Consolas, monospace;
   font-weight: 400;
-  color: white;
-  margin: 3px 0px;
+  color: #161515;
+  margin: 5px 0px;
   background-color: rgba(174, 19, 19, 0.6);
   border-radius: 10px;
   padding: 0px 5px; }
@@ -8562,7 +8563,7 @@ blockquote {
 #main {
   display: block;
   min-height: 100%;
-  background: #fff;
+  background: #231f1f;
   transition: transform .25s ease-in-out;
   -webkit-transition: -webkit-transform .25s ease-in-out; }
   #main.hasCover.hasCoverCaption, #main.hasCover.hasCoverMetaOut {
@@ -9679,15 +9680,15 @@ blockquote {
 figure.highlight,
 .codeblock {
   margin: 5px;
-  line-height: 1.2em;
-  padding-top: 1px;
-  padding-bottom: 10px;
+  line-height: 1em;
+  padding: 5px;
   border-radius: 5px;
-  overflow: hidden; }
+  overflow: auto; }
   figure.highlight table,
   .codeblock table {
     display: block;
-    width: 100%; }
+    width: 100%;
+    padding: 8px; }
   figure.highlight pre,
   figure.highlight .gutter,
   figure.highlight .code,
@@ -9700,7 +9701,7 @@ figure.highlight,
     font-family: Menlo, Consolas, monospace;
     border: none;
     padding: 0;
-    margin: 10px;
+    margin: 0px;
     cursor: text; }
   figure.highlight .gutter,
   figure.highlight .code,
@@ -9725,10 +9726,10 @@ figure.highlight,
     display: none; }
   figure.highlight .code,
   .codeblock .code {
-    padding: 0.3em 15px 0.3em 1em;
+    padding: 5px;
     width: 100%;
     border-radius: 7px;
-    color: white; }
+    color: #201d1d; }
     figure.highlight .code pre,
     .codeblock .code pre {
       max-width: calc(750px - 50px);
@@ -9736,14 +9737,14 @@ figure.highlight,
       overflow-y: hidden; }
   figure.highlight .line,
   .codeblock .line {
-    height: 1.2em;
+    height: 1em;
     font-size: 1.4rem;
-    color: white; }
+    color: #191616; }
 
 .codeblock--tabbed figure.highlight,
 .codeblock--tabbed pre > code {
-  margin-bottom: 0;
-  padding-bottom: 0; }
+  margin-top: 10px;
+  padding: 0px; }
 
 .codeblock--tabbed figcaption a, .codeblock--tabbed figcaption span {
   float: left !important; }
@@ -10888,27 +10889,28 @@ a.tag--small,
     transform: translateY(-50%); }
 
 pre > code {
-  background: #494343;
-  color: #333; }
+  background: #e4e3e396;
+  color: #1e1c1c; }
 
 code {
-  background-color: #494343; }
+  background-color: #494343;
+  color: white; }
 
 .codeblock--tabbed figcaption .tab.active {
   background: #349ef3;
-  color: white; }
+  color: #1a1818; }
 
 figure.highlight,
 .codeblock {
-  background: #494343;
-  color: #333; }
+  background: #e4e3e396;
+  color: #1e1c1c; }
   figure.highlight figcaption,
   .codeblock figcaption {
-    background: #494343;
-    color: #999999; }
+    background: #e4e3e396;
+    color: #1f1e1e; }
   figure.highlight .gutter,
   .codeblock .gutter {
-    background: #494343;
+    background: #e4e3e396;
     border-right-color: #e6e6e6; }
     figure.highlight .gutter .line,
     .codeblock .gutter .line {
@@ -10953,7 +10955,7 @@ figure.highlight,
     color: #0086b3; }
   figure.highlight.bash .code .variable,
   .codeblock.bash .code .variable {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.bash .code .title,
   .codeblock.bash .code .title {
     color: #795da3; }
@@ -11016,7 +11018,7 @@ figure.highlight,
   figure.highlight.cs .code .preprocessor .keyword,
   .codeblock.cs .code .preprocessor,
   .codeblock.cs .code .preprocessor .keyword {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.cs .code .title,
   .codeblock.cs .code .title {
     color: #795da3; }
@@ -11050,7 +11052,7 @@ figure.highlight,
   figure.highlight.css .code .value,
   .codeblock.css .code .attr_selector,
   .codeblock.css .code .value {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.css .code .id,
   figure.highlight.css .code .class,
   figure.highlight.css .code .pseudo,
@@ -11104,7 +11106,7 @@ figure.highlight,
   figure.highlight.ini .code .keyword,
   .codeblock.ini .code .value,
   .codeblock.ini .code .keyword {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.java .code .title,
   .codeblock.java .code .title {
     color: #795da3; }
@@ -11139,7 +11141,7 @@ figure.highlight,
     color: #a71d5d; }
   figure.highlight.js .code .tag .title,
   .codeblock.js .code .tag .title {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.js .code .regexp,
   .codeblock.js .code .regexp {
     color: #df5000; }
@@ -11158,7 +11160,7 @@ figure.highlight,
     color: #0086b3; }
   figure.highlight.mak .code .constant,
   .codeblock.mak .code .constant {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.mak .code .title,
   .codeblock.mak .code .title {
     color: #795da3; }
@@ -11209,7 +11211,7 @@ figure.highlight,
     color: #55a532; }
   figure.highlight.nginx .code .variable,
   .codeblock.nginx .code .variable {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.objectivec .code .preprocessor,
   figure.highlight.objectivec .code .meta,
   .codeblock.objectivec .code .preprocessor,
@@ -11293,7 +11295,7 @@ figure.highlight,
   figure.highlight.xml .tag, figure.highlight.html .tag,
   .codeblock.xml .tag,
   .codeblock.html .tag {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.xml .value, figure.highlight.html .value,
   .codeblock.xml .value,
   .codeblock.html .value {
@@ -11380,7 +11382,7 @@ figure.highlight,
     color: #0086b3; }
   figure.highlight.scss .variable,
   .codeblock.scss .variable {
-    color: #333; }
+    color: #1e1c1c; }
   figure.highlight.scss .built_in,
   .codeblock.scss .built_in {
     color: #df5000; }
