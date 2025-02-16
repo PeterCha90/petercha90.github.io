@@ -8188,7 +8188,7 @@ pre > code {
   border: none;
   cursor: text;
   color: black;
-  overflow-x: auto;
+  overflow-x: hidden;
   line-height: 1em;
   font-size: 1.4rem; }
 
@@ -8210,10 +8210,12 @@ abbr {
 blockquote {
   border-left: 3px solid #5d686f;
   padding: 0 5px;
-  margin: 0.5em 0 0; }
+  margin: 0.5em 0 0.5em 0;
+  background-color: #fffcef;
+  border-radius: 5px; }
   blockquote cite:before {
     content: ' — ';
-    padding: 0 0.3em; }
+    padding: 0.3em 0.3em; }
   blockquote > p:first-child {
     margin: 0; }
 
@@ -9682,7 +9684,8 @@ figure.highlight,
   margin: 5px 0px;
   line-height: 1em;
   border-radius: 5px;
-  overflow: auto; }
+  overflow: auto;
+  word-wrap: break-word; }
   figure.highlight table,
   .codeblock table {
     display: block;
@@ -9706,7 +9709,9 @@ figure.highlight,
   figure.highlight .code,
   .codeblock .gutter,
   .codeblock .code {
-    vertical-align: top; }
+    vertical-align: top;
+    word-wrap: break-word;
+    overflow-x: auto; }
   figure.highlight.plain .gutter,
   .codeblock.plain .gutter {
     display: none; }
@@ -9732,8 +9737,8 @@ figure.highlight,
     figure.highlight .code pre,
     .codeblock .code pre {
       max-width: calc(750px - 50px);
-      overflow-x: auto;
-      overflow-y: hidden; }
+      word-wrap: break-word;
+      overflow: auto; }
   figure.highlight .line,
   .codeblock .line {
     height: 1em;
@@ -9743,7 +9748,9 @@ figure.highlight,
 .codeblock--tabbed figure.highlight,
 .codeblock--tabbed pre > code {
   margin-top: 10px;
-  padding: 0px; }
+  padding: 0px;
+  word-wrap: break-word;
+  overflow: hidden; }
 
 .codeblock--tabbed figcaption a, .codeblock--tabbed figcaption span {
   float: left !important; }
@@ -10898,7 +10905,9 @@ code {
 
 .codeblock--tabbed figcaption .tab.active {
   background: #349ef3;
-  color: #1a1818; }
+  color: #1a1818;
+  word-wrap: break-word;
+  overflow: hidden; }
 
 figure.highlight,
 .codeblock {
