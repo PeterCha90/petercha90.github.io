@@ -127,7 +127,8 @@ table {
   background: transparent;
   border-collapse: collapse;
   border-spacing: 0;
-  text-align: left; }
+  text-align: left;
+  margin-bottom: 5px; }
   table th {
     padding: 5px 10px;
     font-weight: bold;
@@ -136,6 +137,8 @@ table {
     padding: 5px 10px; }
   table tr:nth-child(2n) {
     background: #f7f8f8; }
+  table th, table td {
+    border: 1px solid #959595; }
 
 hr {
   margin: 1.5em 0 1.5em;
