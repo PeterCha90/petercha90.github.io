@@ -74,6 +74,10 @@
 
     
         
+            
+<link rel="stylesheet" href="/assets/css/gitalk.css">
+
+        
     
 <style>
     figure.codeblock {
@@ -444,9 +448,8 @@
         
         
             
-                <div id="disqus_thread">
-    <noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-</div>
+                <div id="gitalk"></div>
+
             
         
     </div>
@@ -504,21 +507,21 @@
 
 
     
-        <script>
-          var disqus_config = function() {
-            this.page.url = 'https://petercha90.github.io/2025/02/15/authentication-3/';
-              
-            this.page.identifier = '2025/02/15/authentication-3/';
-              
-          };
-          (function() {
-            var d = document, s = d.createElement('script');
-            var disqus_shortname = 'petercha90';
-            s.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+        
+<script src="/assets/js/gitalk.js"></script>
 
-            s.setAttribute('data-timestamp', +new Date());
-            (d.head || d.body).appendChild(s);
-          })();
+        <script type="text/javascript">
+          (function() {
+            new Gitalk({
+              clientID: 'Ov23ctEFemWzZtNO9xv3',
+              clientSecret: '66c9a0dd353efb32e8bd10c41981d87ddbd493b8',
+              repo: 'petercha90.github.io',
+              owner: 'petercha90',
+              admin: ['petercha90'],
+              id: '2025/02/15/authentication-3/',
+              ...{"language":"ko","perPage":5,"distractionFreeMode":false,"enableHotKey":true,"pagerDirection":"first"}
+            }).render('gitalk')
+          })()
         </script>
     
 
