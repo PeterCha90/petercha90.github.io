@@ -1,0 +1,639 @@
+
+<!DOCTYPE html>
+<html lang="en">
+    
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="generator" content="Peter&#39;s Place">
+    <title>🦙Ollama + Continue = 🧡 - Peter&#39;s Place</title>
+    <meta name="author" content="Peter Cha">
+    <meta name="google-adsense-account" content="ca-pub-4926107872672843">
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-4926107872672843" crossorigin="anonymous"></script>
+    
+        <meta name="keywords" content="tutorial,ollama,continue,ai_coding,무료 AI">
+    
+    
+        <link rel="icon" href="https://petercha90.github.io/assets/images/pp.webp">
+    
+    
+    <script type="application/ld+json">{"@context":"http://schema.org","@type":"BlogPosting","author":{"@type":"Person","name":"Peter Cha","sameAs":[],"image":"peter.webp"},"articleBody":"\n\n\n\n\n안녕하세요, PETER입니다.👋  아시는 분들은 이미 아시는 내용일 수 있겠지만, 무료로 Offline AI 코딩 방법에 대해 두 Part에 걸쳐 나눠보려 합니다. Cursor AI나 Copilot과 같은 AI코딩을 사용하기에는 구독료가 부담스러우셨던 분들께도 좋은 소식이길 바랍니다.\n\n이제 우리는 코딩을 하기 위해서 비행기 안에서 와이파이 결재를 할 필요도 없고, 인터넷이 안되는 곳에서도 전기⚡️만 있다면 AI와 함께 코딩을 계속할 수 있게 되니 너무 좋은 세상이네요.😭 본론으로 들어가 볼게요!🤟\n\n\n\n\n\n\n\n1. Ollama🦙 사용하기\nOllama🦙는 무료로 Local PC에서 LLM을 직접 실행할 수 있게 해주는 OpenSource Project입니다.🫰 링크를 따라들어가신 뒤에  자신의 OS에 맞게 Ollama를 설치해주세요.   \n  \n  Click Download! \n  \n\n&nbsp;&nbsp;&nbsp;&nbsp; ollama list\n설치가 끝나셨다면, Linux나 Mac의 경우 Terminal&#x2F;Bash 창을 열어주시고 Window는 Powershell을 열어주세요! 그리고 아래와 같이 ollama ls 혹은 ollama list를 실행해주세요. 현재 Ollama로 실행할 수 있는 모델들을 확인하실 수 있습니다. (저는 이미 설치한 모델들이 많아서 아래와 같고, 여러분들이 보시고 계신 모델리스트는 이와 다를거에요)\n  bashbash(base)  PETER 🪵  ollama listNAME                       ID              SIZE      MODIFIEDgranite3.1-dense:latest    34d3be74ec54    5.0 GB    6 weeks agophi4:latest                ac896e5b8b34    9.1 GB    6 weeks agoqwen2.5-coder:7b           2b0496514337    4.7 GB    6 weeks agoqwen2.5-coder:14b          3028237cc8c5    9.0 GB    6 weeks agollama3.2-vision:latest     085a1fdae525    7.9 GB    7 weeks agoqwen2.5-coder:1.5b         6d3abb8d2d53    986 MB    2 months agoQwen2.5-7B-2Q:latest       7075c92e9f5d    3.0 GB    3 months agollama2:latest              78e26419b446    3.8 GB    11 months ago\n\n\n\n&nbsp;&nbsp;&nbsp;&nbsp; ollama run\n이번에는 ollama run 명령어를 사용해서 LLM 모델을 다운로드 받고 실행하는 방법을 알아볼게요! 아래와 같이 ollama에서 Models 탭을 클릭해보세요. 이곳에서 당신은 ollama를 통해 다운받을 수 있는 Model을 확인할 수 있습니다. :) 빠른 실습을 위해 조금만 아래로 내리면 찾을 수 있는 llama3.2를 클릭해봅니다!\n  \n  \n   \n  \n\n아래와 같이, 좌측 상단의 dropdown을 클릭하면 기본적으로 해당 모델에서 제공되는 버전을 확인할 수 있고, 특정 버전을 클릭하면 우측에 다운받고 실행해볼 수 있는 ollama 명령어를 확인할 수 있어요. 3b를 클릭해봅니다. 그러면 우측 겹쳐진 네모 박스를 클릭해서 복사하셔서 붙여넣으셔도 좋고, ollama run llama3.2:3b를 터미널에 직접 입력해보세요!\n  \n  \n   \n  \n\n그렇다면 아래와 같이 모델 다운로드가 실행되고.. 대화할 수 있는 창이 실행될 거에요! ‘안녕! 자기소개 부탁해!’ 같은 짧은 대화를 실행해보세요.😉 좀 이상하게 대답을 할 수는 있지만 인터넷이 없는 곳에서도 내 PC에서 LLM과 대화를 할 수 있다는 것을 확인하실 수 있을거에요. :) \n  \n  \n   \n  \n\n아래와 같이 간단한 질문을 해보세요! :) \n  \n  \n   \n  \n축하합니다! 🥳🍾🎉 이것으로 당신은 Offline LLM 실행에 성공하셨습니다!ㅎㅎ 대화를 그만하고 싶다면 /bye를 입력하시면 됩니다!\n\n\n\n\n&nbsp;&nbsp;&nbsp;&nbsp; ollama rm\nollama의 다운받은 모델을 지우고 싶다면, ollama rm model_name:tag를 사용하시면 됩니다.🙂 llama3.2로 간단한 실습은 끝났으니 저는 아래 명령어로 모델을 지워버릴게요.😁\n  bashbash(base)  PETER 🪵 ollama rm llama3.2:3bdeleted 'llama3.2:3b'\n\n그 외에 다른 명령어들도 알고 싶으시다면, ollama라고만 입력해보세요! 더 많은 명령어들을 보실 수 있습니다.😉\n\n\n\n\n2. Continue 설치 &amp; 설정하기&nbsp;&nbsp;&nbsp;&nbsp; 2.1. Continue Extension 설치 🧑🏻‍💻\n자, 이제 다(?) 왔습니다! Continue라는 Extension만 설치하고, Ollama와 연결만하면 됩니다 :)! Continue는 VSCode Extension 혹은 JetBrains의 Plugin으로 설치할 수 있는데요! ‘continue’라고 검색하셔서 나오는 extension &#x2F; plugin을 설치해주세요.🤗\n  \n  \n  VSCode extension 설치 \n\n  \n  JetBrains plugin 설치 \n  \n\n설치가 끝났다면, 아래 .gif처럼 VSCode의 경우 Activity Bar에 Continue Icon이 생성됐을 거에요. 그걸 Drag &amp; Drop으로 우측으로 이동하면 우측에 고정시킬 수도 있어요! 저도 이렇게 사용 중입니다.\n  \n  \n   \n  \n\n\n\n&nbsp;&nbsp;&nbsp;&nbsp; 2.2. coder llm 다운받기 📥\ncoding 특화 llm을 다운받아 봅시다! 위에서 했던 방법과 똑같이 Ollama models에 들어가 아래와 같이 qwen2.5-coder:1.5b 모델을 확인하시고 ollama run 명령어로 다운받아 주세요! 물론 PC 사양이 좋으신 분들은 7b나 14b 추천드립니다 :)\n  \n  \n   \n  \n\n\n\n&nbsp;&nbsp;&nbsp;&nbsp; 2.3. ollama🦙 연결하기\n자, 이제 드디어 Ollama와 연결해보겠습니다. 사용하고 계신 IDE에서, Mac이시라면 command + l, Windows라면 Ctrl + l을 입력해보세요! 그러면 아래와 같이 채팅 창이 뜰 거에요! \n  \n  \n   \n  \n\n여기서 Dropdown을 내리시고 아래와 같이 + Add Chat model을 클릭해주세요. Dropdown을 내렸을 때 모습은 캡쳐한 제 내용과 다를 거에요! 저는 이미 연동이 돼있어서 그렇습니다..!😗\n  \n  \n   \n  \n\n그 다음에는 OpenAI로 선택되어 있는 Provider를 귀여운 Ollama로 바꿔서 클릭해줍니다. \n  \n  \n   \n  \n\n아래 Model 칸은 Autodetect로 설정해주시면 됩니다. Autodetect로 설정이 되어있다면 그대로 두시면 돼요! 그 다음, Connect를 클릭해주세요! \n  \n  \n   \n  \n\n아래와 같이 config.json이 갑자기 나타나면서 provider가 ollama로 설정된 AUTODETECT를 확인하셨다면 제대로 설정이 된 것입니다! config.json은 닫으셔도 됩니다.\n  \n  \n   \n  \n\n그 다음 다시 채팅창을 열어보시고 Autodetect - qwen2.5-coder:1.5b가 잘 뜨는지 확인해보세요! 확인이 되셨다면 클릭해서 모델을 선택해주세요 :)!\n  \n  \n   \n  \n\n\n\n3. Continue와 코딩해보기 🧑🏻‍💻\n지금부터 진행할 내용들은 사용하는 PC의 사양과 사용하는 모델의 크기에 따라 응답속도가 다를 수 있으니 참고해주세요! 😼\n\n자, 그럼 이제 본격적으로 Continue를 통해 Ollama AI와 함께 코딩 실습을 해볼게요! 편하신 곳에 아래와 같이 test.py(혹은 test.java) 파일을 만드시고, Ctrl + l &#x2F; Cmd + l을 눌러서 아래와 같이 실습 준비를 해주세요! 저는 Python으로 해볼게요 :)\n  \n  \n   \n  \n\n아래와 같이 ‘피보나치 수열 python 코딩’이라고 입력하고 엔터를 쳐보세요! 잠시 기다리시면, 답변을 얻을 수 있을 거에요 :) 아래 이미지의 Click!이라고 적은 버튼을 누르면, 현재 커서가 위치한 곳에 답변으로 나온 코드가 바로 붙여넣기 될 거에요! \n  \n  \n   \n  \n\n물론 바로 옆 버튼을 눌러서 전체 코드 복사 후, 원하는 위치에 붙여넣을 수도 있고, 일부분만 마우스로 Drag해서 복사 &amp; 붙여넣기할 수도 있어요. :)\n\n\n&nbsp;&nbsp;&nbsp;&nbsp; 코드 수정✍️ 부탁해보기\n이제 생성해서 붙여넣은 Fibonacci 코드에 아래와 같이 함수가 실행될 때 마다, 들어온 숫자를 확인할 수 있게 코드를 수정하고 싶다고 가정해봅시다. 이 때, 수정하고 싶은 부분을 아래와 같이 Drag를 하고 `Ctrl+l` or `Cmd + l`을 누르면 해당 코드를 LLM에게 Context로 전달해서 질문을 할 수 있어요 :)\n  \n  \n   \n  \n자, 이제 아래와 같이 잘 수정해준 코드를 실제 내 코드에 적용을 해봐야겠죠? Apply버튼을 눌려줍니다.\n  \n  \n   \n  \n\nApply 버튼을 눌렀다면 Continue가 똑똑하게 위에서부터 코드를 내려가며 수정이 필요한 알맞은 곳을 찾아 수정을 해주는데요(PC 사양과 사용하는 모델의 크기에 따라 시간이 꽤 걸리기도 해요.), 수정 내용이 마음에 드신다면 Accept을, 마음에 들지 않는다면 Reject을 클릭해주시면 됩니다. :) \n  \n  \n   \n  \n\n&nbsp;&nbsp;&nbsp;&nbsp; 파일 참조시키기! 📨\n마지막으로, 특정 파일을 태그해서 질문을 해볼게요! 우리가 채팅어플에서 누군가를 소환할 때 사용하는, @를 똑같이 사용하면 아래와 같이 원하는 파일을 LLM에게 인식시킨 상태로 질문을 할 수 있어요!  \n  \n   \n  \n혹시나 아래와 같이 질문에 대답이 빨리 나오지않고 너무 오래걸리거나 잘 안된다면,😿 VSCode를 껏다 켜보거나 Ollama를 재시작해보셔도 좋을 것 같아요!  \n  \n   \n  \n\n\n\n\n여기까지 ollama를 소개하고, Ollama와 continue를 이용해서 로컬에서 LLM을 Offline에서도 Code Assistant로 사용하는 방법에 대해 알아봤습니다! 🤗\nPart. 2에서는 Huggingface에서 모델을 다운받고, Ollama로 커스텀 설정하여 사용하는 방법(약간의 Prompt Engieering 포함)과 무료는 아니지만 Continue에서 아주 가성비 좋은 Code Assistant Provider인 Together.ai를 연동하는 방법에 대해 알아볼게요!😉\n혹시나 잘못 기입된 내용이 있거나 수정이 필요한 부분은 댓글로 알려주시면 감사하겠습니다!\n\n\n\n&nbsp;&nbsp;&nbsp;&nbsp; 읽어주셔서 감사합니다!🙇🏻‍♂️\n\nReferences\n&nbsp;&nbsp; TILNOTE, Conitnue Docs\n\n","dateCreated":"2025-03-20T20:31:23+09:00","dateModified":"2025-03-20T23:07:04+09:00","datePublished":"2025-03-20T20:31:23+09:00","description":"\n\nOllama와 함께라면 AI Coding도 무료!🦙\nContinue로 LLM AI Assistant 사용하기!\n","headline":"🦙Ollama + Continue = 🧡","image":["thumbnail.png","cover.png"],"mainEntityOfPage":{"@type":"WebPage","@id":"https://petercha90.github.io/2025/03/20/ollama-continue/"},"publisher":{"@type":"Organization","name":"Peter Cha","sameAs":[],"image":"peter.webp","logo":{"@type":"ImageObject","url":"peter.webp"}},"url":"https://petercha90.github.io/2025/03/20/ollama-continue/","keywords":"tutorial, ollama, continue, ai_coding, 무료 AI","thumbnailUrl":"thumbnail.png"}</script>
+    <meta name="description" content="Ollama와 함께라면 AI Coding도 무료!🦙 Continue로 LLM AI Assistant 사용하기!">
+<meta property="og:type" content="blog">
+<meta property="og:title" content="🦙Ollama + Continue &#x3D; 🧡">
+<meta property="og:url" content="https://petercha90.github.io/2025/03/20/ollama-continue/index.html">
+<meta property="og:site_name" content="Peter&#39;s Place">
+<meta property="og:description" content="Ollama와 함께라면 AI Coding도 무료!🦙 Continue로 LLM AI Assistant 사용하기!">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/ollama_1.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/ollama_2.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/ollama_3.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/ollama_4.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/ollama_5.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_2.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_3.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_4.gif">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_10.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_11.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_6.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_7.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_8.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_12.png">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/continue_14.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/test_1.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/test_2.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/test_3.png">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/test_4.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/test_5.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/test_6.webp">
+<meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/test_7.webp">
+<meta property="article:published_time" content="2025-03-20T11:31:23.000Z">
+<meta property="article:modified_time" content="2025-03-20T14:07:04.710Z">
+<meta property="article:author" content="Peter Cha">
+<meta property="article:tag" content="tutorial">
+<meta property="article:tag" content="ollama">
+<meta property="article:tag" content="continue">
+<meta property="article:tag" content="ai_coding">
+<meta property="article:tag" content="무료 AI">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/ollama_1.webp">
+    
+    
+        
+    
+    
+        <meta property="og:image" content="https://petercha90.github.io/assets/images/peter.webp"/>
+    
+    
+        <meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/thumbnail.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://petercha90.github.io/2025/03/20/ollama-continue/thumbnail.png"/>
+    
+    
+        <meta property="og:image" content="https://petercha90.github.io/2025/03/20/ollama-continue/cover.png"/>
+        <meta class="swiftype" name="image" data-type="enum" content="https://petercha90.github.io/2025/03/20/ollama-continue/cover.png"/>
+    
+    
+    
+    <!--STYLES-->
+    
+<link rel="stylesheet" href="/assets/css/style-gjvacwv7luhdjy5ofjvmeph2otzxpngacbwkfdanmzqbavurgwptok9rk9f3.min.css">
+
+    <!--STYLES END-->
+    
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DFMCMD9E8V"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-DFMCMD9E8V');
+    </script>
+
+
+    
+
+    
+        
+            
+<link rel="stylesheet" href="/assets/css/gitalk.css">
+
+        
+    
+<style>
+    figure.codeblock {
+       margin: 0;
+    }
+    figure figcaption .tabs {
+      display: flex;
+      margin: 0;
+    }
+    figure figcaption .tabs .tab {
+      cursor: pointer;
+      list-style: none;
+      padding: 5px 15px;
+    }
+    figure figcaption .tabs .tab.active {
+      background: #2d2d2d;
+      color: white;
+    }
+  </style></head>
+
+    <body>
+        <div id="blog">
+            <!-- Define author's picture -->
+
+
+    
+        
+            
+        
+    
+
+<header id="header" data-behavior="4">
+    <i id="btn-open-sidebar" class="fa fa-lg fa-bars"></i>
+    <div class="header-title">
+        <a
+            class="header-title-link"
+            href="/"
+            aria-label=""
+        >
+            Peter&#39;s Place
+        </a>
+    </div>
+    
+        
+            <a
+                class="header-right-picture "
+                href="#about"
+                aria-label="Open the link: /#about"
+            >
+        
+        
+            <img class="header-picture" src="/assets/images/peter.webp" alt="Author&#39;s picture"/>
+        
+        </a>
+    
+</header>
+
+            <!-- Define author's picture -->
+
+
+
+        
+    
+
+<nav id="sidebar" data-behavior="4">
+    <div class="sidebar-container">
+        
+            <div class="sidebar-profile">
+                <a
+                    href="/#about"
+                    aria-label="Read more about the author"
+                >
+                    <img class="sidebar-profile-picture" src="/assets/images/peter.webp" alt="Author&#39;s picture"/>
+                </a>
+                <h4 class="sidebar-profile-name">Peter Cha</h4>
+                <!-- 
+                    <h5 class="sidebar-profile-bio"><p>author.bio</p>
+</h5>
+                 -->
+            </div>
+        
+        
+            <ul class="sidebar-buttons">
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/"
+                            
+                            rel="noopener"
+                            title="Home"
+                        >
+                        <i class="sidebar-button-icon fa fa-home" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Home</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-categories"
+                            
+                            rel="noopener"
+                            title="Categories"
+                        >
+                        <i class="sidebar-button-icon fa fa-bookmark" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Categories</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/all-tags"
+                            
+                            rel="noopener"
+                            title="Search tags"
+                        >
+                        <i class="sidebar-button-icon fa fa-tags" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Search tags</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="/visitors-book"
+                            
+                            rel="noopener"
+                            title="Visitors&#39; book"
+                        >
+                        <i class="sidebar-button-icon fa fa-book" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">Visitors&#39; book</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="https://www.linkedin.com/in/petercha90/"
+                            
+                                target="_blank"
+                            
+                            rel="noopener"
+                            title="LinkedIn"
+                        >
+                        <i class="sidebar-button-icon fab fa-linkedin" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">LinkedIn</span>
+                    </a>
+            </li>
+            
+                <li class="sidebar-button">
+                    
+                        <a
+                            class="sidebar-button-link "
+                            href="#about"
+                            
+                            rel="noopener"
+                            title="About"
+                        >
+                        <i class="sidebar-button-icon fa fa-question" aria-hidden="true"></i>
+                        <span class="sidebar-button-desc">About</span>
+                    </a>
+            </li>
+            
+        </ul>
+        
+    </div>
+</nav>
+
+            
+        <div class="post-header-cover
+                    text-center
+                    post-header-cover--partial"
+             style="background-image:url('/2025/03/20/ollama-continue/cover.png');"
+             data-behavior="4">
+            
+        </div>
+
+            <div style="background: rgba(255,255,255,0.94);" id="main" data-behavior="4"
+                 class="hasCover
+                        hasCoverMetaOut
+                        hasCoverCaption">
+                
+<article class="post">
+    
+        <span class="post-header-cover-caption caption">🦙Ollama + Continue = 🫢✨</span>
+    
+    
+        <div class="post-header main-content-wrap text-center">
+    
+        <h1 class="post-title">
+            🦙Ollama + Continue = 🧡
+        </h1>
+    
+    
+        <div class="post-meta">
+    <time datetime="2025-03-20T20:31:23+09:00">
+	
+		    Mar 20, 2025
+    	
+    </time>
+    
+        <span>in </span>
+        
+    <a class="category-link" href="/categories/tutorial/">tutorial</a>
+
+
+    
+</div>
+
+    
+</div>
+
+    
+    <div class="post-content markdown">
+        <div class="main-content-wrap">
+            <!-- excerpt -->
+
+<br>
+
+<ul>
+<li><p>안녕하세요, PETER입니다.👋 <br> 아시는 분들은 이미 아시는 내용일 수 있겠지만, 무료로 Offline AI 코딩 방법에 대해 두 Part에 걸쳐 나눠보려 합니다. <a target="_blank" rel="noopener" href="https://www.cursor.com/">Cursor AI</a>나 <a target="_blank" rel="noopener" href="https://code.visualstudio.com/docs/copilot/overview">Copilot</a>과 같은 AI코딩을 사용하기에는 구독료가 부담스러우셨던 분들께도 좋은 소식이길 바랍니다.</p>
+</li>
+<li><p>이제 우리는 코딩을 하기 위해서 비행기 안에서 와이파이 결재를 할 필요도 없고, 인터넷이 안되는 곳에서도 전기⚡️만 있다면 AI와 함께 코딩을 계속할 수 있게 되니 너무 좋은 세상이네요.😭 본론으로 들어가 볼게요!🤟</p>
+</li>
+</ul>
+<br>
+
+
+<hr>
+
+<h3 id="1-Ollama🦙-사용하기"><a href="#1-Ollama🦙-사용하기" class="headerlink" title="1. Ollama🦙 사용하기"></a>1. Ollama🦙 사용하기</h3><ul>
+<li><a target="_blank" rel="noopener" href="https://ollama.com/">Ollama</a>🦙는 무료로 Local PC에서 LLM을 직접 실행할 수 있게 해주는 OpenSource Project입니다.🫰 <a href="(https://ollama.com/">링크</a>를 따라들어가신 뒤에  자신의 OS에 맞게 Ollama를 설치해주세요.   <center>
+  <img src="ollama_1.webp" style="width:80%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;">Click Download!</div> 
+  </center></li>
+</ul>
+<h5 id="nbsp-nbsp-nbsp-nbsp-ollama-list"><a href="#nbsp-nbsp-nbsp-nbsp-ollama-list" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; ollama list"></a>&nbsp;&nbsp;&nbsp;&nbsp; ollama list</h5><ul>
+<li><p>설치가 끝나셨다면, Linux나 Mac의 경우 Terminal&#x2F;Bash 창을 열어주시고 Window는 Powershell을 열어주세요! 그리고 아래와 같이 <code>ollama ls</code> 혹은 <code>ollama list</code>를 실행해주세요. 현재 Ollama로 실행할 수 있는 모델들을 확인하실 수 있습니다. (저는 이미 설치한 모델들이 많아서 아래와 같고, 여러분들이 보시고 계신 모델리스트는 이와 다를거에요)</p>
+  <figure class="codeblock codeblock--tabbed"><figcaption><span>bash</span><ul class="tabs"><li class="tab active">bash</li></ul></figcaption><div class="tabs-content"><figure class="highlight bash" style="display: block;"><table><tbody><tr><td class="code"><pre><span class="line">(base)  PETER 🪵  ollama list</span><br><span class="line">NAME                       ID              SIZE      MODIFIED</span><br><span class="line">granite3.1-dense:latest    34d3be74ec54    5.0 GB    6 weeks ago</span><br><span class="line">phi4:latest                ac896e5b8b34    9.1 GB    6 weeks ago</span><br><span class="line">qwen2.5-coder:7b           2b0496514337    4.7 GB    6 weeks ago</span><br><span class="line">qwen2.5-coder:14b          3028237cc8c5    9.0 GB    6 weeks ago</span><br><span class="line">llama3.2-vision:latest     085a1fdae525    7.9 GB    7 weeks ago</span><br><span class="line">qwen2.5-coder:1.5b         6d3abb8d2d53    986 MB    2 months ago</span><br><span class="line">Qwen2.5-7B-2Q:latest       7075c92e9f5d    3.0 GB    3 months ago</span><br><span class="line">llama2:latest              78e26419b446    3.8 GB    11 months ago</span><br></pre></td></tr></tbody></table></figure></div></figure></li>
+</ul>
+<br>
+
+<h5 id="nbsp-nbsp-nbsp-nbsp-ollama-run"><a href="#nbsp-nbsp-nbsp-nbsp-ollama-run" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; ollama run"></a>&nbsp;&nbsp;&nbsp;&nbsp; ollama run</h5><ul>
+<li><p>이번에는 <code>ollama run</code> 명령어를 사용해서 LLM 모델을 다운로드 받고 실행하는 방법을 알아볼게요! 아래와 같이 ollama에서 Models 탭을 클릭해보세요. 이곳에서 당신은 ollama를 통해 다운받을 수 있는 Model을 확인할 수 있습니다. :) 빠른 실습을 위해 조금만 아래로 내리면 찾을 수 있는 <code>llama3.2</code>를 클릭해봅니다!</p>
+  <center>
+  <img src="ollama_2.webp" style="width:80%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>아래와 같이, 좌측 상단의 dropdown을 클릭하면 기본적으로 해당 모델에서 제공되는 버전을 확인할 수 있고, 특정 버전을 클릭하면 우측에 다운받고 실행해볼 수 있는 ollama 명령어를 확인할 수 있어요. 3b를 클릭해봅니다. 그러면 우측 겹쳐진 네모 박스를 클릭해서 복사하셔서 붙여넣으셔도 좋고, <code>ollama run llama3.2:3b</code>를 터미널에 직접 입력해보세요!</p>
+  <center>
+  <img src="ollama_3.webp" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>그렇다면 아래와 같이 모델 다운로드가 실행되고.. 대화할 수 있는 창이 실행될 거에요! ‘안녕! 자기소개 부탁해!’ 같은 짧은 대화를 실행해보세요.😉 좀 이상하게 대답을 할 수는 있지만 인터넷이 없는 곳에서도 내 PC에서 LLM과 대화를 할 수 있다는 것을 확인하실 수 있을거에요. :) </p>
+  <center>
+  <img src="ollama_4.webp" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>아래와 같이 간단한 질문을 해보세요! :) </p>
+  <center>
+  <img src="ollama_5.webp" style="width:500px;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center></li>
+<li><p>축하합니다! 🥳🍾🎉 이것으로 당신은 Offline LLM 실행에 성공하셨습니다!ㅎㅎ 대화를 그만하고 싶다면 <code>/bye</code>를 입력하시면 됩니다!</p>
+</li>
+</ul>
+<br>
+
+<h5 id="nbsp-nbsp-nbsp-nbsp-ollama-rm"><a href="#nbsp-nbsp-nbsp-nbsp-ollama-rm" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; ollama rm"></a>&nbsp;&nbsp;&nbsp;&nbsp; ollama rm</h5><ul>
+<li><p>ollama의 다운받은 모델을 지우고 싶다면, <code>ollama rm model_name:tag</code>를 사용하시면 됩니다.🙂 llama3.2로 간단한 실습은 끝났으니 저는 아래 명령어로 모델을 지워버릴게요.😁</p>
+  <figure class="codeblock codeblock--tabbed"><figcaption><span>bash</span><ul class="tabs"><li class="tab active">bash</li></ul></figcaption><div class="tabs-content"><figure class="highlight bash" style="display: block;"><table><tbody><tr><td class="code"><pre><span class="line">(base)  PETER 🪵 ollama <span class="built_in">rm</span> llama3.2:3b</span><br><span class="line">deleted <span class="string">'llama3.2:3b'</span></span><br></pre></td></tr></tbody></table></figure></div></figure>
+</li>
+<li><p>그 외에 다른 명령어들도 알고 싶으시다면, <code>ollama</code>라고만 입력해보세요! 더 많은 명령어들을 보실 수 있습니다.😉</p>
+</li>
+</ul>
+<hr>
+
+<h3 id="2-Continue-설치-설정하기"><a href="#2-Continue-설치-설정하기" class="headerlink" title="2. Continue 설치 &amp; 설정하기"></a>2. Continue 설치 &amp; 설정하기</h3><h5 id="nbsp-nbsp-nbsp-nbsp-2-1-Continue-Extension-설치-🧑🏻‍💻"><a href="#nbsp-nbsp-nbsp-nbsp-2-1-Continue-Extension-설치-🧑🏻‍💻" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; 2.1. Continue Extension 설치 🧑🏻‍💻"></a>&nbsp;&nbsp;&nbsp;&nbsp; 2.1. Continue Extension 설치 🧑🏻‍💻</h5><ul>
+<li><p>자, 이제 다(?) 왔습니다! Continue라는 Extension만 설치하고, Ollama와 연결만하면 됩니다 :)! Continue는 VSCode Extension 혹은 JetBrains의 Plugin으로 설치할 수 있는데요! ‘continue’라고 검색하셔서 나오는 extension &#x2F; plugin을 설치해주세요.🤗</p>
+  <center>
+  <img src="continue_2.webp" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;">VSCode extension 설치</div> 
+
+  <img src="continue_3.webp" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;">JetBrains plugin 설치</div> 
+  </center>
+</li>
+<li><p>설치가 끝났다면, 아래 .gif처럼 VSCode의 경우 Activity Bar에 Continue Icon이 생성됐을 거에요. 그걸 Drag &amp; Drop으로 우측으로 이동하면 우측에 고정시킬 수도 있어요! 저도 이렇게 사용 중입니다.</p>
+  <center>
+  <img src="continue_4.gif" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center></li>
+</ul>
+<br>
+
+<h5 id="nbsp-nbsp-nbsp-nbsp-2-2-coder-llm-다운받기-📥"><a href="#nbsp-nbsp-nbsp-nbsp-2-2-coder-llm-다운받기-📥" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; 2.2. coder llm 다운받기 📥"></a>&nbsp;&nbsp;&nbsp;&nbsp; 2.2. coder llm 다운받기 📥</h5><ul>
+<li><p>coding 특화 llm을 다운받아 봅시다! 위에서 했던 방법과 똑같이 Ollama models에 들어가 아래와 같이 qwen2.5-coder:1.5b 모델을 확인하시고 ollama run 명령어로 다운받아 주세요! 물론 PC 사양이 좋으신 분들은 7b나 14b 추천드립니다 :)</p>
+  <center>
+  <img src="continue_10.webp" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center></li>
+</ul>
+<br>
+
+<h5 id="nbsp-nbsp-nbsp-nbsp-2-3-ollama🦙-연결하기"><a href="#nbsp-nbsp-nbsp-nbsp-2-3-ollama🦙-연결하기" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; 2.3. ollama🦙 연결하기"></a>&nbsp;&nbsp;&nbsp;&nbsp; 2.3. ollama🦙 연결하기</h5><ul>
+<li><p>자, 이제 드디어 Ollama와 연결해보겠습니다. 사용하고 계신 IDE에서, Mac이시라면 <code>command + l</code>, Windows라면 <code>Ctrl + l</code>을 입력해보세요! 그러면 아래와 같이 채팅 창이 뜰 거에요! </p>
+  <center>
+  <img src="continue_11.webp" style="width:500px;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>여기서 Dropdown을 내리시고 아래와 같이 <code>+ Add Chat model</code>을 클릭해주세요. Dropdown을 내렸을 때 모습은 캡쳐한 제 내용과 다를 거에요! 저는 이미 연동이 돼있어서 그렇습니다..!😗</p>
+  <center>
+  <img src="continue_6.webp" style="width:80%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>그 다음에는 OpenAI로 선택되어 있는 Provider를 귀여운 Ollama로 바꿔서 클릭해줍니다. </p>
+  <center>
+  <img src="continue_7.webp" style="width:450px;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>아래 Model 칸은 <code>Autodetect</code>로 설정해주시면 됩니다. Autodetect로 설정이 되어있다면 그대로 두시면 돼요! 그 다음, <code>Connect</code>를 클릭해주세요! </p>
+  <center>
+  <img src="continue_8.webp" style="width:450px;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>아래와 같이 config.json이 갑자기 나타나면서 provider가 ollama로 설정된 AUTODETECT를 확인하셨다면 제대로 설정이 된 것입니다! config.json은 닫으셔도 됩니다.</p>
+  <center>
+  <img src="continue_12.png" style="width:90%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>그 다음 다시 채팅창을 열어보시고 <code>Autodetect - qwen2.5-coder:1.5b</code>가 잘 뜨는지 확인해보세요! 확인이 되셨다면 클릭해서 모델을 선택해주세요 :)!</p>
+  <center>
+  <img src="continue_14.webp" style="width:400px;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center></li>
+</ul>
+<hr>
+
+<h3 id="3-Continue와-코딩해보기-🧑🏻‍💻"><a href="#3-Continue와-코딩해보기-🧑🏻‍💻" class="headerlink" title="3. Continue와 코딩해보기 🧑🏻‍💻"></a>3. Continue와 코딩해보기 🧑🏻‍💻</h3><ul>
+<li><p>지금부터 진행할 내용들은 사용하는 PC의 사양과 사용하는 모델의 크기에 따라 응답속도가 다를 수 있으니 참고해주세요! 😼</p>
+</li>
+<li><p>자, 그럼 이제 본격적으로 Continue를 통해 Ollama AI와 함께 코딩 실습을 해볼게요! 편하신 곳에 아래와 같이 <code>test.py</code>(혹은 <code>test.java</code>) 파일을 만드시고, <code>Ctrl + l</code> &#x2F; <code>Cmd + l</code>을 눌러서 아래와 같이 실습 준비를 해주세요! 저는 Python으로 해볼게요 :)</p>
+  <center>
+  <img src="test_1.webp" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>아래와 같이 ‘피보나치 수열 python 코딩’이라고 입력하고 엔터를 쳐보세요! 잠시 기다리시면, 답변을 얻을 수 있을 거에요 :) 아래 이미지의 <code>Click!</code>이라고 적은 버튼을 누르면, 현재 커서가 위치한 곳에 답변으로 나온 코드가 바로 붙여넣기 될 거에요! </p>
+  <center>
+  <img src="test_2.webp" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>물론 바로 옆 버튼을 눌러서 전체 코드 복사 후, 원하는 위치에 붙여넣을 수도 있고, 일부분만 마우스로 Drag해서 복사 &amp; 붙여넣기할 수도 있어요. :)</p>
+</li>
+</ul>
+<h5 id="nbsp-nbsp-nbsp-nbsp-코드-수정✍️-부탁해보기"><a href="#nbsp-nbsp-nbsp-nbsp-코드-수정✍️-부탁해보기" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; 코드 수정✍️ 부탁해보기"></a>&nbsp;&nbsp;&nbsp;&nbsp; 코드 수정✍️ 부탁해보기</h5><ul>
+<li><p>이제 생성해서 붙여넣은 Fibonacci 코드에 아래와 같이 함수가 실행될 때 마다, 들어온 숫자를 확인할 수 있게 코드를 수정하고 싶다고 가정해봅시다. 이 때, <span class="highlight-text" style="background-color:#FFDFB8;">수정하고 싶은 부분을 아래와 같이 Drag를 하고 `Ctrl+l` or `Cmd + l`을 누르면 해당 코드를 LLM에게 Context로 전달해서 질문을 할 수 있어요 :)</span></p>
+  <center>
+  <img src="test_3.png" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center></li>
+<li><p>자, 이제 아래와 같이 잘 수정해준 코드를 실제 내 코드에 적용을 해봐야겠죠? <code>Apply</code>버튼을 눌려줍니다.</p>
+  <center>
+  <img src="test_4.webp" style="width:100%;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center>
+</li>
+<li><p>Apply 버튼을 눌렀다면 Continue가 똑똑하게 위에서부터 코드를 내려가며 수정이 필요한 알맞은 곳을 찾아 수정을 해주는데요(PC 사양과 사용하는 모델의 크기에 따라 시간이 꽤 걸리기도 해요.), 수정 내용이 마음에 드신다면 Accept을, 마음에 들지 않는다면 Reject을 클릭해주시면 됩니다. :) </p>
+  <center>
+  <img src="test_5.webp" style="width:600px;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center></li>
+</ul>
+<h5 id="nbsp-nbsp-nbsp-nbsp-파일-참조시키기-📨"><a href="#nbsp-nbsp-nbsp-nbsp-파일-참조시키기-📨" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; 파일 참조시키기! 📨"></a>&nbsp;&nbsp;&nbsp;&nbsp; 파일 참조시키기! 📨</h5><ul>
+<li>마지막으로, 특정 파일을 태그해서 질문을 해볼게요! 우리가 채팅어플에서 누군가를 소환할 때 사용하는, <u><code>@</code>를 똑같이 사용하면 아래와 같이 원하는 파일을 LLM에게 인식시킨 상태로 질문을 할 수 있어요!</u>  <center>
+  <img src="test_6.webp" style="width:600px;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center></li>
+<li>혹시나 아래와 같이 질문에 대답이 빨리 나오지않고 너무 오래걸리거나 잘 안된다면,😿 VSCode를 껏다 켜보거나 Ollama를 재시작해보셔도 좋을 것 같아요!  <center>
+  <img src="test_7.webp" style="width:600px;margin-top:15px;">
+  <div style="color: rgba(0, 0, 0, 0.5);font-size: 11pt;margin-bottom:10px;"></div> 
+  </center></li>
+</ul>
+<hr>
+
+<ul>
+<li>여기까지 ollama를 소개하고, Ollama와 continue를 이용해서 로컬에서 LLM을 Offline에서도 Code Assistant로 사용하는 방법에 대해 알아봤습니다! 🤗</li>
+<li>Part. 2에서는 Huggingface에서 모델을 다운받고, Ollama로 커스텀 설정하여 사용하는 방법(약간의 Prompt Engieering 포함)과 무료는 아니지만 Continue에서 아주 가성비 좋은 Code Assistant Provider인 Together.ai를 연동하는 방법에 대해 알아볼게요!😉</li>
+<li>혹시나 잘못 기입된 내용이 있거나 수정이 필요한 부분은 댓글로 알려주시면 감사하겠습니다!</li>
+</ul>
+<Br>
+
+<h6 id="nbsp-nbsp-nbsp-nbsp-읽어주셔서-감사합니다-🙇🏻‍♂️"><a href="#nbsp-nbsp-nbsp-nbsp-읽어주셔서-감사합니다-🙇🏻‍♂️" class="headerlink" title="&nbsp;&nbsp;&nbsp;&nbsp; 읽어주셔서 감사합니다!🙇🏻‍♂️"></a>&nbsp;&nbsp;&nbsp;&nbsp; 읽어주셔서 감사합니다!🙇🏻‍♂️</h6><br>
+
+<h5 id="References"><a href="#References" class="headerlink" title="References"></a>References</h5><blockquote>
+<p>&nbsp;&nbsp; <a target="_blank" rel="noopener" href="https://tilnote.io/pages/6625c48e69df45c6b575016e"><code>TILNOTE</code></a>, <a target="_blank" rel="noopener" href="https://docs.continue.dev/getting-started/install"><code>Conitnue Docs</code></a></p>
+</blockquote>
+<br>
+            <ins class="kakao_ad_area" style="display:none;"
+            data-ad-unit = "DAN-1o1w40Gnzw3o4D6U"
+            data-ad-width = "300"
+            data-ad-height = "250"></ins>
+            <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+            
+
+
+        </div>
+    </div>
+    <ins class="kakao_ad_area" style="display:none;"
+    data-ad-unit = "DAN-1o1w40Gnzw3o4D6U"
+    data-ad-width = "300"
+    data-ad-height = "250"></ins>
+    <script type="text/javascript" src="//t1.daumcdn.net/kas/static/ba.min.js" async></script>
+    <div id="post-footer" class="post-footer main-content-wrap">
+        <center><a target="_blank" rel="noopener" href="https://www.buymeacoffee.com/petercha"><img src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=&slug=petercha&button_colour=FFDD00&font_colour=000000&font_family=Bree&outline_colour=000000&coffee_colour=ffffff" /></a></center>
+        
+            <div class="post-footer-tags">
+                <span class="text-color-light text-small">TAGGED IN</span><br/>
+                
+    <a class="tag tag--primary tag--small t-none-link" href="/tags/ai-coding/" rel="tag">ai_coding</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/continue/" rel="tag">continue</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/ollama/" rel="tag">ollama</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/tutorial/" rel="tag">tutorial</a> <a class="tag tag--primary tag--small t-none-link" href="/tags/%EB%AC%B4%EB%A3%8C-AI/" rel="tag">무료 AI</a>
+
+            </div>
+        
+        
+        
+            
+                <div id="gitalk"></div>
+
+            
+        
+    </div>
+</article>
+
+
+
+                <footer id="footer" class="main-content-wrap">
+    <span class="copyrights">
+        Copyrights &copy; 2025 Peter Cha. All Rights Reserved.
+    </span>
+</footer>
+
+            </div>
+            
+        </div>
+        
+
+
+    
+        
+    
+
+<div id="about">
+    <div id="about-card">
+        <div id="about-btn-close">
+            <i class="fa fa-times"></i>
+        </div>
+        
+            <img id="about-card-picture" src="/assets/images/peter.webp" alt="Author&#39;s picture"/>
+        
+            <h4 id="about-card-name">Peter Cha</h4>
+        
+            <div style="margin-top: -5%" id="about-card-bio"> A normal developer.
+        
+        
+                <br> <br>
+                📭 &nbsp;
+                 petercha90@gmail.com
+                <br/>
+            </div>
+            
+        
+    </div>
+</div>
+
+        
+        
+<div id="cover" style="background-image:url('/assets/images/cover.webp');"></div>
+        <!--SCRIPTS-->
+
+<script src="/assets/js/script-iqkb45mllnb73jtbesvjiev9fxp4agqsuhterpv5igmuxxnfy9brmwz7naqi.min.js"></script>
+
+<!--SCRIPTS END-->
+
+
+    
+        
+<script src="/assets/js/gitalk.js"></script>
+
+        <script type="text/javascript">
+          (function() {
+            new Gitalk({
+              clientID: 'Ov23ctEFemWzZtNO9xv3',
+              clientSecret: '66c9a0dd353efb32e8bd10c41981d87ddbd493b8',
+              repo: 'petercha90.github.io',
+              owner: 'petercha90',
+              admin: ['petercha90'],
+              id: '2025/03/20/ollama-continue/',
+              ...{"language":"ko","perPage":5,"distractionFreeMode":true,"enableHotKey":true,"pagerDirection":"first"}
+            }).render('gitalk')
+          })()
+        </script>
+    
+
+
+
+
+    <script>
+  $(document).ready(function() {
+    $('figure.codeblock').find('.tab').click(function() {
+        var $codeblock = $(this).parent().parent().parent();
+        var $tab = $(this);
+        // remove "active" css class on all tabs
+        $tab.siblings().removeClass('active');
+        // add "active" css class on the clicked tab
+        $tab.addClass('active');
+        // hide all tab contents
+        $codeblock.find('.highlight').hide();
+        // show only the right one
+        $codeblock.find('.highlight.' + $tab.text()).show();
+    });
+  });
+  </script></body>
+</html>
